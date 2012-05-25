@@ -1,0 +1,14 @@
+.xaxis path {
+	display: none;
+}
+.xaxis line {
+	display: none;
+	stroke-width: 1.5px;
+	stroke: #fff;
+}
+.xaxis text {
+	font-family: "Arial Narrow";
+}
+.bgbar {
+	fill: #E6E6E6;
+}
