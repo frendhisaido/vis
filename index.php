@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
  	<script src="lib/jquery/jquery.js"></script>
-	<script type="text/javascript" src="lib/d3/d3.v2.js"></script>
+	<script type="text/javascript" src="lib/d3/d3.v2.min.js"></script>
 	<script type="text/javascript" src="lib/jquery/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.core.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.widget.js"></script>
@@ -24,8 +24,8 @@
     		opt2 = $("#dates2");
 
 		$.each(result, function() {
-    	opt1.append($("<option />").val(this.date).text(this.date.substr(8,2).replace(/-/g,"/")+" "+nm_bulan[Number(this.date.substr(5,2))]));
-    	opt2.append($("<option />").val(this.date).text(this.date.substr(8,2).replace(/-/g,"/")+" "+nm_bulan[Number(this.date.substr(5,2))]));
+    	opt1.append($("<option />").val(this.date).text(Number(this.date.substr(8,2))+" "+nm_bulan[Number(this.date.substr(5,2))]));
+    	opt2.append($("<option />").val(this.date).text(Number(this.date.substr(8,2))+" "+nm_bulan[Number(this.date.substr(5,2))]));
 		});
 				
 		$("#dates2")[ 0 ].selectedIndex = 14;
@@ -44,7 +44,7 @@
 					select2[ 0 ].selectedIndex = ui.values[1] -1;
 				},
 				stop: function( event, ui ) {
-					updatebar(
+					updatebarchart(
 						$("#dates1 option:selected").val(),
 						$("#dates2 option:selected").val()
 					);

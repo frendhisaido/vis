@@ -1,0 +1,128 @@
+<html>
+	<head>
+		<title>LINE</title>
+		<script type="text/javascript" src="../../d3.v2.min.js"></script>
+		<style>
+			/* tell the SVG path to be a thin blue line without any area fill */
+			path {
+				stroke: steelblue;
+				stroke-width: 1;
+				fill: none;
+			}
+			.line {
+				stroke-width: 3px;
+			}
+			.xaxis line {
+				
+				stroke-width: 1.5px;
+				stroke: #ddd;
+			}
+		</style>
+	</head>
+	<body>
+
+
+	<div id="graph" class="aGraph" style="position:absolute;top:0px;left:0; float:left; width:900px; height:350px;"></div>
+
+
+	<script>
+
+		// create an SVG element inside the #graph div that fills 100% of the div
+		var w = 900,
+		    h = 300,
+		    p = 20,
+		    x = d3.scale.linear().domain([0, 1]).range([0, w]),
+		    y = d3.scale.linear().domain([0, 1]).range([h, 0]);
+		var d= null;
+		var bisa;
+		parse = d3.time.format("%Y-%m-%d").parse;
+		var svg = d3.select("#graph").append("svg")
+			.attr("width", w)
+			.attr("height", h)
+		  .append("g")
+			.attr("transform", "translate(" + 5 + "," + 5 + ")");
+		/*
+		var series = [
+		  [{time: 1, value: 2}, {time: 2, value: 4}, {time: 3, value: 8},{time: 4, value: 11}],
+		  [{time: 1, value: 5}, {time: 2, value: 9}, {time: 3, value: 12},{time: 4, value: 3}],
+		  [{time: 1, value: 3}, {time: 2, value: 2}, {time: 3, value: 2},{time: 4, value: 5}],
+					];
+				
+		var srdata =[		[{"time":"2011-09-30","value":"54"},{"time":"2011-10-01","value":"1357"},{"time":"2011-10-02","value":"1411"},{"time":"2011-10-03","value":"1338"},{"time":"2011-10-20","value":"368"},{"time":"2011-10-21","value":"1382"},{"time":"2011-10-22","value":"1122"},{"time":"2011-10-23","value":"1040"},{"time":"2011-10-24","value":"1222"},{"time":"2011-10-25","value":"1527"},{"time":"2011-10-26","value":"881"},{"time":"2011-10-27","value":"1261"},{"time":"2011-10-28","value":"1170"},{"time":"2011-10-29","value":"1272"},{"time":"2011-10-30","value":"559"}],
+		[{"time":"2011-09-30","value":"38"},{"time":"2011-10-01","value":"808"},{"time":"2011-10-02","value":"797"},{"time":"2011-10-03","value":"822"},{"time":"2011-10-20","value":"256"},{"time":"2011-10-21","value":"827"},{"time":"2011-10-22","value":"745"},{"time":"2011-10-23","value":"574"},{"time":"2011-10-24","value":"810"},{"time":"2011-10-25","value":"953"},{"time":"2011-10-26","value":"530"},{"time":"2011-10-27","value":"832"},{"time":"2011-10-28","value":"711"},{"time":"2011-10-29","value":"710"},{"time":"2011-10-30","value":"288"}],
+		[{"time":"2011-09-30","value":"6"},{"time":"2011-10-01","value":"257"},{"time":"2011-10-02","value":"228"},{"time":"2011-10-03","value":"259"},{"time":"2011-10-20","value":"61"},{"time":"2011-10-21","value":"265"},{"time":"2011-10-22","value":"196"},{"time":"2011-10-23","value":"204"},{"time":"2011-10-24","value":"229"},{"time":"2011-10-25","value":"267"},{"time":"2011-10-26","value":"159"},{"time":"2011-10-27","value":"229"},{"time":"2011-10-28","value":"168"},{"time":"2011-10-29","value":"190"},{"time":"2011-10-30","value":"70"}]
+		];
+		*/
+		var clor = d3.scale.ordinal().domain([0,1,2]).range(["red","green","blue"]);
+		
+		//var x = d3.scale.linear().domain([0, 11]).range([0, 700]);
+		//var y = d3.scale.linear().domain([0, 15]).range([320, 0]);
+		
+		var x = d3.scale.ordinal().domain([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]).rangeRoundBands([0, w-10], .1);
+		//var x = d3.time.scale().range([0,700]);
+		var y = d3.scale.linear().domain([0,2000]).range([h-10, 0]);
+		
+		var yAxis = d3.svg.axis().scale(y).orient('left').tickSize(-w).tickPadding(10);
+		
+		var xAxis = d3.svg.axis().scale(x).tickSubdivide(2).tickSize(-h);
+		/* create a line object that represents the SVN line we're creating
+		var line = d3.svg.line()
+		    .interpolate("basis")
+		    .x(function(d,i) { return x(times[i]); })
+		    .y(y);*/
+		
+			var line = d3.svg.line()
+		    	.interpolate("linear")
+			    .x(function(d,i) {
+				//console.log(d.time); 
+				//console.log(x(i));
+				return x(i); })
+			    .y(function(d) { 
+				//console.log(y(d.value));
+				return y(d.value); });
+					
+	
+			d3.json("linejson.php", function(data){
+				//x.domain(data.map(function(d) { return d.time; }));
+				
+			
+				
+			svg.selectAll(".line")
+				.data(data)
+				.enter().append("svg:path")
+				.attr("class","line")
+				.attr("transform","translate(37,-10)")
+				.attr("d", line)
+				.style("stroke", function(d,i) { 
+					//console.log(clor(i));
+					return clor(i); });
+				
+					//setTimeout(function() {svg.selectAll(".line").remove();}, 20000);
+				yo();
+			});
+			function yo() {
+			function draw(k){
+				console.log("k!");
+				console.log(k);
+			}
+			var k = 1, n = 20;
+			
+			d3.timer(function() {
+			    draw(k);
+			    if ((k += 2) >= n - 1) {
+					draw(n - 1);
+			      //setTimeout(horizons, 500);
+			      return true;
+			    }
+			  });
+			};
+					
+			
+
+
+	</script>
+
+
+
+	</body>
+</html>
