@@ -1,7 +1,7 @@
 
 var m = [20, 20, 30, 20],
     w = 1170 - m[1] - m[3],
-    h = 350 - m[0] - m[2];
+    h = 200 - m[0] - m[2];
 
 var 
     duration = 1500,
@@ -67,7 +67,7 @@ var area = d3.svg.area()
     .x(function(d) { return x(d.date); })
     .y1(function(d) { return y(d.price); });
 
-d3.csv("data/linecsv.php", function(data) {
+d3.csv("linecsv.php", function(data) {
 
 //console.log("data");
 //console.log(data);

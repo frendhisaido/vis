@@ -1,0 +1,77 @@
+.xaxis path {
+	display: none;
+}
+.xaxis line {
+	display: none;
+	stroke-width: 1.5px;
+	stroke: #fff;
+}
+.xaxis text {
+	font-family: "Arial Narrow";
+}
+.bgbar {
+	fill: #E6E6E6;
+}
+.linechart {
+padding: 0;
+border: 1px solid rgba(0, 0, 0, 0.05);
+margin-bottom: 10px;
+height: 350px;
+}
+.xAxis {
+  fill: none;
+  stroke: #ddd;
+}
+.xAxis text {
+	font-size: 9pt;
+	stroke-width: 0px;
+	fill: #000;
+}
+
+.yAxis {
+  fill: none;
+  stroke: #ddd;
+}
+.yAxis text {
+	font-size: 9pt;
+	stroke-width: 0px;
+	fill: #000;
+}
+
+path {
+  -webkit-transition: fill-opacity 250ms linear;
+}
+
+.selecting circle {
+  fill-opacity: .2;
+}
+
+.selecting circle.selected {
+  fill: #000;
+  stroke: #f00;
+  stroke-width: 2px;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+.line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+}
+.barchart {
+position: absolute;
+height: 350px;
+float: left;
+border: 1px solid #ddd;
+	font-family: Helvetica;
+}
