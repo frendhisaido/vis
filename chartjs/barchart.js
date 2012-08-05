@@ -5,9 +5,9 @@ hbar = 260 - mbar[0] - mbar[2];
 var format = d3.format(",.0f"); 
 var wdthbar = d3.scale.linear().range([0, wbar]),
 	hghtbar = d3.scale.ordinal().rangeRoundBands([0, hbar], .1),
-	clorbar = d3.scale.ordinal().domain(["negatif","positif","netral"]).range(["#FF0000","#009900","#0099FF"]),
-	txbar = d3.scale.ordinal().range(["NEGATIF","POSITIF","NETRAL"]),
-	xAxisbar = d3.svg.axis().scale(wdthbar).tickSubdivide(true).orient("top").tickSize(-hbar).tickValues([1000,3000,5000,10000,13000,15000]);
+	clorbar = d3.scale.ordinal().domain(["negatif","positif","nonopini"]).range(["#FF0000","#0099FF","#009900"]),
+	txbar = d3.scale.ordinal().range(["NEGATIF","POSITIF","NONOPINI"]),
+	xAxisbar = d3.svg.axis().scale(wdthbar).tickSubdivide(true).orient("top").tickSize(-hbar).tickValues([1000,3000,5000,10000,13000]);
 	
 var svgbar = d3.select("#bar").append("svg")
 	.attr("width", wbar + mbar[3] + mbar[3])
@@ -20,20 +20,23 @@ var svgbar = d3.select("#bar").append("svg")
 	.attr("width", wbar)
 	.attr("x",0)
 	.attr("y",8);
-
+	
+	//mengubah urutan array
+	function order(T) {
+		return [ T[0],T[2],T[1] ];
+	}
+	
 function initbarchart() {
 	d3.json("data/barchartjson.php" , function(data) { 
-	  data.sort(function(a, b) { return b.jumlah - a.jumlah; });
-	  drawbarchart(data);
+	 var ordered = order(data);
+	  drawbarchart(ordered);
 	});
 }
 
 function drawbarchart(data) {
-  	data.sort(function(a, b) { return b.jumlah - a.jumlah; });
-	  wdthbar.domain([0,18000]);
-	  hghtbar.domain(data.map(function(d) { return d.orientasi; })); //(["Negatif", "Positif", "Netral"])
+	  wdthbar.domain([0,14000]);
+	  hghtbar.domain(data.map(function(d) { return d.orientasi; })); //(["Negatif", "Positif", "Nonopini"])
 	  txbar.domain(data.map(function(d) { return d.orientasi; })); 
-  
 	  var bar = svgbar.selectAll("g.bar")
 		  .data(data)
 		.enter().append("g")
@@ -101,8 +104,8 @@ function drawbarchart(data) {
 function updatebarchart(date1, date2) {
 	var barchartjson = "data/barchartjson.php?df="+date1+"&dl="+date2;
 	d3.json(barchartjson , function(data) { 
-	  data.sort(function(a, b) { return b.jumlah - a.jumlah; });
-	  redrawbarchart(data);
+	  var ordered = order(data);
+	  redrawbarchart(ordered);
 	});
 }
 

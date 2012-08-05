@@ -14,50 +14,6 @@
     <script type="text/javascript" src="lib/jquery/jquery.ui.mouse.js"></script>
 	<script type="text/javascript" src="lib/jquery/jquery.ui.slider.js"></script>
 	<script type="text/javascript" src="lib/tooltipsy.min.js"></script>
-	<script type="text/javascript">
-	$.getJSON("data/datelist.php", function(result) {
-		
-		var nm_bulan = new Array("Januari", "Februari", "Maret", 
-		"April", "Mei", "Juni", "Juli", "Agustus", "September", 
-		"Oktober", "November", "Desember");
-		
-    	var opt1 = $("#dates1"),
-    		opt2 = $("#dates2");
-
-		$.each(result, function() {
-    	opt1.append($("<option />").val(this.date).text(Number(this.date.substr(8,2))+" "+nm_bulan[Number(this.date.substr(5,2))]));
-    	opt2.append($("<option />").val(this.date).text(Number(this.date.substr(8,2))+" "+nm_bulan[Number(this.date.substr(5,2))]));
-		});
-				
-		$("#dates2")[ 0 ].selectedIndex = 14;
-	});
-	
-	$(function() {
-			var select1 = $("#dates1");
-			var select2 = $("#dates2");
-			$("#slider").slider({
-				range: true,
-				min: 1, 
-				max: 15,
-				values: [ 1,15],
-				slide: function( event, ui ) {
-					select1[ 0 ].selectedIndex = ui.values[0] -1;
-					select2[ 0 ].selectedIndex = ui.values[1] -1;
-				},
-				stop: function( event, ui ) {
-					updatebarchart(
-						$("#dates1 option:selected").val(),
-						$("#dates2 option:selected").val()
-					);
-				}
-			});
-		});
-	$("#dates1").change(function() {
-					var values = $( "#slider" ).slider( "option", "values" );
-					console.log(values[0]);
-					$("#slider").slider( "option","values", this.selectedIndex + 1 );
-				});
-	</script>
     <!-- Le styles -->
 	<link type="text/css" href="css/overcast/jquery-ui-1.8.20.custom.css" rel="stylesheet" />	
     <link type="text/css" href="css/bootstrap.css" rel="stylesheet">
@@ -132,7 +88,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     
-   
+    <script src="chartjs/barcontrol.js"></script>
 	<script src="chartjs/barchart.js"></script>
 	<script src="chartjs/linechart.js"></script>
     <!--<script src="lib/bootstrap/bootstrap-transition.js"></script>

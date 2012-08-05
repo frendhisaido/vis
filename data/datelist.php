@@ -7,7 +7,7 @@ include 'mysqlconfig.php';
 @mysql_select_db($dsn) or die( "Unable to select database");
 
 // outputs the db as lines of text.
-$result = mysql_query("select distinct date from tweets");
+$result = mysql_query("SELECT DISTINCT DATE(datetime) AS date FROM dataset");
 $rows = array();
 
 while($r = mysql_fetch_assoc($result)) {

@@ -13,7 +13,7 @@ var monthNames = [ "January", "February", "March", "April", "May", "June",
 
 
 var color = d3.scale.category10();
-var clor = d3.scale.ordinal().domain(["negatif","positif","netral"]).range(["#FF0000","#009900","#0099FF"]);
+var clor = d3.scale.ordinal().domain(["negatif","nonopini","positif"]).range(["#FF0000","#009900","#0099FF"]);
 var x = d3.time.scale().range([0, w - 60]);
 var y = d3.scale.linear().range([h , 0]);
 var xAxis = d3.svg.axis()
