@@ -1,142 +1,206 @@
 
-var m = [20, 20, 30, 20],
-    w = 1170 - m[1] - m[3],
-    h = 350 - m[0] - m[2];
-
-var 
-    duration = 1500,
+var m = [20, 30, 40, 50, 60],
+    w = 1000 ,
+    h = 300,
+    h2 = 80 + m[0];
+	
+	
+var duration = 1500,
     delay = 500;
+    
 
 var monthNames = [ "January", "February", "March", "April", "May", "June",
 	 "July", "August", "September", "October", "November", "December" ];
 
 
-
-var color = d3.scale.category10();
-var clor = d3.scale.ordinal().domain(["negatif","nonopini","positif"]).range(["#FF0000","#009900","#0099FF"]);
-var x = d3.time.scale().range([0, w - 60]);
-var y = d3.scale.linear().range([h , 0]);
+var clor = d3.scale.ordinal().domain(["negatif","positif","nonopini"]).range(["#FF0000","#009900","#0099FF"]);
+var x = d3.time.scale().range([0, w - m[4] ]),
+    xContext = d3.time.scale().range([0, w - m[4] ]),
+    y = d3.scale.linear().range([h , 0]),
+    yContext = d3.scale.linear().range([h2, 0]);
+	
 var xAxis = d3.svg.axis()
-			.scale(x).tickSize(-h).tickPadding(10)
-			.ticks(d3.time.days).tickFormat(d3.time.format("%d/%b"));
+		.scale(x)
+		.tickSize(-h)
+		.tickPadding(10);
+		      //.ticks(d3.time.days).tickFormat(d3.time.format("%d/%b"));
+
+var xAxisContext = d3.svg.axis()
+		      .scale(xContext)
+		      .tickSize(-h2)
+		      .tickPadding(10)
+		      .ticks(8);				
+				  
 var yAxis = d3.svg.axis()
-			    .scale(y).tickSize(-w+60).ticks(3);
+	    .scale(y)
+	    .tickSize(-w+m[4])
+	    .ticks(5);
+			
+var yAxisContext = d3.svg.axis()
+		  .scale(yContext)
+		  .tickSize(-w+m[4])
+		  .ticks(2);
 	
 var allsvg = d3.select("#linechart").append("svg:svg")
-    .attr("width", w + m[1] + m[3])
-    .attr("height", h + m[0] + m[2]);
+	    .attr("class","view")
+	    .attr("width", w + m[1] + m[3])
+	    .attr("height", h + m[0] + m[2]);
+    //!!!!IMPORTANT, Clipping path supaya ga melebihi axis
+    //Setelah diset disini, diset lagi attr("clip-path", "url(#clip)") di elemen yang mau diisi pathnya
+    allsvg.append("defs").append("clipPath")
+	  .attr("id", "clip")
+	  .append("rect")
+	  .attr("width", w - m[4])
+	  .attr("height", h);
+
+/*
+ *
+ *
+ */
+var contsvg = d3.select("#context").append("svg:svg")
+	      .attr("width", w + m[1] + m[3])
+	      .attr("height", h2);
 
 var backsvg = allsvg.append("svg:g")
-	.attr("class","theAxis")
-	.attr("transform", "translate(" + 50 + "," + m[0] + ")");
-	
+	      .attr("class","theAxis")
+	      .attr("transform", "translate(" + m[1] + "," + 0 + ")");
+
+var contextbacksvg = contsvg.append("svg:g")
+		     .attr("class","contAxis")
+		     .attr("transform","translate(" + m[1] + "," + 0 + ")");
+
 var linesvg= allsvg.append("svg:g")
-	.attr("class","theLines")
-    .attr("transform", "translate(" + 50 + "," + m[0] + ")");
+	    .attr("class","theLines")
+	    .attr("transform", "translate(" + m[1] + "," + 0 + ")");
 
 var circsvg = allsvg.append("svg:g")
-	.attr("class","theCircles")
-	.attr("transform", "translate(" + 50 + "," + m[0] + ")");
+	     .attr("class","theCircles")
+	     .attr("transform", "translate(" + m[1] + "," + 0 + ")");
 
-var dataset,
-    orientasi,
-	datess,
-	datadates,
-	datacirc,
-	maxtemp,
-	circ,
-	g;
+var contextsvg = contsvg.append("svg:g")
+		 .attr("class","theContext")
+		 .attr("transform", "translate(" + m[1] + "," + 0 + ")");
 
-	
 
-// A line generator, for the dark stroke.
+
+
 var line = d3.svg.line()
-    .interpolate("linear")
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.jumlah); });
+	  .interpolate("linear")
+	  .x(function(d) { return x(d.date); })
+	  .y(function(d) { return y(d.jumlah); });
 
-// A line generator, for the dark stroke.
+var line2 = d3.svg.line()
+	    .interpolate("bundle")
+	    .x(function(d) { return xContext(d.date);})
+	    .y(function(d){ return yContext(d.jumlah)});
+
+
 var axis = d3.svg.line()
-    .interpolate("basis")
-    .x(function(d) { return x(d.date); })
-    .y(h);
+	  .interpolate("basis")
+	  .x(function(d) { return x(d.date); })
+	  .y(h);
 
-// A area generator, for the dark stroke.
+
 var area = d3.svg.area()
-    .interpolate("basis")
-    .x(function(d) { return x(d.date); })
-    .y1(function(d) { return y(d.price); });
+	  .interpolate("basis")
+	  .x(function(d) { return x(d.date); })
+	  .y1(function(d) { return y(d.price); });
+
+var brush = d3.svg.brush()
+	  .x(xContext)
+	  .on("brush", zoom);
+
+var stillpositif;
 
 d3.csv("data/linecsv.php", function(data) {
 
 //console.log("data");
 //console.log(data);
+datacontext = data;
 
-var parse = d3.time.format("%Y-%m-%d").parse;
-	
-	data.forEach(function(d){
-		d.date = parse(d.date);
-		d.jumlah = +d.jumlah;
-	});
-	
-  // Nest stock values by symbol.
-  orientasi = d3.nest()
-      .key(function(d) { return d.orientasi; })
-      .entries(dataset = data);
+var parse = d3.time.format("%Y-%m-%d %H").parse;
 
-	//console.log("datess");
-	//console.log(datess);
-	//console.log(datess.length);
-	
 
-//console.log("orientasi nest: ");
-//console.log(orientasi);
-
-  // Parse dates and numbers. We assume values are sorted by date.
-  // Also compute the maximum price per symbol, needed for the y-domain.
-  orientasi.forEach(function(s) {
- 
-    s.maxJumlah = d3.max(s.values, function(d) { return d.jumlah; });
-    s.sumJumlah = d3.sum(s.values, function(d) { return d.jumlah; });
-	//console.log(s.maxJumlah);
+  data.forEach(function(d){
+	  d.date = parse(d.date);
+	  d.jumlah = +d.jumlah;
   });
-	maxtemp = d3.max(orientasi.map(function(d){ return d.maxJumlah}), function(d){ return d;}) + 200;
-	//console.log(maxtemp);
-	
-//console.log("orientasi parsed: ");
-//console.log(orientasi);
 
-  // Sort by maximum price, descending.
-  //orientasi.sort(function(a, b) { return b.maxJumlah - a.maxJumlah; });
+  orientasi = d3.nest()
+      .key(function(d) { 
+		return d.orientasi; })
+      .entries(data);
 
-//console.log("orientasi sorted :");
-//console.log(orientasi);
+  orientasi.forEach(function(s) {
+    s.maxJumlah = d3.max(s.values, function(d) { return d.jumlah; });
+     //console.log(s.maxJumlah);
+    s.sumJumlah = d3.sum(s.values, function(d) { return d.jumlah; });
+  });
+	maxtemp = d3.max(orientasi.map(function(d){ return d.maxJumlah}),
+			 function(d){ return d;}) + 10; //penambahan supaya line tidak menyentuh bagian atas chart
+	maxpositif = d3.max(orientasi.map(function(d){ return d.key == "positif"? d.maxJumlah : 0},
+					  function(d){ return d;})) + 5;
   
-   g = linesvg.selectAll(".theLines")
+  linesvg.selectAll(".theLines")
       .data(orientasi)
     .enter().append("svg:g")
       .attr("class", "symbol"); 
-  
-  var c = circsvg.selectAll(".theCircle")
+
+  contextsvg.selectAll(".theContexts")
+		.data(orientasi)
+	.enter().append("svg:g")
+		.attr("class", "context");
+		
+  circsvg.selectAll(".theCircle")
 		.data(data)
 	.enter().append("svg:g")
 		.attr("class","points");
 
-
+		
+	
+	x.domain([d3.min(orientasi, function(d) { return d.values[0].date; }),
+		  d3.max(orientasi, function(d) { return d.values[d.values.length - 1].date; })]);
+	xContext.domain(x.domain());
 	y.domain([0,maxtemp]);
-	//console.log(datess.map(function(d,i){ return d.key;}).length);
-  // Compute the minimum and maximum date across orientasi.
-  x.domain([d3.min(orientasi, function(d) { return d.values[0].date; }),d3.max(orientasi, function(d) { return d.values[d.values.length - 1].date; })]);
+	yContext.domain(y.domain());
+	
+	//console.log("xdomain", x.domain());
 
   base();
-  lines();
-  circles();
-  startBrush();
+  draw();
+  //circles();
 	
 
 
 	
 });
+function drawmaincontext(){
+  maincontextbacksvg.append("svg:g")
+			.attr("class", "xMainContextAxis")
+			.call(xAxisContextMain);
+			
+  var m = maincontextsvg.selectAll(".symbol");
+  
+  m.each(function(d) {
+    var e = d3.select(this);
+
+    e.append("svg:path")
+	.attr("class", "linecontext")
+		.attr("id", function(d){
+		  var ids = 'line_'+d.key;
+		  return ids;
+		})
+		.attr("d", function(d) { 
+			return line(d.values); })
+		.style("stroke-width", "1px")
+		.style("stroke", function(d) {
+			return clor(d.key); })
+		.style("opacity", "0")
+		.transition().duration(500).delay(500)
+		.style("opacity", "1");
+  });
+  
+}
 
 
 function base() {
@@ -149,49 +213,37 @@ function base() {
 		.attr("class","yAxis")
 		.call(yAxis.orient("left"));
 		
+		contextbacksvg.append("svg:g")
+			.attr("class","xContextAxis")
+			.attr("transform", "translate(0," + (h2-20)+ ")")
+			.call(xAxisContext);
+		
 		
 }
 
-function circles() {
-	var c = circsvg.selectAll(".points");
-	
-	//console.log(c);
-	
-	c.each(function(d){
-		var e = d3.select(this);
-		
-		e.append("svg:circle")
-		.attr("title",function() {
-			var d = this.__data__; 
-			var pDate = d.date;
-			return showData(pDate, d.jumlah, d.orientasi);})
-		.attr("r", 4)
-		.attr("class", "apoint")
-		.style("fill", "#fff")
-		.style("stroke-width", "1px")
-		.style("stroke", function(d){ return clor(d.orientasi);})
-		.attr("cx",function(d){ return x(d.date);})
-		.attr("cy",function(d){ return y(d.jumlah);})
-			.style("opacity", "0")
-			.transition().duration(1000).delay(500)
-			.style("opacity", "1");
-			});
-	
-	
-}
 
-function lines() {
+function draw() {
+  
+  //var = maincontextsvg.selectAll
+  
+  
   var g = linesvg.selectAll(".symbol")
-      .attr("transform", "translate(0," + 0 + ")");
-  	
+		.attr("clip-path", "url(#clip)");
+      //.attr("transform", "translate(0," + 100 + ")");
+	
 		//console.log(g);
   g.each(function(d) {
     var e = d3.select(this);
 
     e.append("svg:path")
-        .attr("class", "line")
+	.attr("class", "line")
+		.attr("id", function(d){
+		  var ids = 'line_'+d.key;
+		  return ids;
+		})
 		.attr("d", function(d) { 
 			return line(d.values); })
+		.style("stroke-width", "1px")
 		.style("stroke", function(d) {
 			return clor(d.key); })
 		.style("opacity", "0")
@@ -199,81 +251,182 @@ function lines() {
 		.style("opacity", "1");
   });
 
-
-	
-	$('.points').tooltipsy({
-		show: function() {
-			var d = this.__data__;
-			console.log(this); 
-			var pDate = d.date;
-			return showData(pDate, d.jumlah, d.orientasi);},
-		alignTo: 'cursor',
-		    offset: [10, 10],
-		css: {
-		        'padding': '10px',
-		        'max-width': '200px',
-		        'color': '#303030',
-		        'background-color': '#f5f5b5',
-		        'border': '2px solid #deca7e',
-		        '-moz-box-shadow': '0 0 10px rgba(0, 0, 0, .5)',
-		        '-webkit-box-shadow': '0 0 10px rgba(0, 0, 0, .5)',
-		        'box-shadow': '0 0 10px rgba(0, 0, 0, .5)',
-		        'text-shadow': 'none'
-		    }
-	});
-	/*
-	$('.points').tipsy({ 
-    gravity: $.fn.tipsy.autoWE,
-	fade: true,
-	delayOut: 1500,
- 	opacity: 0.8,
-	trigger: 'hover',
-    html: true, 
-    title: 
-		function() {
-			var d = this.__data__; 
-			var pDate = d.date;
-			return showData(pDate, d.jumlah, d.orientasi);
+ var cx = contextsvg.selectAll(".context")
+			.attr("transform", "translate(0," + -20+ ")");
 			
-			//return 'Tanggal: ' + pDate.getDate() + " " + monthNames[pDate.getMonth()] + " at " + pDate.getHours() + ':'+ pDate.getMinutes() +'<br>Jumlah tweet '+d.orientasi+':' +d.jumlah; 
-    	}
-  	});
-	*/
-		
+  cx.each(function(d) {
+    var e = d3.select(this);
+
+    e.append("svg:path")
+	.attr("class", "linecontext")
+		.attr("d", function(d) { 
+			return line2(d.values); })
+		.style("stroke", function(d) {
+			return clor(d.key); })
+		.style("opacity", "0")
+		.transition().duration(500).delay(500)
+		.style("opacity", "1");
+  });
+
+	contextsvg.append("g")
+	      .attr("class", "x brush")
+	      .call(brush)
+	    .selectAll("rect")
+	      .attr("y", -6)
+	      .attr("height", h2 -13);
+	      
+
+var c = circsvg.selectAll(".points")
+	    .attr("clip-path", "url(#clip)")
+	    .on("mouseover", function(d){
+			console.log(showData(d.date, d.jumlah, d.orientasi));
+			});
+  
+  c.each(function(d){
+    var e = d3.select(this);
+    e.append("svg:circle")
+    .attr("r", circlesize() )
+    .attr("id", function(d){
+		  var ids = 'circ_'+d.orientasi;
+		  return ids;
+		})
+    .attr("class", "apoint")
+      .style("fill", function(d){ return clor(d.orientasi);})
+    .attr("stroke-width", "0px")
+    .attr("cx" , function(d){ return x(d.date);})
+    .attr("cy" , function(d){ return y(d.jumlah);})
+		.style("opacity", "0")
+		.transition().duration(500).delay(1000)
+		.style("opacity", "1");
+    
+  });
+}
+
+
+function zoom() {
+  var maxyaxis;
+  if(stillpositif){
+    maxyaxis = maxpositif;
+  }else{
+    maxyaxis = maxtemp;
+  }
+  x.domain(brush.empty() ? xContext.domain() : brush.extent());
+  y.domain([0, maxyaxis]);
+  
+  var diffmili = brush.extent()[1].getTime() - brush.extent()[0].getTime();
+  var diffhours = ( diffmili / 1000 ) / 60 / 60;
+  diffhours = Math.log(Math.ceil(diffhours));
+  var brushsize = Math.ceil(diffhours);
+  
+  redraw(brushsize);
+}
+
+function redraw(brushsize){
+  
+  var recirc = circsvg.selectAll(".theCircles circle");
+	recirc.each(function(d){
+	    var e = d3.select(this);
+	    e.attr("cx" , function(d){ return x(d.date);})
+	    .attr("cy" , function(d){ return y(d.jumlah);})
+	    .attr("r" , circlesize(brushsize));
+	});
+	
+  var reline = linesvg.selectAll(".theLines path");
+	reline.each(function(d){
+		var e = d3.select(this);
+		e.attr("d",line(d.values))
+		.style("stroke-width", linewidth(brushsize));
+	});
+  
+  backsvg.select(".xAxis").call(xAxis);
+  backsvg.select(".yAxis").call(yAxis);
+}
+
+
+function circlesize(brushsize){
+    var sz;
+    if (brushsize == 5) {
+      return sz = 3;
+    }else if(brushsize >= 3 && brushsize < 5) {
+      return sz = 4; 
+    }else if(brushsize >= 0 && brushsize <= 2){
+      return sz = 5;
+    }else{
+      return 2; //default circlesize;
+    }
+}
+
+function linewidth(brushsize){
+    var sz;
+    if (brushsize == 5) {
+      return sz = "2px";
+    }else if(brushsize >= 3 && brushsize < 5) {
+      return sz = "2.5px"; 
+    }else if(brushsize >= 0 && brushsize <= 2){
+      return sz = "3px";
+    }else{
+      return 1;
+    }
+}
+
+function onlypositif(){
+  stillpositif = true;
+  hideline("negatif");
+  hideline("nonopini");
+  x.domain(brush.empty() ? xContext.domain() : brush.extent());
+  y.domain([0, maxpositif]);
+  
+  var diffmili = brush.extent()[1].getTime() - brush.extent()[0].getTime();
+  var diffhours = ( diffmili / 1000 ) / 60 / 60;
+  diffhours = Math.log(Math.ceil(diffhours));
+  var brushsize = Math.ceil(diffhours);
+  
+  redraw(brushsize);
+}
+
+function showAll(){
+  stillpositif = false;
+  showline("negatif");
+  showline("nonopini");
+}
+
+function hideline(ornt) {
+	var selectedline = '#line_'+ornt;
+	var selectedcirc = '#circ_'+ornt;
+	
+	var reline = linesvg.select(selectedline);
+	var recirc = circsvg.selectAll(selectedcirc);
+	reline
+	.transition().duration(500)
+	.style("opacity",0);
+	
+	recirc
+	.transition().duration(500)
+	.style("opacity",0);
+}
+
+function showline(ornt) {
+	var selectedline = '#line_'+ornt;
+	var selectedcirc = '#circ_'+ornt;
+	
+	var reline = linesvg.select(selectedline);
+	var recirc = circsvg.selectAll(selectedcirc);
+	reline
+	.transition().duration(500)
+	.style("opacity",1);
+	
+	recirc
+	.transition().duration(500)
+	.style("opacity",1);
 }
 
 function showData(aDate, bJumlah, cOrientasi){
-	return "Info: <b>" + aDate.getDate() + " " + monthNames[aDate.getMonth()] + "</b> at <b>" + aDate.getHours() + ":"+ aDate.getMinutes() +"</b><br>Jumlah tweet <i>"+cOrientasi+"</i>:<b>" +bJumlah+"</b>";
-}
+	  return "Info: " + aDate.getDate() + " "
+	  + monthNames[aDate.getMonth()] + " at "
+	  + aDate.getHours() + ":"
+	  + aDate.getMinutes() +" Jumlah tweet "
+	  +cOrientasi+":" +bJumlah;
+	}
 
-function startBrush() {
-	
-			g.append("g")
-			    .attr("class", "brush")
-			    .call(d3.svg.brush().x(x)
-			    .on("brushstart", brushstart)
-			    .on("brush", brushmove)
-			    .on("brushend", brushend))
-			  .selectAll("rect")
-			    .attr("height", h);
+ 
 
-				var selpoint = circsvg.selectAll("circle");
-				//console.log(selpoint);
-				function brushstart() {
-				  selpoint.classed("selecting", true);
-				}
-
-				function brushmove() {
-				  var s = d3.event.target.extent();
-					//console.log(s);
-				  selpoint.classed("selected", function(d) { 
-					//console.log(s[0] <= (d = x(d)) && d <= s[1]);
-					return s[0] <= (d = x(d)) && d <= s[1]; });
-				}
-
-				function brushend() {
-					var s = d3.event.target.extent();
-
-				  selpoint.classed("selecting", !d3.event.target.empty());
-				}
-}

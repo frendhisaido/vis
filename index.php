@@ -6,22 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
- 	<script src="lib/jquery/jquery.js"></script>
-	<script type="text/javascript" src="lib/d3/d3.v2.min.js"></script>
-	<script type="text/javascript" src="lib/jquery/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="lib/d3/d3.v2.min.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.core.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.mouse.js"></script>
-	<script type="text/javascript" src="lib/jquery/jquery.ui.slider.js"></script>
-	<script type="text/javascript" src="lib/tooltipsy.min.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.ui.slider.js"></script>
+    <script type="text/javascript" src="lib/bootstrap/bootstrap.js"></script>
     <!-- Le styles -->
-	<link type="text/css" href="css/overcast/jquery-ui-1.8.20.custom.css" rel="stylesheet" />	
+    <link type="text/css" href="css/overcast/jquery-ui-1.8.20.custom.css" rel="stylesheet" />	
     <link type="text/css" href="css/bootstrap.css" rel="stylesheet">
-	<link type="text/css" href="css/barchart.css" rel="stylesheet">
-	<link type="text/css" href="css/tipsy.css" rel="stylesheet">
-	<link type="text/css" href="css/style-2.css" rel="stylesheet">
-	<link type="text/css" href="css/charts.css" rel="stylesheet">
-    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link type="text/css" href="css/barchart.css" rel="stylesheet">
+    <link type="text/css" href="css/style-2.css" rel="stylesheet">
+    <link type="text/css" href="css/charts.css" rel="stylesheet">
+    <link type="text/css" href="css/bootstrap-responsive.css" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -49,15 +47,42 @@
               <li><a href="#contact">About</a></li>
             </ul>
           </div><!--/.nav-collapse -->
+	  
         </div>
       </div>
     </div>
 
     <div class="container dashboard">
-    	<div class="linechart">
-    		<div id="linechart">
-			</div>
-    	</div>
+	
+	<div class="row">
+	  <div class="span5">
+	    <div id="linechart"></div>
+	    <div id="context"></div>	
+			
+	  </div>
+	  <div class="span2 offset5">
+		<script type="text/javascript">
+		  $(document).ready(function(){
+ 
+		  $("#context").hide();
+		  $(".show_hide").show();
+ 
+		  $('#buton').click(function(){
+		      $("#context").slideToggle();
+		     });
+ 
+		  });
+		</script>
+		
+		<button type="button" class="btn" data-toggle="button"><i class="icon-plus-sign"></i> Positif</button></br>
+		<button type="button" class="btn" data-toggle="button"><i class="icon-minus-sign"></i> Negatif</button></br>
+		<button type="button" class="btn" data-toggle="button"><i class="icon-adjust"></i> Non-Opini</button></br>
+		<button type="button" id="buton" class="btn" data-toggle="button">Zoom</button>
+		
+	  
+	  </div>
+	</div>
+	
     	<div class="row">
     		
 					<div id="bar" class="span4 barchart">
@@ -76,8 +101,8 @@
 						</div>
 					</div>
 				
-			</div>
-    <!-- /row -->
+	</div>
+   
     
     	
     	
@@ -88,10 +113,11 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     
-    <script src="chartjs/barcontrol.js"></script>
-	<script src="chartjs/barchart.js"></script>
 	<script src="chartjs/linechart.js"></script>
-    <!--<script src="lib/bootstrap/bootstrap-transition.js"></script>
+	<script src="chartjs/barchart.js"></script>
+	<script src="chartjs/barcontrol.js"></script>
+	<!--
+    <script src="lib/bootstrap/bootstrap-transition.js"></script>
     <script src="lib/bootstrap/bootstrap-alert.js"></script>
     <script src="lib/bootstrap/bootstrap-modal.js"></script>
     <script src="lib/bootstrap/bootstrap-dropdown.js"></script>
@@ -99,7 +125,7 @@
     <script src="lib/bootstrap/bootstrap-tab.js"></script>
     <script src="lib/bootstrap/bootstrap-tooltip.js"></script>
     <script src="lib/bootstrap/bootstrap-popover.js"></script>
-    <script src="lib/bootstrap/bootstrap-button.js"></script>
+    
     <script src="lib/bootstrap/bootstrap-collapse.js"></script>
     <script src="lib/bootstrap/bootstrap-carousel.js"></script>
     <script src="lib/bootstrap/bootstrap-typeahead.js"></script>-->

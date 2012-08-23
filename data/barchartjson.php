@@ -10,11 +10,30 @@ if(empty($dfirst) && empty($dlast)) {
 	$query = "SELECT orientasi, COUNT(datetime) AS jumlah
 						   FROM dataset 
 						   GROUP BY orientasi";
-}else{
+}else if($dfirst==$dlast){
+	
+	$month = substr($dfirst, 5,2);
+	$day   = substr($dfirst, -2);
+	
 	$query = "SELECT orientasi, COUNT(datetime) AS jumlah
 						   FROM dataset 
-						   WHERE datetime >= '".$dfirst."' AND datetime <= '".$dlast."'
+						   WHERE MONTH(datetime) = '$month'
+						   AND DAY(datetime) = '$day'
 						   GROUP BY orientasi";
+	//debug
+	//echo $dfirst."  ".$dlast." m=".$month." d=".$day."</br>";
+	//echo $query."</br>";
+	
+}else{
+	
+	$query = "SELECT orientasi, COUNT(datetime) AS jumlah
+						   FROM dataset 
+						   WHERE datetime >= '$dfirst' 
+						   AND datetime <= '$dlast'
+						   GROUP BY orientasi";
+	//debug
+	//echo $dfirst."  ".$dlast."</br>";
+	//echo $query."</br>";
 }
 
 // connect to the database

@@ -7,11 +7,11 @@ include 'mysqlconfig.php';
 @mysql_select_db($dsn) or die( "Unable to select database");
 
 // outputs the db as lines of text.
-$result = mysql_query("SELECT orientasi,DATE_FORMAT(datetime,'%Y-%m-%d') as date,count(DATE_FORMAT(datetime,'%Y-%m-%d')) as jumlah FROM dataset WHERE orientasi='negatif' group by DATE_FORMAT(datetime,'%Y-%m-%d')
+$result = mysql_query("SELECT orientasi,DATE_FORMAT(datetime,'%Y-%m-%d %H') as date,count(DATE_FORMAT(datetime,'%Y-%m-%d %H')) as jumlah FROM dataset WHERE orientasi='negatif' group by DATE_FORMAT(datetime,'%Y-%m-%d %H')
 UNION
-SELECT orientasi,DATE_FORMAT(datetime,'%Y-%m-%d') as date,count(DATE_FORMAT(datetime,'%Y-%m-%d')) as jumlah FROM dataset WHERE orientasi='positif' group by DATE_FORMAT(datetime,'%Y-%m-%d')
+SELECT orientasi,DATE_FORMAT(datetime,'%Y-%m-%d %H') as date,count(DATE_FORMAT(datetime,'%Y-%m-%d %H')) as jumlah FROM dataset WHERE orientasi='positif' group by DATE_FORMAT(datetime,'%Y-%m-%d %H')
 UNION
-SELECT orientasi,DATE_FORMAT(datetime,'%Y-%m-%d') as date,count(DATE_FORMAT(datetime,'%Y-%m-%d')) as jumlah FROM dataset WHERE orientasi='nonopini' group by DATE_FORMAT(datetime,'%Y-%m-%d')");
+SELECT orientasi,DATE_FORMAT(datetime,'%Y-%m-%d %H') as date,count(DATE_FORMAT(datetime,'%Y-%m-%d %H')) as jumlah FROM dataset WHERE orientasi='nonopini' group by DATE_FORMAT(datetime,'%Y-%m-%d %H')");
   header( 'Content-Type: text/csv' );
   header( 'Content-Disposition: attachment;filename=line.csv' );
   //

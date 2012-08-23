@@ -16,6 +16,10 @@ margin-top: -12px;
 margin-left: -20px;
 }
 
+button{
+margin: 10px 5px 5px 5px;
+}
+
 .judulchart {
 	font-size: 1.1em;
 	padding: 5px 0px 5px 0px;

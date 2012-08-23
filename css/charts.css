@@ -1,28 +1,34 @@
-.xaxis path {
-	display: none;
-}
-.xaxis line {
-	display: none;
-	stroke-width: 1.5px;
-	stroke: #fff;
-}
-.xaxis text {
-	font-family: "Arial Narrow";
-}
+
 .bgbar {
 	fill: #E6E6E6;
 }
-.linechart {
-padding: 0;
-border: 1px solid rgba(0, 0, 0, 0.05);
-margin-bottom: 10px;
-height: 350px;
+.controlchart{
+	
+}
+#linechart {
+	padding: 0;
+	border: 0px solid #000;
+	margin-top: 10px;
+}
+#context{
+	margin-top: -40px;
 }
 .xAxis {
   fill: none;
   stroke: #ddd;
 }
 .xAxis text {
+	font-family: "Arial Narrow";
+	font-size: 9pt;
+	stroke-width: 0px;
+	fill: #000;
+}
+.xContextAxis {
+  fill: none;
+  stroke: #ddd;
+}
+.xContextAxis text {
+	font-family: "Arial Narrow";
 	font-size: 9pt;
 	stroke-width: 0px;
 	fill: #000;
@@ -66,7 +72,18 @@ path {
 .line {
   fill: none;
   stroke: #000;
-  stroke-width: 2px;
+  stroke-width: 1px;
+}
+
+.linecontext {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1px;
+}
+.area {
+	fill: none;
+	  stroke: #000;
+	  stroke-width: 0px;
 }
 .barchart {
 position: absolute;

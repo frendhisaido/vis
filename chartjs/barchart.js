@@ -5,7 +5,7 @@ hbar = 260 - mbar[0] - mbar[2];
 var format = d3.format(",.0f"); 
 var wdthbar = d3.scale.linear().range([0, wbar]),
 	hghtbar = d3.scale.ordinal().rangeRoundBands([0, hbar], .1),
-	clorbar = d3.scale.ordinal().domain(["negatif","positif","nonopini"]).range(["#FF0000","#0099FF","#009900"]),
+	clorbar = d3.scale.ordinal().domain(["negatif","positif","nonopini"]).range(["#FF0000","#009900","#000000"]),
 	txbar = d3.scale.ordinal().range(["NEGATIF","POSITIF","NONOPINI"]),
 	xAxisbar = d3.svg.axis().scale(wdthbar).tickSubdivide(true).orient("top").tickSize(-hbar).tickValues([1000,3000,5000,10000,13000]);
 	
@@ -102,7 +102,9 @@ function drawbarchart(data) {
 }
 
 function updatebarchart(date1, date2) {
+	
 	var barchartjson = "data/barchartjson.php?df="+date1+"&dl="+date2;
+	console.log(barchartjson);
 	d3.json(barchartjson , function(data) { 
 	  var ordered = order(data);
 	  redrawbarchart(ordered);

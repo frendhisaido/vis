@@ -1,8 +1,8 @@
 var totaldates = 0;
 $.getJSON("data/datelist.php", function(result) {
 	totaldates = result.length;
-		
-	var nm_bulan = new Array("Januari", "Februari", "Maret", 
+	
+	var nama_bulan = new Array("0","Januari", "Februari", "Maret", 
 	"April", "Mei", "Juni", "Juli", "Agustus", "September", 
 	"Oktober", "November", "Desember");
 	
@@ -11,8 +11,8 @@ $.getJSON("data/datelist.php", function(result) {
 
 
 	$.each(result, function() {
-	select1.append($("<option />").val(this.date).text(Number(this.date.substr(8,2))+" "+nm_bulan[Number(this.date.substr(5,2))]));
-	select2.append($("<option />").val(this.date).text(Number(this.date.substr(8,2))+" "+nm_bulan[Number(this.date.substr(5,2))]));
+	select1.append($("<option />").val(this.date).text(Number(this.date.substr(8,2))+" "+nama_bulan[Number(this.date.substr(5,2))]));
+	select2.append($("<option />").val(this.date).text(Number(this.date.substr(8,2))+" "+nama_bulan[Number(this.date.substr(5,2))]));
 	});
 			
 	$("#dates2")[ 0 ].selectedIndex = totaldates-1;

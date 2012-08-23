@@ -3,110 +3,31 @@
   <head>
     <title>Bar Chart</title>
     <script type="text/javascript" src="../../d3.v2.js"></script>
-    <link rel="stylesheet" type="text/css" media="all" href="960.css"/>
-    <link rel="stylesheet" type="text/css" media="all" href="reset.css"/>
-    <link rel="stylesheet" type="text/css" media="all" href="text.css"/>
-    <style type="text/css">
-		.wrapper {
-		height: 100%;
-		min-width: 1200px;
-		}
-		.linechart {
-		border: 1px solid grey;
-		margin: 10px auto 10px auto;
-		min-width:1200px;
-		height: 60%;
-		}
-		.barchart {
-		margin-left:5px;
-		border: 1px solid grey;
-		min-height: 270px;
-		min-width: 388px;
-		float: left;
-		}
-		.gauge {
-		border: 1px solid grey;
-		min-height: 270px;
-		float: left;
-		}
-		.keywords {
-		border: 1px solid grey;
-		min-height: 270px;
-		margin-left: 5px;
-		margin-right: 5px;
-		float: right;
-		}
-		.footer {
-		background-color: grey;
-		min-width: 1100px;
-		height: 10%;
-		}
-		.chart text.bar {
-		font: 12px sans-serif;
-		fill: white;
-		}
-		.chart rect {
-		stroke: white;
-		fill: red;
-		vertical-align: bottom;
-		}
-    </style>
+    <script type="text/javascript" src="lib/jquery/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript">
+      
+      $(document).ready(function(){
+	 
+		$("#context").hide();
+		$(".show_hide").show();
+	 
+	    $('.show_hide').click(function(){
+	    $("#context").slideToggle();
+	    });
+	 
+	});
+
+    </script>
   </head>
   <body>
-    <script type="text/javascript">
-    </script>
-    <div class="container_12 wrapper">
-    
-    	<div class="grid_12 linechart">
-    	
-    	</div>
-    	<div id="bar" class="grid_5 barchart">
-    	 <script type="text/javascript">
-	var data = [20, 40, 80];	
-	var chart = d3.select("#bar").append("svg")
-		.attr("class", "chart")
-		.attr("width", 320)
-		.attr("height", 250)
-	  .append("g")
-	  .attr("transform", "translate(15,20)");
-		
-	var x = d3.scale.linear()
-		.domain([0, d3.max(data)])
-		.range([0,320]);
-	
-	var y = d3.scale.ordinal()
-		.domain(data)
-		.rangeBands([0,240]);
-
-	chart.selectAll("rect")
-		.data(data)
-	.enter().append("rect")
-		.attr("height", y.rangeBand())
-		.attr("y",y)
-		.attr("width", 0)
-	  .transition()
-	  	.delay(100)
-	  	.duration(1500)
-		.attr("width", x);
-	
-	chart.selectAll("bar")
-		.data(data)
-	.enter().append("text")
-		.attr("class", "bar")
-		.attr("dx", -3)
-		.attr("dy", ".35em")
-		.attr("text-anchor", "end")
-		.text(String);
-	
-    </script>
-    	</div>
-    	<div class="grid_5 gauge">
-    	</div>
-    	<div class="grid_5 keywords">
-    	</div>
-    	<div class="grid_12 footer">
-    	 .
-    	</div>
+    <a href="#" class="show_hide">Show/hide</a>
+    <div id="context">
+      This is context.
     </div>
+    
+    <div id="will">
+      will this be shifted?
+    </div>
+    
   </body>
 </html>
