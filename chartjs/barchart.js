@@ -1,6 +1,6 @@
 var mbar = [5, 10, 20, 25], 
 wbar = 370 - mbar[1] - mbar[1], 
-hbar = 260 - mbar[0] - mbar[2]; 
+hbar = 230 - mbar[0] - mbar[2]; 
 
 var format = d3.format(",.0f"); 
 var wdthbar = d3.scale.linear().range([0, wbar]),

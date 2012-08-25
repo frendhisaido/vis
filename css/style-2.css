@@ -20,6 +20,14 @@ button{
 margin: 10px 5px 5px 5px;
 }
 
+.controlchart{
+	margin-top: 10px;
+	position: absolute;
+	background-color: #EEE;
+	height: 300px;
+	border: 1px solid #E3E3E3;
+	-webkit-border-radius: 4px;
+}
 .judulchart {
 	font-size: 1.1em;
 	padding: 5px 0px 5px 0px;

@@ -53,17 +53,33 @@
     </div>
 
     <div class="container dashboard">
-	
 	<div class="row">
+	    <div class="span12 slidercontainer" >
+								Sejak   
+							 	<select id="dates1" disabled>
+								</select>
+								hingga
+								<select id="dates2" disabled>
+								</select>
+							<div id="slider" class="barslider"></div>
+						</div>
+	</div>
+	<div class="row">
+	  
 	  <div class="span5">
 	    <div id="linechart"></div>
 	    <div id="context"></div>	
 			
 	  </div>
-	  <div class="span2 offset5">
+	  <div class="span2 offset10 controlchart">
 		<script type="text/javascript">
+		  
+		  var helps = 500;
 		  $(document).ready(function(){
- 
+		  
+		  $('#buton').popover({trigger: 'hover',
+				      placement: 'bottom',
+				      delay: {show: helps, hide: 500}});
 		  $("#context").hide();
 		  $(".show_hide").show();
  
@@ -77,7 +93,10 @@
 		<button type="button" class="btn" data-toggle="button"><i class="icon-plus-sign"></i> Positif</button></br>
 		<button type="button" class="btn" data-toggle="button"><i class="icon-minus-sign"></i> Negatif</button></br>
 		<button type="button" class="btn" data-toggle="button"><i class="icon-adjust"></i> Non-Opini</button></br>
-		<button type="button" id="buton" class="btn" data-toggle="button">Zoom</button>
+		<button type="button" id="buton" class="btn"
+			data-toggle="button"
+			data-title="Fitur zoom"
+			data-content="Fokus pada grafik dengan rentang tanggal tertentu.">Zoom</button>
 		
 	  
 	  </div>
@@ -87,18 +106,6 @@
     		
 					<div id="bar" class="span4 barchart">
 						
-						<div class="judulchart">
-							Perbandingan jumlah tweet tiap sentimen
-						</div>
-						<div class="slidercontainer" >
-								Sejak   
-							 	<select id="dates1" disabled>
-								</select>
-								hingga
-								<select id="dates2" disabled>
-								</select>
-							<div id="slider" class="barslider"></div>
-						</div>
 					</div>
 				
 	</div>

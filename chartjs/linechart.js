@@ -2,7 +2,7 @@
 var m = [20, 30, 40, 50, 60],
     w = 1000 ,
     h = 300,
-    h2 = 80 + m[0];
+    h2 = 50 + m[0];
 	
 	
 var duration = 1500,
@@ -136,8 +136,8 @@ var parse = d3.time.format("%Y-%m-%d %H").parse;
      //console.log(s.maxJumlah);
     s.sumJumlah = d3.sum(s.values, function(d) { return d.jumlah; });
   });
-	maxtemp = d3.max(orientasi.map(function(d){ return d.maxJumlah}),
-			 function(d){ return d;}) + 10; //penambahan supaya line tidak menyentuh bagian atas chart
+	maxValue = d3.max(orientasi.map(function(d){ return d.maxJumlah}),
+			 function(d){ return d;}) + 10; //penambahan supaya line tidak menyentuh pojok atas chart
 	maxpositif = d3.max(orientasi.map(function(d){ return d.key == "positif"? d.maxJumlah : 0},
 					  function(d){ return d;})) + 5;
   
@@ -161,7 +161,7 @@ var parse = d3.time.format("%Y-%m-%d %H").parse;
 	x.domain([d3.min(orientasi, function(d) { return d.values[0].date; }),
 		  d3.max(orientasi, function(d) { return d.values[d.values.length - 1].date; })]);
 	xContext.domain(x.domain());
-	y.domain([0,maxtemp]);
+	y.domain([0,maxValue]);
 	yContext.domain(y.domain());
 	
 	//console.log("xdomain", x.domain());
@@ -308,7 +308,7 @@ function zoom() {
   if(stillpositif){
     maxyaxis = maxpositif;
   }else{
-    maxyaxis = maxtemp;
+    maxyaxis = maxValue;
   }
   x.domain(brush.empty() ? xContext.domain() : brush.extent());
   y.domain([0, maxyaxis]);
