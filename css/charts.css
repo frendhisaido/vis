@@ -89,3 +89,35 @@ border: 1px solid #ddd;
 margin-bottom: 0px;
 padding-top: 20px;
 }
+
+
+
+
+.selecting rect {
+  fill-opacity: 1;
+}
+
+.selecting rect.selected {
+  fill-opacity: .7;
+}
+
+.resize rect{
+  fill: #ddd;
+  stroke: #ddd;
+  stroke-width: 1px;
+}
+
+.contextbrush .extent {
+  stroke: #000;
+  stroke-width: 1px;
+  fill: #000;
+  fill-opacity: .2;
+  shape-rendering: crispEdges;
+}
+
+.contextaxis {
+	fill: none;
+}
+
+
+

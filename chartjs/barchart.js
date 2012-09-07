@@ -104,7 +104,7 @@ function drawbarchart(data) {
 function updatebarchart(date1, date2) {
 	
 	var barchartjson = "data/barchartjson.php?df="+date1+"&dl="+date2;
-	console.log(barchartjson);
+	//console.log(barchartjson);
 	d3.json(barchartjson , function(data) { 
 	  var ordered = order(data);
 	  redrawbarchart(ordered);

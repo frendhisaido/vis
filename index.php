@@ -6,20 +6,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+      <!-- Le styles 
+    <link type="text/css" href="css/overcast/jquery-ui-1.8.20.custom.css" rel="stylesheet" />	
+    <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link type="text/css" href="css/barchart.css" rel="stylesheet">
+    <link type="text/css" href="css/style-2.css" rel="stylesheet">
+    <link type="text/css" href="css/charts.css" rel="stylesheet">
+    -->
+    <link type="text/css" href="http://localhost/vis/min/b=vis/css&f=barchart.css,style-2.css,charts.css" rel="stylesheet">
+    <link type="text/css" href="http://localhost/vis/min/b=vis/css&f=jquery-ui-1.8.20.custom.css,bootstrap.css,bootstrap-responsive.css" rel="stylesheet" />
+      <!-- Le javascripts
     <script type="text/javascript" src="lib/d3/d3.v2.min.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="lib/bootstrap/bootstrap.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.core.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.mouse.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.slider.js"></script>
-    <script type="text/javascript" src="lib/bootstrap/bootstrap.js"></script>
-    <!-- Le styles -->
-    <link type="text/css" href="css/overcast/jquery-ui-1.8.20.custom.css" rel="stylesheet" />	
-    <link type="text/css" href="css/bootstrap.css" rel="stylesheet">
-    <link type="text/css" href="css/barchart.css" rel="stylesheet">
-    <link type="text/css" href="css/style-2.css" rel="stylesheet">
-    <link type="text/css" href="css/charts.css" rel="stylesheet">
-    <link type="text/css" href="css/bootstrap-responsive.css" rel="stylesheet">
+    -->
+	<script type="text/javascript" src="http://localhost/vis/min/b=vis/lib&f=d3/d3.v2.min.js,jquery/jquery-1.7.2.min.js,bootstrap/bootstrap.min.js,jquery/jquery.ui.core.js,jquery/jquery.ui.widget.js,jquery/jquery.ui.mouse.js,jquery/jquery.ui.slider.js"></script>
+    <script type="text/javascript">
+		  
+		  var helps = 2500;
+		  $(document).ready(function(){
+		  
+		  $('#buton').popover({trigger: 'hover',
+				      placement: 'bottom',
+				      delay: {show: helps, hide: 500}});
+		  $("#context").hide();
+		  $(".show_hide").show();
+ 
+		  $('#zoombutton').click(function(){
+		      $("#context").slideToggle(250,unzoom);
+		     });
+		  
+		  });
+		  
+		 
+		  
+		  function initjs(){
+		  	
+		  };
+		  
+		  
+		
+		
+		</script>
+    
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -29,7 +63,7 @@
     <!-- Le fav and touch icons -->
     </head>
 
-  <body>
+  <body onload="initjs();">
 
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
@@ -45,6 +79,7 @@
               <li class="active"><a href="#">Main</a></li>
               <li><a href="#about">Tweets Viewer</a></li>
               <li><a href="#contact">About</a></li>
+	      <li><a href="#helps">Help</a></li>
             </ul>
           </div><!--/.nav-collapse -->
 	  
@@ -54,16 +89,24 @@
 
     <div class="container dashboard">
 	<div class="row">
+		  <div id="inforentang" class="span3">
+									
+								</div> 
 	    <div class="span12 slidercontainer" >
-								Sejak   
+								
 							 	<select id="dates1" disabled>
 								</select>
-								hingga
 								<select id="dates2" disabled>
 								</select>
 							<div id="slider" class="barslider"></div>
 						</div>
+	    
+	 <!-- 
+	    <div id="contextbar"></div>
+	  -->
 	</div>
+	
+	
 	<div class="row">
 	  
 	  <div class="span5">
@@ -71,32 +114,29 @@
 	    <div id="context"></div>	
 			
 	  </div>
-	  <div class="span2 offset10 controlchart">
-		<script type="text/javascript">
-		  
-		  var helps = 500;
-		  $(document).ready(function(){
-		  
-		  $('#buton').popover({trigger: 'hover',
-				      placement: 'bottom',
-				      delay: {show: helps, hide: 500}});
-		  $("#context").hide();
-		  $(".show_hide").show();
- 
-		  $('#buton').click(function(){
-		      $("#context").slideToggle();
-		     });
- 
-		  });
-		</script>
+	  <div class="offset10 controlchart">
 		
-		<button type="button" class="btn" data-toggle="button"><i class="icon-plus-sign"></i> Positif</button></br>
-		<button type="button" class="btn" data-toggle="button"><i class="icon-minus-sign"></i> Negatif</button></br>
-		<button type="button" class="btn" data-toggle="button"><i class="icon-adjust"></i> Non-Opini</button></br>
-		<button type="button" id="buton" class="btn"
+		 
+		<button id="togglePositif" type="button" class="btn toggleview" data-toggle="button" onclick="toggleLine('positif')">
+		  <i class="icon-plus-sign"></i> Positif</button> 
+		</br>
+		<button id="toggleNegatif" type="button" class="btn toggleview" data-toggle="button" onclick="toggleLine('negatif')">
+		  <i class="icon-minus-sign"></i> Negatif</button>
+		</br>
+		<button id="toggleNonopini" type="button" class="btn toggleview" data-toggle="button" onclick="toggleLine('nonopini')">
+		  <i class="icon-adjust"></i> Non-Opini</button>
+		</br>
+		<div class="btn-group toggleMaxY" data-toggle="buttons-radio">
+		  <button name="grps" type="button" class="btn" onclick="toggleMaxY('positif')"><i class="icon-plus-sign"></i></button>
+		  <button name="grpsneg" type="button" class="btn" onclick="toggleMaxY('negatif')"><i class="icon-minus-sign"></i></button>
+		  <button name="grpsnon" type="button" class="btn" onclick="toggleMaxY('nonopini')"><i class="icon-adjust"></i></button>
+		</div>
+		<button type="button" id="zoombutton" class="btn"
 			data-toggle="button"
 			data-title="Fitur zoom"
-			data-content="Fokus pada grafik dengan rentang tanggal tertentu.">Zoom</button>
+			data-content="Fokus pada grafik dengan rentang tanggal tertentu.">
+		<i class="icon-resize-horizontal"></i>
+		  Zoom</button>
 		
 	  
 	  </div>
@@ -107,23 +147,25 @@
 					<div id="bar" class="span4 barchart">
 						
 					</div>
+					 
 				
 	</div>
    
-    
-    	
+   
     	
      
     </div> <!-- /container -->
 
     <!-- Le javascript
+    
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    
+	
 	<script src="chartjs/linechart.js"></script>
 	<script src="chartjs/barchart.js"></script>
 	<script src="chartjs/barcontrol.js"></script>
 	<!--
+	<script src="chartjs/contextbar.js"></script>
     <script src="lib/bootstrap/bootstrap-transition.js"></script>
     <script src="lib/bootstrap/bootstrap-alert.js"></script>
     <script src="lib/bootstrap/bootstrap-modal.js"></script>

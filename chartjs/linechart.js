@@ -3,17 +3,23 @@ var m = [20, 30, 40, 50, 60],
     w = 1000 ,
     h = 300,
     h2 = 50 + m[0];
-	
-	
-var duration = 1500,
-    delay = 500;
+
+var parseJam = d3.time.format("%Y-%m-%d %H").parse;
+var parseTanggal = d3.time.format("%Y-%m-%d").parse;
+
+
+var duration = [100,200,500,1000,1500],
+    delay = [500,1000];
     
+var stillpositif,stillnegatif,stillnonop,stillhover;
+var maxpositif,maxnegatif,maxnonopini,maxYcurrent,maxgrouped;
+var maxdate, mindate;
 
 var monthNames = [ "January", "February", "March", "April", "May", "June",
 	 "July", "August", "September", "October", "November", "December" ];
 
 
-var clor = d3.scale.ordinal().domain(["negatif","positif","nonopini"]).range(["#FF0000","#009900","#0099FF"]);
+var clor = d3.scale.ordinal().domain(["negatif","positif","nonopini"]).range(["#FF0000","#009900","#969395"]);
 var x = d3.time.scale().range([0, w - m[4] ]),
     xContext = d3.time.scale().range([0, w - m[4] ]),
     y = d3.scale.linear().range([h , 0]),
@@ -23,13 +29,13 @@ var xAxis = d3.svg.axis()
 		.scale(x)
 		.tickSize(-h)
 		.tickPadding(10);
-		      //.ticks(d3.time.days).tickFormat(d3.time.format("%d/%b"));
-
+		      
 var xAxisContext = d3.svg.axis()
 		      .scale(xContext)
 		      .tickSize(-h2)
 		      .tickPadding(10)
-		      .ticks(8);				
+		      .ticks(8)
+		      .ticks(d3.time.days).tickFormat(d3.time.format("%d/%b"));				
 				  
 var yAxis = d3.svg.axis()
 	    .scale(y)
@@ -44,11 +50,23 @@ var yAxisContext = d3.svg.axis()
 var allsvg = d3.select("#linechart").append("svg:svg")
 	    .attr("class","view")
 	    .attr("width", w + m[1] + m[3])
-	    .attr("height", h + m[0] + m[2]);
+	    .attr("height", h + m[0] + m[2])
+	    .on("mouseover.chart", circopacity(1))
+	    .on("mouseout.chart", circopacity(.1));
     //!!!!IMPORTANT, Clipping path supaya ga melebihi axis
     //Setelah diset disini, diset lagi attr("clip-path", "url(#clip)") di elemen yang mau diisi pathnya
     allsvg.append("defs").append("clipPath")
 	  .attr("id", "clip")
+	  .append("rect")
+	  .attr("width", w - m[4])
+	  .attr("height", h);
+	  
+var contsvg = d3.select("#context").append("svg:svg")
+	      .attr("width", w + m[1] + m[3])
+	      .attr("height", h2);
+	      
+    contsvg.append("defs").append("clipPath")
+	  .attr("id", "clip2")
 	  .append("rect")
 	  .attr("width", w - m[4])
 	  .attr("height", h);
@@ -57,9 +75,7 @@ var allsvg = d3.select("#linechart").append("svg:svg")
  *
  *
  */
-var contsvg = d3.select("#context").append("svg:svg")
-	      .attr("width", w + m[1] + m[3])
-	      .attr("height", h2);
+
 
 var backsvg = allsvg.append("svg:g")
 	      .attr("class","theAxis")
@@ -108,9 +124,9 @@ var area = d3.svg.area()
 
 var brush = d3.svg.brush()
 	  .x(xContext)
-	  .on("brush", zoom);
+	  .on("brush", redraw);
 
-var stillpositif;
+
 
 d3.csv("data/linecsv.php", function(data) {
 
@@ -118,14 +134,14 @@ d3.csv("data/linecsv.php", function(data) {
 //console.log(data);
 datacontext = data;
 
-var parse = d3.time.format("%Y-%m-%d %H").parse;
+
 
 
   data.forEach(function(d){
-	  d.date = parse(d.date);
+	  d.date = parseJam(d.date);
 	  d.jumlah = +d.jumlah;
   });
-
+  
   orientasi = d3.nest()
       .key(function(d) { 
 		return d.orientasi; })
@@ -138,8 +154,17 @@ var parse = d3.time.format("%Y-%m-%d %H").parse;
   });
 	maxValue = d3.max(orientasi.map(function(d){ return d.maxJumlah}),
 			 function(d){ return d;}) + 10; //penambahan supaya line tidak menyentuh pojok atas chart
+	
 	maxpositif = d3.max(orientasi.map(function(d){ return d.key == "positif"? d.maxJumlah : 0},
 					  function(d){ return d;})) + 5;
+	maxnegatif = d3.max(orientasi.map(function(d){ return d.key == "negatif"? d.maxJumlah : 0},
+					  function(d){ return d;})) + 5;
+	maxnonopini = d3.max(orientasi.map(function(d){ return d.key == "nonopini"? d.maxJumlah : 0},
+					  function(d){ return d;})) + 5;
+	
+	
+	maxdate = d3.max(orientasi, function(d) { return d.values[d.values.length - 1].date; });
+	mindate = d3.min(orientasi, function(d) { return d.values[0].date; });
   
   linesvg.selectAll(".theLines")
       .data(orientasi)
@@ -158,22 +183,22 @@ var parse = d3.time.format("%Y-%m-%d %H").parse;
 
 		
 	
-	x.domain([d3.min(orientasi, function(d) { return d.values[0].date; }),
-		  d3.max(orientasi, function(d) { return d.values[d.values.length - 1].date; })]);
+	x.domain([ mindate , maxdate ]);
 	xContext.domain(x.domain());
 	y.domain([0,maxValue]);
 	yContext.domain(y.domain());
-	
+	maxYcurrent = maxValue;
 	//console.log("xdomain", x.domain());
 
   base();
-  draw();
+  drawLineChart();
   //circles();
 	
 
 
 	
 });
+
 function drawmaincontext(){
   maincontextbacksvg.append("svg:g")
 			.attr("class", "xMainContextAxis")
@@ -222,7 +247,7 @@ function base() {
 }
 
 
-function draw() {
+function drawLineChart() {
   
   //var = maincontextsvg.selectAll
   
@@ -245,13 +270,11 @@ function draw() {
 			return line(d.values); })
 		.style("stroke-width", "1px")
 		.style("stroke", function(d) {
-			return clor(d.key); })
-		.style("opacity", "0")
-		.transition().duration(500).delay(500)
-		.style("opacity", "1");
+			return clor(d.key); });
   });
 
  var cx = contextsvg.selectAll(".context")
+			.attr("clip-path", "url(#clip)")
 			.attr("transform", "translate(0," + -20+ ")");
 			
   cx.each(function(d) {
@@ -278,8 +301,9 @@ function draw() {
 
 var c = circsvg.selectAll(".points")
 	    .attr("clip-path", "url(#clip)")
-	    .on("mouseover", function(d){
-			console.log(showData(d.date, d.jumlah, d.orientasi));
+	    .on("mouseover.circles", function(d){
+			console.log(d.orientasi,d.date, d.jumlah);
+			//console.log(showData(d.date, d.jumlah, d.orientasi));
 			});
   
   c.each(function(d){
@@ -295,99 +319,144 @@ var c = circsvg.selectAll(".points")
     .attr("stroke-width", "0px")
     .attr("cx" , function(d){ return x(d.date);})
     .attr("cy" , function(d){ return y(d.jumlah);})
-		.style("opacity", "0")
-		.transition().duration(500).delay(1000)
-		.style("opacity", "1");
+		.style("opacity", "0");
     
   });
 }
 
-
-function zoom() {
-  var maxyaxis;
-  if(stillpositif){
-    maxyaxis = maxpositif;
-  }else{
-    maxyaxis = maxValue;
+function redraw(chartsize){
+  
+  var currentDomain = brush.empty() ? xContext.domain() : brush.extent();
+  
+  if(chartsize==null){
+    chartsize = selisih(
+		currentDomain
+		);	
   }
-  x.domain(brush.empty() ? xContext.domain() : brush.extent());
-  y.domain([0, maxyaxis]);
   
-  var diffmili = brush.extent()[1].getTime() - brush.extent()[0].getTime();
-  var diffhours = ( diffmili / 1000 ) / 60 / 60;
-  diffhours = Math.log(Math.ceil(diffhours));
-  var brushsize = Math.ceil(diffhours);
+  x.domain(currentDomain);
+  y.domain([0, maxYcurrent]);
   
-  redraw(brushsize);
-}
-
-function redraw(brushsize){
-  
+  //console.log("circ "+circlesize(chartsize));
+  //console.log("line "+linewidth(chartsize));
   var recirc = circsvg.selectAll(".theCircles circle");
 	recirc.each(function(d){
 	    var e = d3.select(this);
 	    e.attr("cx" , function(d){ return x(d.date);})
 	    .attr("cy" , function(d){ return y(d.jumlah);})
-	    .attr("r" , circlesize(brushsize));
+	    .attr("r" , circlesize(chartsize));
 	});
 	
   var reline = linesvg.selectAll(".theLines path");
 	reline.each(function(d){
 		var e = d3.select(this);
 		e.attr("d",line(d.values))
-		.style("stroke-width", linewidth(brushsize));
+		.style("stroke-width", linewidth(chartsize));
 	});
+   var recontext = contextsvg.selectAll(".theContext path");
+	recontext.each(function(d){
+		var e = d3.select(this);
+		e.attr("d", line2(d.values));
+		
+	})
   
+  contextbacksvg.select(".xContextAxis").call(xAxisContext);
   backsvg.select(".xAxis").call(xAxis);
   backsvg.select(".yAxis").call(yAxis);
 }
 
 
-function circlesize(brushsize){
-    var sz;
-    if (brushsize == 5) {
-      return sz = 3;
-    }else if(brushsize >= 3 && brushsize < 5) {
-      return sz = 4; 
-    }else if(brushsize >= 0 && brushsize <= 2){
-      return sz = 5;
+function circlesize(chartsize){
+    
+    if (chartsize >= 11 && chartsize <= 15) {
+      return 3;
+    }else if(chartsize >= 5 && chartsize <= 10) {
+      return 4; 
+    }else if(chartsize >= 0 && chartsize <= 4){
+      return 5;
     }else{
       return 2; //default circlesize;
     }
 }
 
-function linewidth(brushsize){
-    var sz;
-    if (brushsize == 5) {
-      return sz = "2px";
-    }else if(brushsize >= 3 && brushsize < 5) {
-      return sz = "2.5px"; 
-    }else if(brushsize >= 0 && brushsize <= 2){
-      return sz = "3px";
+function linewidth(chartsize){
+    if (chartsize >= 11 && chartsize <= 15) {
+      return "2px";
+    }else if(chartsize >= 5 && chartsize <= 10) {
+      return "2.5px"; 
+    }else if(chartsize >= 0 && chartsize <= 4){
+      return "3px";
     }else{
       return 1;
     }
 }
 
-function onlypositif(){
-  stillpositif = true;
-  hideline("negatif");
-  hideline("nonopini");
-  x.domain(brush.empty() ? xContext.domain() : brush.extent());
-  y.domain([0, maxpositif]);
+function unzoom(){
+	brush.clear();
+	redraw();
+}
+
+function toggleLine(orient){
+	
+	/*
+	 * $("#element").css("display");
+	 * Mungkin bisa dideteksi dari sini?
+	 */
+  if(orient=="positif"){
+    if(!stillpositif){
+	stillpositif = true;
+	hideline("positif");
+    }else{
+	stillpositif = false;
+	showline("positif");
+    }
+  }else if(orient=="negatif"){
+    if(!stillnegatif){
+	stillnegatif = true;
+	hideline("negatif");
+    }else{
+	stillnegatif = false;
+	showline("negatif");
+    }
+  }else{
+     if(!stillnonop){
+	stillnonop = true;
+	hideline("nonopini");
+    }else{
+	stillnonop = false;
+	showline("nonopini");
+    }
+  }
   
-  var diffmili = brush.extent()[1].getTime() - brush.extent()[0].getTime();
-  var diffhours = ( diffmili / 1000 ) / 60 / 60;
-  diffhours = Math.log(Math.ceil(diffhours));
-  var brushsize = Math.ceil(diffhours);
   
-  redraw(brushsize);
+   
+   //maxYcurrent = !stillnonop && !stillnegatif ? maxYcurrent : maxpositif;
+  redraw();
+}
+
+function toggleMaxY(ornt){
+	switch(ornt){
+		case "positif":
+			maxYcurrent = maxpositif;
+		break;
+		case "negatif":
+			maxYcurrent = maxnegatif;
+		break;
+		case "nonopini":
+			maxYcurrent = maxnonopini;
+		break;
+	}
+	
+	redraw();
 }
 
 function showAll(){
   stillpositif = false;
   showline("negatif");
   showline("nonopini");
+  
+  
+  redraw();
 }
 
 function hideline(ornt) {
@@ -398,11 +467,11 @@ function hideline(ornt) {
 	var recirc = circsvg.selectAll(selectedcirc);
 	reline
 	.transition().duration(500)
-	.style("opacity",0);
+	.style("display","none");
 	
 	recirc
 	.transition().duration(500)
-	.style("opacity",0);
+	.style("display","none");
 }
 
 function showline(ornt) {
@@ -411,13 +480,15 @@ function showline(ornt) {
 	
 	var reline = linesvg.select(selectedline);
 	var recirc = circsvg.selectAll(selectedcirc);
+	
 	reline
 	.transition().duration(500)
-	.style("opacity",1);
+	.style("display","block");
 	
 	recirc
 	.transition().duration(500)
-	.style("opacity",1);
+	.style("display","block");
+	
 }
 
 function showData(aDate, bJumlah, cOrientasi){
@@ -427,6 +498,43 @@ function showData(aDate, bJumlah, cOrientasi){
 	  + aDate.getMinutes() +" Jumlah tweet "
 	  +cOrientasi+":" +bJumlah;
 	}
+	
+function circopacity(opacity){
+	return function(d){
+		
+	var recirc = circsvg.selectAll(".apoint");
+	recirc
+			.transition().duration(duration[3])
+			.style("opacity",opacity);
+	}
+	
+}
 
- 
+function passingDomain(passDomain){
+	var dd1 = parseJam(passDomain[0]);
+	var dd2 = parseJam(passDomain[1]);
+	if(dd1.getDate()==mindate.getDate()){
+		dd1 = mindate;
+	};
+	if(dd2.getDate()==maxdate.getDate()){
+		dd2 = maxdate;	
+	};
+	
+	var newDomain = [dd1, dd2];
+	x.domain(newDomain);
+	xContext.domain(newDomain);
+
+	
+	redraw(
+	       selisih(newDomain)
+	       );
+}
+
+function selisih(dates){
+	return Math.ceil(
+			 (dates[1] - dates[0])/(1000*60*60*24)
+			 );
+}
+
+
 

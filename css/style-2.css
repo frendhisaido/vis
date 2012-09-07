@@ -16,8 +16,13 @@ margin-top: -12px;
 margin-left: -20px;
 }
 
-button{
+.toggleview{
+width: 180px;
 margin: 10px 5px 5px 5px;
+}
+
+.toggleMaxY{
+margin: 10px 10px 10px 30px;
 }
 
 .controlchart{
@@ -26,6 +31,7 @@ margin: 10px 5px 5px 5px;
 	background-color: #EEE;
 	height: 300px;
 	border: 1px solid #E3E3E3;
+	width: 190px;	
 	-webkit-border-radius: 4px;
 }
 .judulchart {
@@ -42,6 +48,12 @@ margin: 10px 5px 5px 5px;
 .barslider:hover {
 	opacity: 1;
 }
+
+#inforentang{
+	position: relative;
+	left: 36%;
+	float:center;
+}
 .slidercontainer {
 	padding-left: 15px;
 	padding-right: 20px;
@@ -49,25 +61,9 @@ margin: 10px 5px 5px 5px;
 	margin-bottom: 2px;
 	text-align: center;
 	font-size: 0.9em;
-	border-bottom: 1px solid #ddd;
 }
 .slidercontainer select {
-	cursor: default;
-	width: 115px;
-	-webkit-appearance: button;
-	-webkit-padding-end: 0px;
-	-webkit-padding-start: 2px;
-	-webkit-user-select: none;
-	background: transparent;
-	border: 0px;
-	color: #000;
-	font-weight: bold;
-	font-size: 1.5em;
-	margin: 0;
-	overflow: hidden;
-	padding-top: 0px;
-	padding-bottom: 5px;
-	margin-bottom: 1px;
+	display: none;
 }
 .gauge {
 border: 1px solid grey;

@@ -7,7 +7,7 @@ include 'mysqlconfig.php';
 @mysql_select_db($dsn) or die( "Unable to select database");
 
 // outputs the db as lines of text.
-$result = mysql_query("SELECT DISTINCT DATE(datetime) AS date FROM dataset");
+$result = mysql_query("SELECT SQL_CACHE DISTINCT DATE(datetime) AS date FROM dataset ORDER BY date");
 $rows = array();
 
 while($r = mysql_fetch_assoc($result)) {

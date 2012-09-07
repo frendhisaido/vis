@@ -7,7 +7,7 @@ $dlast = $_GET['dl'];
 $query = "";
 
 if(empty($dfirst) && empty($dlast)) {
-	$query = "SELECT orientasi, COUNT(datetime) AS jumlah
+	$query = "SELECT SQL_CACHE orientasi, COUNT(datetime) AS jumlah
 						   FROM dataset 
 						   GROUP BY orientasi";
 }else if($dfirst==$dlast){
