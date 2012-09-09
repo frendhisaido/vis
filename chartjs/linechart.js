@@ -230,16 +230,16 @@ function drawmaincontext(){
 
 function base() {
 	backsvg.append("svg:g")
-		.attr("class","xAxis")
+		.attr("class","xAxis textUnselectable")
 		.attr("transform", "translate(0," + h+ ")")
 		.call(xAxis);
 		
 	backsvg.append("svg:g")
-		.attr("class","yAxis")
+		.attr("class","yAxis textUnselectable")
 		.call(yAxis.orient("left"));
 		
 		contextbacksvg.append("svg:g")
-			.attr("class","xContextAxis")
+			.attr("class","xContextAxis textUnselectable")
 			.attr("transform", "translate(0," + (h2-20)+ ")")
 			.call(xAxisContext);
 		
@@ -300,11 +300,7 @@ function drawLineChart() {
 	      
 
 var c = circsvg.selectAll(".points")
-	    .attr("clip-path", "url(#clip)")
-	    .on("mouseover.circles", function(d){
-			console.log(d.orientasi,d.date, d.jumlah);
-			//console.log(showData(d.date, d.jumlah, d.orientasi));
-			});
+	    .attr("clip-path", "url(#clip)");
   
   c.each(function(d){
     var e = d3.select(this);
@@ -316,10 +312,21 @@ var c = circsvg.selectAll(".points")
 		})
     .attr("class", "apoint")
       .style("fill", function(d){ return clor(d.orientasi);})
+    .attr("stroke","black")
     .attr("stroke-width", "0px")
     .attr("cx" , function(d){ return x(d.date);})
     .attr("cy" , function(d){ return y(d.jumlah);})
-		.style("opacity", "0");
+		.style("opacity", "0")
+	    .on("mouseover.circles", function(d){
+			//console.log(d.orientasi,d.date, d.jumlah);
+			
+			d3.select(this).attr("stroke-width","8px");
+			setInfoCircle(d.date, d.jumlah, d.orientasi);
+			})
+		.on("mouseout.circles", function(d){
+			d3.select(this).attr("stroke-width","0px");
+			setInfoWaktuBlank();
+		});
     
   });
 }
@@ -490,14 +497,6 @@ function showline(ornt) {
 	.style("display","block");
 	
 }
-
-function showData(aDate, bJumlah, cOrientasi){
-	  return "Info: " + aDate.getDate() + " "
-	  + monthNames[aDate.getMonth()] + " at "
-	  + aDate.getHours() + ":"
-	  + aDate.getMinutes() +" Jumlah tweet "
-	  +cOrientasi+":" +bJumlah;
-	}
 	
 function circopacity(opacity){
 	return function(d){

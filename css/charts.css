@@ -21,6 +21,15 @@
 	stroke-width: 0px;
 	fill: #000;
 }
+
+.textUnselectable{
+	-webkit-touch-callout: none;
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
 .xContextAxis {
   fill: none;
   stroke: #ddd;

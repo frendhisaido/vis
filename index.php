@@ -45,11 +45,13 @@
 		  
 		 
 		  
-		  function initjs(){
-		  	
+		  function panggilToggle(){
+		  	$("#toggleNonopini").click();
 		  };
 		  
-		  
+		  function initjs(){
+		  setTimeout(panggilToggle, 1900);
+		  }
 		
 		
 		</script>
@@ -126,17 +128,21 @@
 		<button id="toggleNonopini" type="button" class="btn toggleview" data-toggle="button" onclick="toggleLine('nonopini')">
 		  <i class="icon-adjust"></i> Non-Opini</button>
 		</br>
-		<div class="btn-group toggleMaxY" data-toggle="buttons-radio">
+		<div class="btn-group buttonTengah" data-toggle="buttons-radio">
 		  <button name="grps" type="button" class="btn" onclick="toggleMaxY('positif')"><i class="icon-plus-sign"></i></button>
 		  <button name="grpsneg" type="button" class="btn" onclick="toggleMaxY('negatif')"><i class="icon-minus-sign"></i></button>
 		  <button name="grpsnon" type="button" class="btn" onclick="toggleMaxY('nonopini')"><i class="icon-adjust"></i></button>
 		</div>
-		<button type="button" id="zoombutton" class="btn"
+		<button type="button" id="zoombutton" class="btn buttonTengah"
+			style="width: 130px;"
 			data-toggle="button"
 			data-title="Fitur zoom"
 			data-content="Fokus pada grafik dengan rentang tanggal tertentu.">
 		<i class="icon-resize-horizontal"></i>
 		  Zoom</button>
+		<div id="infoCircle">
+			
+		</div>
 		
 	  
 	  </div>

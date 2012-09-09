@@ -49,7 +49,7 @@ function drawbarchart(data) {
 	  	.attr("height", hghtbar.rangeBand()-mbar[1]);
 	
 	  svgbar.append("g")
- 		.attr("class", "xaxis")
+ 		.attr("class", "xaxis textUnselectable")
 		.attr("transform", "translate(0," + 9 + ")")
 	 	.call(xAxisbar);
 

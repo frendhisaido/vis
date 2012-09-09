@@ -1,4 +1,3 @@
-
 body{
 padding-top: 45px; /* 60px to make the container go all the way to the bottom of the topbar */  
 }
@@ -21,10 +20,13 @@ width: 180px;
 margin: 10px 5px 5px 5px;
 }
 
-.toggleMaxY{
+.buttonTengah{
 margin: 10px 10px 10px 30px;
 }
 
+#infoCircle{
+margin: 15px 5px 5px 5px;
+}
 .controlchart{
 	margin-top: 10px;
 	position: absolute;
@@ -51,8 +53,21 @@ margin: 10px 10px 10px 30px;
 
 #inforentang{
 	position: relative;
-	left: 36%;
-	float:center;
+	left: 40%;
+	font:"Arial Narrow";
+	font-size: large;
+	font-weight: lighter;
+	margin: 5px 0px 5px 0px;
+	
+}
+
+.blingyo{
+	text-shadow: 0 0 0.2em #87F, 0 0 0.2em #87F,
+        0 0 0.2em #87F
+}
+
+.textrentang{
+	font-weight: 600;
 }
 .slidercontainer {
 	padding-left: 15px;

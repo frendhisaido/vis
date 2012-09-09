@@ -28,7 +28,6 @@ $.getJSON("data/datelist.php", function(result) {
 				values : [1,totaldates],
 				range: true,
 				start: function(event, ui){
-					console.log("starto");
 				},
 				slide: function( event, ui ) {
 					select1[ 0 ].selectedIndex = ui.values[0] -1;
@@ -66,4 +65,50 @@ function setInfoRentang(date1,date2){
 	 infos.append("text").text("Pada ");
 	 infos.append("text").attr("class","textrentang").text(date1);
 	}
+}
+
+function setInfoCircle(tanggal, jumlah, orientasi){
+	var infos = d3.select("#infoCircle");
+	infos.selectAll("button").remove();
+	
+	var infjml = infos.append("button").attr("class","btn").style("width","180px");
+	infjml.append("svg")
+	.style("float","left")
+	.attr("width","20px")
+	.attr("height","20px")
+	.append("circle")
+	.attr("r","6px")
+	.attr("cx",10)
+	.attr("cy",10)
+	.attr("fill",function(){
+		var warna;
+		switch (orientasi){
+		case 'negatif':
+			return '#FF0000';
+		break;
+		case 'positif':
+			return '#009900';
+		break;
+		case 'nonopini':
+			return '#969395';
+		break;}
+		}
+		);
+	infjml.append("text").text(jumlah + " tweet "+orientasi+" ");
+	var infwkt = infos.append("button").attr("class","btn").style("width","180px");
+	infwkt.append("i").attr("class","icon-time");
+	infwkt.append("text").text(" "+tanggal.getDate()+" "
+								+nama_bulan[(tanggal.getMonth()+1)]+" Jam "
+								+(tanggal.getHours() < 11 ? ('0'+ (tanggal.getHours())) : tanggal.getHours())+":"
+								+(tanggal.getMinutes() < 11 ? ('0'+ (tanggal.getMinutes())) : tanggal.getMinutes())
+								);
+}
+
+function setInfoWaktuBlank(){
+	var infos = d3.select("#infoCircle");
+	var btns = infos.selectAll("button");
+	btns.text("---");
+
+	
+	
 }
