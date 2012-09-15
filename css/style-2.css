@@ -19,7 +19,6 @@ margin-left: -20px;
 width: 130px;
 margin: 5px 5px 0px 5px;
 }
-
 .buttonTengah{
 margin: 5px 10px 0px 30px;
 }
@@ -60,7 +59,7 @@ margin: 5px 5px 5px 5px;
 #inforentang{
 	position: relative;
 	left: 40%;
-	font:"Arial Narrow";
+	font-family:"Arial Narrow";
 	font-size: large;
 	font-weight: lighter;
 	margin: 5px 0px 5px 0px;
@@ -88,21 +87,4 @@ margin: 5px 5px 5px 5px;
 }
 .slidercontainer select {
 	display: none;
-}
-.gauge {
-border: 1px solid grey;
-min-height: 270px;
-float: left;
-}
-.keywords {
-border: 1px solid grey;
-min-height: 270px;
-margin-left: 5px;
-margin-right: 5px;
-float: right;
-}
-.footer {
-background-color: grey;
-min-width: 1100px;
-height: 10%;
 }

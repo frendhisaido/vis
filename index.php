@@ -26,7 +26,9 @@
     <script type="text/javascript" src="lib/jquery/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.mouse.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.slider.js"></script>
+    
      <!-- Le javascripts
+     	<script type="text/javascript" src="lib/jquery/jquery.ui.draggable.js"></script>
      	<script type="text/javascript" src="http://localhost/vis/min/b=vis/lib&f=d3/d3.v2.min.js,jquery/jquery-1.7.2.min.js,bootstrap/bootstrap.min.js,jquery/jquery.ui.core.js,jquery/jquery.ui.widget.js,jquery/jquery.ui.mouse.js,jquery/jquery.ui.slider.js"></script>
     
     -->
@@ -46,7 +48,7 @@
 		     
 		  initbarchart();
 		  initLineChart('perday',false);
-		  
+		  //$("#controlers").draggable();
 		  }
 		
 		 
@@ -114,7 +116,7 @@
 	    <div id="context"></div>	
 			
 	  </div>
-	  <div class="offset10 controlchart">
+	  <div id="controlers" class="offset10 controlchart">
 		
 		 
 		<button id="togglePositif" type="button" class="btn btn-success toggleview" data-toggle="button" onclick="toggleLine('positif')">
@@ -123,12 +125,12 @@
 		<button id="toggleNegatif" type="button" class="btn btn-danger toggleview" data-toggle="button" onclick="toggleLine('negatif')">
 		  <i class="icon-minus-sign"></i> Negatif</button>
 		</br>
-		<button id="toggleNonopini" type="button" class="btn toggleview" data-toggle="button" onclick="toggleLine('nonopini')">
+		<button id="toggleNonopini" type="button" class="btn btn-warning toggleview" data-toggle="button" onclick="toggleLine('nonopini')">
 		  <i class="icon-adjust"></i> Non-Opini</button>
-		<div class="btn-group btn-group-vertical buttonPinggir" data-toggle="buttons-radio">
-		  <button name="grps" type="button" class="btn btn-success" onclick="toggleMaxY('positif')"><i class="icon-plus-sign"></i></button>
-		  <button name="grpsneg" type="button" class="btn btn-danger" onclick="toggleMaxY('negatif')"><i class="icon-minus-sign"></i></button>
-		  <button name="grpsnon" type="button" class="btn" onclick="toggleMaxY('nonopini')"><i class="icon-adjust"></i></button>
+		<div id="toggleMax" class="btn-group btn-group-vertical buttonPinggir" data-toggle="buttons-radio">
+		  <button id="maxPos" type="button" class="btn btn-success" onclick="toggleMaxY('positif')"><i class="icon-plus-sign"></i></button>
+		  <button id="maxNeg" type="button" class="btn btn-danger" onclick="toggleMaxY('negatif')"><i class="icon-minus-sign"></i></button>
+		  <button id="maxnon" type="button" class="btn btn-warning" onclick="toggleMaxY('nonopini')"><i class="icon-adjust"></i></button>
 		</div>
 		<div class="buttonTengah">
 		<button type="button" id="zoombutton" class="btn btn-info"

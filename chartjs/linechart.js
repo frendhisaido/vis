@@ -18,7 +18,7 @@ var monthNames = [ "January", "February", "March", "April", "May", "June",
 	 "July", "August", "September", "October", "November", "December" ];
 
 
-var clor = d3.scale.ordinal().domain(["negatif","positif","nonopini"]).range(["#FF0000","#009900","#969395"]);
+var clor = d3.scale.ordinal().domain(["negatif","positif","nonopini"]).range(["#FF0000","#009900","#FAA732"]);
 var x = d3.time.scale().range([0, w - m[4] ]),
     xContext = d3.time.scale().range([0, w - m[4] ]),
     y = d3.scale.linear().range([h , 0]),
@@ -125,8 +125,24 @@ var brush = d3.svg.brush()
 	  .x(xContext)
 	  .on("brush", redraw);
 
-
+function resetControls(){
+	var ng = $("#toggleNegatif").attr("class");
+	var po = $("#togglePositif").attr("class");
+	var no = $("#toggleNonopini").attr("class");
+	//var maxng = $("#maxNeg").attr("class");
+	//var maxpo = $("#maxPos").attr("class");
+	//var maxno = $("#maxNon").attr("class");
+	
+	$("#toggleNegatif").attr("class", ng.replace('active',''));
+	$("#togglePositif").attr("class", po.replace('active',''));
+	$("#toggleNonopini").attr("class", no.replace('active',''));
+	
+	//$("#maxNeg").attr("class", maxng.replace('active',''));
+	//$("#maxPos").attr("class", maxpo.replace('active',''));
+	//$("#maxNon").attr("class", maxno.replace('active',''));
+}
 function initLineChart(atom,update){
+	resetControls();
 	currentAtom = atom;
 	callCSV ="data/linecsv.php?atom="+atom;
 	var addtop = atom == 'perday'? 100 : 10;
@@ -331,24 +347,33 @@ var c = circsvg.selectAll(".points")
 	    .on("mouseover.circles", function(d){
 	    	var element = this;
 			d3.select(this).attr("stroke-width","8px");
-			setInfoCircle(d.date, d.jumlah, d.orientasi);
+			setInfoCircle(d.date, d.jumlah, d.orientasi);		
 			})
 		.on("click.circles",function(d){
 			var element = this;
 			if(currentAtom=='perday'){
 				var request = "data/getKeyword.php?tg="+d.tgl+"&or="+d.orientasi+"&full=n";
-				var wow = d3.text(request, function(keyWords){	
-					$(element).tooltip({
-						title: keyWords
-					});
-					$(element).tooltip('show');
-					
-					});
+				var wow = function(){
+					d3.text(request, function(keyWords){	
+						$(element).tooltip({
+							title: keyWords
+						});
+						$(element).tooltip('show');
+						});
+				};
+				wow();
 			}
+			d3.select(this)
+				.attr("r", (circlesize()+5))
+				.transition().duration(duration[2])
+				.attr("r",circlesize());
+				
 		})
 		.on("mouseout.circles", function(d){
+			var element = this;
 			if(currentAtom=='perday'){
-				$(this).tooltip('destroy');
+				
+				$(element).tooltip('destroy');
 			}
 			d3.select(this).attr("stroke-width","0px");
 			setInfoWaktuBlank();
@@ -438,16 +463,30 @@ function toggleLine(orient){
 	/*
 	 * $("#element").css("display");
 	 * Mungkin bisa dideteksi dari sini?
+	 * 
 	 */
+  var elementName = "#line_"+orient; 
+  //console.log("elementName: "+elementName);
+  var isBlock ="";
+  getDisplay = $(elementName).css("display");
+    //console.log("isBlock: "+ isBlock);
+  if (getDisplay == "block" || getDisplay == "inline"){
+  	hideline(orient);
+  	//console.log("hiding");
+  }else if(getDisplay == "none"){
+  	showline(orient);
+  	//console.log("showing");
+  }
+  /*
   if(orient=="positif"){
-    if(!stillpositif){
+  	getDisplay = $(elementName).css("display");
+    if(getDisplay == "block"){
 	stillpositif = true;
 	hideline("positif");
     }else{
 	stillpositif = false;
 	showline("positif");
     }
-  }else if(orient=="negatif"){
     if(!stillnegatif){
 	stillnegatif = true;
 	hideline("negatif");
@@ -464,9 +503,7 @@ function toggleLine(orient){
 	showline("nonopini");
     }
   }
-  
-  
-   
+  */  
    //maxYcurrent = !stillnonop && !stillnegatif ? maxYcurrent : maxpositif;
   redraw();
 }
@@ -488,9 +525,6 @@ function toggleMaxY(ornt){
 }
 
 function showAll(){
-  stillpositif = false;
-  showline("negatif");
-  showline("nonopini");
   
   
   redraw();
