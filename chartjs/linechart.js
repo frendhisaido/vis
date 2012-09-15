@@ -1,4 +1,3 @@
-
 var m = [20, 30, 40, 50, 60],
     w = 1000 ,
     h = 300,
@@ -13,7 +12,7 @@ var duration = [100,200,500,1000,1500],
     
 var stillpositif,stillnegatif,stillnonop,stillhover;
 var maxpositif,maxnegatif,maxnonopini,maxYcurrent,maxgrouped;
-var maxdate, mindate;
+var maxdate, mindate,currentAtom,callCSV;
 
 var monthNames = [ "January", "February", "March", "April", "May", "June",
 	 "July", "August", "September", "October", "November", "December" ];
@@ -94,7 +93,7 @@ var circsvg = allsvg.append("svg:g")
 	     .attr("transform", "translate(" + m[1] + "," + 0 + ")");
 
 var contextsvg = contsvg.append("svg:g")
-		 .attr("class","theContext")
+		 .attr("class","theContexts")
 		 .attr("transform", "translate(" + m[1] + "," + 0 + ")");
 
 
@@ -127,19 +126,24 @@ var brush = d3.svg.brush()
 	  .on("brush", redraw);
 
 
-
-d3.csv("data/linecsv.php", function(data) {
+function initLineChart(atom,update){
+	currentAtom = atom;
+	callCSV ="data/linecsv.php?atom="+atom;
+	var addtop = atom == 'perday'? 100 : 10;
+	 //penambahan supaya line tidak menyentuh pojok atas chart
+	
+d3.csv(callCSV, function(data) {
 
 //console.log("data");
-//console.log(data);
-datacontext = data;
-
-
-
+//	console.log(data);
 
   data.forEach(function(d){
-	  d.date = parseJam(d.date);
+  	  d.tgl = d.date;
+  	  console.log(d.tgl);
+	  d.date = atom == 'perday'? parseTanggal(d.date) : parseJam(d.date);
+	  console.log(d.date);
 	  d.jumlah = +d.jumlah;
+	  console.log(d.jumlah);
   });
   
   orientasi = d3.nest()
@@ -147,14 +151,13 @@ datacontext = data;
 		return d.orientasi; })
       .entries(data);
 
-  orientasi.forEach(function(s) {
-    s.maxJumlah = d3.max(s.values, function(d) { return d.jumlah; });
+  orientasi.forEach(function(d) {
+    d.maxJumlah = d3.max(d.values, function(d) { return d.jumlah; });
      //console.log(s.maxJumlah);
-    s.sumJumlah = d3.sum(s.values, function(d) { return d.jumlah; });
+    d.sumJumlah = d3.sum(d.values, function(d) { return d.jumlah; });
   });
 	maxValue = d3.max(orientasi.map(function(d){ return d.maxJumlah}),
-			 function(d){ return d;}) + 10; //penambahan supaya line tidak menyentuh pojok atas chart
-	
+			 function(d){ return d;}) + addtop; 
 	maxpositif = d3.max(orientasi.map(function(d){ return d.key == "positif"? d.maxJumlah : 0},
 					  function(d){ return d;})) + 5;
 	maxnegatif = d3.max(orientasi.map(function(d){ return d.key == "negatif"? d.maxJumlah : 0},
@@ -165,67 +168,80 @@ datacontext = data;
 	
 	maxdate = d3.max(orientasi, function(d) { return d.values[d.values.length - 1].date; });
 	mindate = d3.min(orientasi, function(d) { return d.values[0].date; });
-  
-  linesvg.selectAll(".theLines")
-      .data(orientasi)
-    .enter().append("svg:g")
-      .attr("class", "symbol"); 
-
-  contextsvg.selectAll(".theContexts")
-		.data(orientasi)
-	.enter().append("svg:g")
-		.attr("class", "context");
-		
-  circsvg.selectAll(".theCircle")
-		.data(data)
-	.enter().append("svg:g")
-		.attr("class","points");
-
-		
-	
 	x.domain([ mindate , maxdate ]);
 	xContext.domain(x.domain());
 	y.domain([0,maxValue]);
 	yContext.domain(y.domain());
 	maxYcurrent = maxValue;
+	//console.log("maxYcurrent :"+maxYcurrent);
+	
+	if(update){
+		changeAtom(orientasi,data);
+	}else{
+	initDrawLine(orientasi,data);
+	}
+});
+
+}
+
+function initDrawLine(datasetline,datasetcircle){
+	linesvg.selectAll(".theLine")
+      .data(datasetline)
+    .enter().append("svg:g")
+      .attr("class", "symbol"); 
+
+  contextsvg.selectAll(".theContext")
+		.data(datasetline)
+	.enter().append("svg:g")
+		.attr("class", "context");
+		
+  circsvg.selectAll(".theCircle")
+		.data(datasetcircle)
+	.enter().append("svg:g")
+		.attr("class","points");
+		
+  contextsvg.append("g")
+	      .attr("class", "x brush")
+	      .call(brush)
+	    .selectAll("rect")
+	      .attr("y", -6)
+	      .attr("height", h2 -13);
+
 	//console.log("xdomain", x.domain());
 
   base();
   drawLineChart();
-  //circles();
-	
-
-
-	
-});
-
-function drawmaincontext(){
-  maincontextbacksvg.append("svg:g")
-			.attr("class", "xMainContextAxis")
-			.call(xAxisContextMain);
-			
-  var m = maincontextsvg.selectAll(".symbol");
-  
-  m.each(function(d) {
-    var e = d3.select(this);
-
-    e.append("svg:path")
-	.attr("class", "linecontext")
-		.attr("id", function(d){
-		  var ids = 'line_'+d.key;
-		  return ids;
-		})
-		.attr("d", function(d) { 
-			return line(d.values); })
-		.style("stroke-width", "1px")
-		.style("stroke", function(d) {
-			return clor(d.key); })
-		.style("opacity", "0")
-		.transition().duration(500).delay(500)
-		.style("opacity", "1");
-  });
-  
+  //circles();	
 }
+
+function changeAtom(datasetline,datasetcircle){
+	
+	linesvg.selectAll(".symbol").remove();
+	contextsvg.selectAll(".context").remove();
+	circsvg.selectAll(".points").remove();
+	
+	linesvg.selectAll(".theLine")
+      .data(datasetline)
+    .enter().append("svg:g")
+      .attr("class", "symbol"); 
+
+  	contextsvg.selectAll(".theContext")
+		.data(datasetline)
+	.enter().append("svg:g")
+		.attr("class", "context");
+		
+  	circsvg.selectAll(".theCircle")
+		.data(datasetcircle)
+	.enter().append("svg:g")
+		.attr("class","points");
+  
+  drawLineChart();
+ 
+  /*
+  
+  */
+}
+
 
 
 function base() {
@@ -291,12 +307,7 @@ function drawLineChart() {
 		.style("opacity", "1");
   });
 
-	contextsvg.append("g")
-	      .attr("class", "x brush")
-	      .call(brush)
-	    .selectAll("rect")
-	      .attr("y", -6)
-	      .attr("height", h2 -13);
+	
 	      
 
 var c = circsvg.selectAll(".points")
@@ -312,23 +323,42 @@ var c = circsvg.selectAll(".points")
 		})
     .attr("class", "apoint")
       .style("fill", function(d){ return clor(d.orientasi);})
-    .attr("stroke","black")
+    .attr("stroke",function(d){ return clor(d.orientasi);})
     .attr("stroke-width", "0px")
     .attr("cx" , function(d){ return x(d.date);})
     .attr("cy" , function(d){ return y(d.jumlah);})
 		.style("opacity", "0")
 	    .on("mouseover.circles", function(d){
-			//console.log(d.orientasi,d.date, d.jumlah);
-			
+	    	var element = this;
 			d3.select(this).attr("stroke-width","8px");
 			setInfoCircle(d.date, d.jumlah, d.orientasi);
 			})
+		.on("click.circles",function(d){
+			var element = this;
+			if(currentAtom=='perday'){
+				var request = "data/getKeyword.php?tg="+d.tgl+"&or="+d.orientasi+"&full=n";
+				var wow = d3.text(request, function(keyWords){	
+					$(element).tooltip({
+						title: keyWords
+					});
+					$(element).tooltip('show');
+					
+					});
+			}
+		})
 		.on("mouseout.circles", function(d){
+			if(currentAtom=='perday'){
+				$(this).tooltip('destroy');
+			}
 			d3.select(this).attr("stroke-width","0px");
 			setInfoWaktuBlank();
 		});
     
   });
+  
+   contextbacksvg.select(".xContextAxis").call(xAxisContext);
+  backsvg.select(".xAxis").call(xAxis);
+  backsvg.select(".yAxis").call(yAxis);
 }
 
 function redraw(chartsize){
@@ -360,7 +390,7 @@ function redraw(chartsize){
 		e.attr("d",line(d.values))
 		.style("stroke-width", linewidth(chartsize));
 	});
-   var recontext = contextsvg.selectAll(".theContext path");
+   var recontext = contextsvg.selectAll(".theContexts path");
 	recontext.each(function(d){
 		var e = d3.select(this);
 		e.attr("d", line2(d.values));

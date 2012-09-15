@@ -37,7 +37,7 @@ $.getJSON("data/datelist.php", function(result) {
 						$("#dates2 option:selected").val()
 					);
 				},
-				stop: function( event, ui ) {
+				change: function( event, ui ) {
 					var dd1 = $("#dates1 option:selected").val()+" 00";
 					var dd2 = $("#dates2 option:selected").val()+" 23";
 					var passDomain = [dd1, dd2];
@@ -49,6 +49,7 @@ $.getJSON("data/datelist.php", function(result) {
 					);
 				}
 			});
+			
 });
 
 function setInfoRentang(date1,date2){
@@ -71,7 +72,20 @@ function setInfoCircle(tanggal, jumlah, orientasi){
 	var infos = d3.select("#infoCircle");
 	infos.selectAll("button").remove();
 	
-	var infjml = infos.append("button").attr("class","btn").style("width","180px");
+	var infjml = infos.append("button")
+	.attr("class",function(){
+		switch (orientasi){
+		case 'negatif':
+			return 'btn btn-danger';
+		break;
+		case 'positif':
+			return 'btn btn-success';
+		break;
+		case 'nonopini':
+			return 'btn';
+		break;}
+	})
+	.style("width","180px");
 	infjml.append("svg")
 	.style("float","left")
 	.attr("width","20px")
@@ -99,15 +113,15 @@ function setInfoCircle(tanggal, jumlah, orientasi){
 	infwkt.append("i").attr("class","icon-time");
 	infwkt.append("text").text(" "+tanggal.getDate()+" "
 								+nama_bulan[(tanggal.getMonth()+1)]+" Jam "
-								+(tanggal.getHours() < 11 ? ('0'+ (tanggal.getHours())) : tanggal.getHours())+":"
-								+(tanggal.getMinutes() < 11 ? ('0'+ (tanggal.getMinutes())) : tanggal.getMinutes())
+								+(tanggal.getHours() < 10 ? ('0'+ (tanggal.getHours())) : tanggal.getHours())+":"
+								+(tanggal.getMinutes() < 10 ? ('0'+ (tanggal.getMinutes())) : tanggal.getMinutes())
 								);
 }
 
 function setInfoWaktuBlank(){
 	var infos = d3.select("#infoCircle");
 	var btns = infos.selectAll("button");
-	btns.text("---");
+	btns.attr("class","btn").text("---");
 
 	
 	

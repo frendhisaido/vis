@@ -134,6 +134,5 @@ function redrawbarchart(data) {
 			//console.log("updt width: wdthbar("+d.jumlah+") = "+wdthbar(d.jumlah));
 			return wdthbar(d.jumlah); });
 }
-initbarchart();
 
 	

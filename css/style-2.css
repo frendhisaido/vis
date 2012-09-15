@@ -16,16 +16,22 @@ margin-left: -20px;
 }
 
 .toggleview{
-width: 180px;
-margin: 10px 5px 5px 5px;
+width: 130px;
+margin: 5px 5px 0px 5px;
 }
 
 .buttonTengah{
-margin: 10px 10px 10px 30px;
+margin: 5px 10px 0px 30px;
 }
 
+.buttonPinggir{
+	position:inherit;
+	float: right;
+	top: 12px;
+	margin: 0px 0px 0px 0px;
+}
 #infoCircle{
-margin: 15px 5px 5px 5px;
+margin: 5px 5px 5px 5px;
 }
 .controlchart{
 	margin-top: 10px;
@@ -59,6 +65,9 @@ margin: 15px 5px 5px 5px;
 	font-weight: lighter;
 	margin: 5px 0px 5px 0px;
 	
+}
+.btn{
+	font:"Arial Narrow";
 }
 
 .blingyo{

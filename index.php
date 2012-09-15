@@ -6,17 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-      <!-- Le styles 
-    <link type="text/css" href="css/overcast/jquery-ui-1.8.20.custom.css" rel="stylesheet" />	
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+      
+    <link type="text/css" href="css/jquery-ui-1.8.20.custom.css" rel="stylesheet" />	
     <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
     <link type="text/css" href="css/bootstrap-responsive.css" rel="stylesheet">
     <link type="text/css" href="css/barchart.css" rel="stylesheet">
     <link type="text/css" href="css/style-2.css" rel="stylesheet">
     <link type="text/css" href="css/charts.css" rel="stylesheet">
-    -->
+    <!-- Le styles 
     <link type="text/css" href="http://localhost/vis/min/b=vis/css&f=barchart.css,style-2.css,charts.css" rel="stylesheet">
     <link type="text/css" href="http://localhost/vis/min/b=vis/css&f=jquery-ui-1.8.20.custom.css,bootstrap.css,bootstrap-responsive.css" rel="stylesheet" />
-      <!-- Le javascripts
+     --> 
+     
     <script type="text/javascript" src="lib/d3/d3.v2.min.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="lib/bootstrap/bootstrap.js"></script>
@@ -24,35 +26,30 @@
     <script type="text/javascript" src="lib/jquery/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.mouse.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.slider.js"></script>
+     <!-- Le javascripts
+     	<script type="text/javascript" src="http://localhost/vis/min/b=vis/lib&f=d3/d3.v2.min.js,jquery/jquery-1.7.2.min.js,bootstrap/bootstrap.min.js,jquery/jquery.ui.core.js,jquery/jquery.ui.widget.js,jquery/jquery.ui.mouse.js,jquery/jquery.ui.slider.js"></script>
+    
     -->
-	<script type="text/javascript" src="http://localhost/vis/min/b=vis/lib&f=d3/d3.v2.min.js,jquery/jquery-1.7.2.min.js,bootstrap/bootstrap.min.js,jquery/jquery.ui.core.js,jquery/jquery.ui.widget.js,jquery/jquery.ui.mouse.js,jquery/jquery.ui.slider.js"></script>
-    <script type="text/javascript">
+	<script type="text/javascript">
 		  
-		  var helps = 2500;
-		  $(document).ready(function(){
+		  function initjs(){
 		  
 		  $('#buton').popover({trigger: 'hover',
 				      placement: 'bottom',
-				      delay: {show: helps, hide: 500}});
+				      delay: {show: 2500, hide: 500}});
 		  $("#context").hide();
 		  $(".show_hide").show();
  
 		  $('#zoombutton').click(function(){
 		      $("#context").slideToggle(250,unzoom);
 		     });
+		     
+		  initbarchart();
+		  initLineChart('perday',false);
 		  
-		  });
-		  
-		 
-		  
-		  function panggilToggle(){
-		  	$("#toggleNonopini").click();
-		  };
-		  
-		  function initjs(){
-		  setTimeout(panggilToggle, 1900);
 		  }
 		
+		 
 		
 		</script>
     
@@ -93,7 +90,8 @@
 	<div class="row">
 		  <div id="inforentang" class="span3">
 									
-								</div> 
+				</div> 
+				
 	    <div class="span12 slidercontainer" >
 								
 							 	<select id="dates1" disabled>
@@ -119,27 +117,32 @@
 	  <div class="offset10 controlchart">
 		
 		 
-		<button id="togglePositif" type="button" class="btn toggleview" data-toggle="button" onclick="toggleLine('positif')">
+		<button id="togglePositif" type="button" class="btn btn-success toggleview" data-toggle="button" onclick="toggleLine('positif')">
 		  <i class="icon-plus-sign"></i> Positif</button> 
 		</br>
-		<button id="toggleNegatif" type="button" class="btn toggleview" data-toggle="button" onclick="toggleLine('negatif')">
+		<button id="toggleNegatif" type="button" class="btn btn-danger toggleview" data-toggle="button" onclick="toggleLine('negatif')">
 		  <i class="icon-minus-sign"></i> Negatif</button>
 		</br>
 		<button id="toggleNonopini" type="button" class="btn toggleview" data-toggle="button" onclick="toggleLine('nonopini')">
 		  <i class="icon-adjust"></i> Non-Opini</button>
-		</br>
-		<div class="btn-group buttonTengah" data-toggle="buttons-radio">
-		  <button name="grps" type="button" class="btn" onclick="toggleMaxY('positif')"><i class="icon-plus-sign"></i></button>
-		  <button name="grpsneg" type="button" class="btn" onclick="toggleMaxY('negatif')"><i class="icon-minus-sign"></i></button>
+		<div class="btn-group btn-group-vertical buttonPinggir" data-toggle="buttons-radio">
+		  <button name="grps" type="button" class="btn btn-success" onclick="toggleMaxY('positif')"><i class="icon-plus-sign"></i></button>
+		  <button name="grpsneg" type="button" class="btn btn-danger" onclick="toggleMaxY('negatif')"><i class="icon-minus-sign"></i></button>
 		  <button name="grpsnon" type="button" class="btn" onclick="toggleMaxY('nonopini')"><i class="icon-adjust"></i></button>
 		</div>
-		<button type="button" id="zoombutton" class="btn buttonTengah"
+		<div class="buttonTengah">
+		<button type="button" id="zoombutton" class="btn btn-info"
 			style="width: 130px;"
 			data-toggle="button"
 			data-title="Fitur zoom"
 			data-content="Fokus pada grafik dengan rentang tanggal tertentu.">
 		<i class="icon-resize-horizontal"></i>
 		  Zoom</button>
+		 </div>
+		 <div class="btn-group buttonTengah" data-toggle="buttons-radio">			
+		  			<button style="width: 65px;padding-left: 5px;" type="button" class="btn" onclick="initLineChart('perday',true);">Per Hari</button>
+		  			<button style="width: 65px;padding-left: 5px;" type="button" class="btn" onclick="initLineChart('perhour',true);">Per Jam</button>
+		</div>
 		<div id="infoCircle">
 			
 		</div>
@@ -152,6 +155,9 @@
     		
 					<div id="bar" class="span4 barchart">
 						
+					</div>
+					<div class="span6">
+					
 					</div>
 					 
 				
