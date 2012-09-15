@@ -1,11 +1,11 @@
 <?php
 // load in mysql server configuration (connection string, user/pw, etc)
 include 'mysqlconfig.php';
-//include 'makegzip.php';
-//ob_start();
-//ob_implicit_flush(0);
-//header( 'Content-Type: application/json' );
-//header( 'Content-Disposition: attachment;filename=datelistjson.json' );
+include 'makegzip.php';
+ob_start();
+ob_implicit_flush(0);
+header( 'Content-Type: application/json' );
+header( 'Content-Disposition: attachment;filename=datelistjson.json' );
 
 
 // connect to the database
@@ -21,5 +21,5 @@ while($r = mysql_fetch_assoc($result)) {
 
 echo json_encode($rows);
 mysql_close();
-//print_gzipped_page();
+print_gzipped_page();
 ?>

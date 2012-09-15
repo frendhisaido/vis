@@ -1,9 +1,9 @@
 <?php
 // load in mysql server configuration (connection string, user/pw, etc)
 include 'mysqlconfig.php';
-//include 'makegzip.php';
-//ob_start();
-//ob_implicit_flush(0);
+include 'makegzip.php';
+ob_start();
+ob_implicit_flush(0);
 
 
 $atom = $_GET['atom'];
@@ -64,5 +64,5 @@ header( 'Content-Disposition: attachment;filename=line.csv' );
     echo "\r\n";
   }
 
-//print_gzipped_page();
+print_gzipped_page();
 ?>  

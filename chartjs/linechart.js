@@ -139,11 +139,11 @@ d3.csv(callCSV, function(data) {
 
   data.forEach(function(d){
   	  d.tgl = d.date;
-  	  console.log(d.tgl);
+  	  //console.log(d.tgl);
 	  d.date = atom == 'perday'? parseTanggal(d.date) : parseJam(d.date);
-	  console.log(d.date);
+	  //console.log(d.date);
 	  d.jumlah = +d.jumlah;
-	  console.log(d.jumlah);
+	  //console.log(d.jumlah);
   });
   
   orientasi = d3.nest()
