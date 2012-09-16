@@ -59,14 +59,10 @@ margin: 5px 5px 5px 5px;
 #inforentang{
 	position: relative;
 	left: 40%;
-	font-family:"Arial Narrow";
+	
 	font-size: large;
 	font-weight: lighter;
 	margin: 5px 0px 5px 0px;
-	
-}
-.btn{
-	font:"Arial Narrow";
 }
 
 .blingyo{

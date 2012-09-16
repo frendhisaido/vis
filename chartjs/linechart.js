@@ -59,6 +59,7 @@ var allsvg = d3.select("#linechart").append("svg:svg")
 	  .append("rect")
 	  .attr("width", w - m[4])
 	  .attr("height", h);
+    
 	  
 var contsvg = d3.select("#context").append("svg:svg")
 	      .attr("width", w + m[1] + m[3])
@@ -95,7 +96,29 @@ var circsvg = allsvg.append("svg:g")
 var contextsvg = contsvg.append("svg:g")
 		 .attr("class","theContexts")
 		 .attr("transform", "translate(" + m[1] + "," + 0 + ")");
-
+		 
+var loadbar = allsvg.append("svg:g")
+			.attr("id","loading")
+			.style("display","none");;
+			
+		loadbar.append("rect")
+		.attr("transform","translate(30,0)")
+    	.attr("class","load")
+    	.attr("fill","#ddd")
+    	.style("opacity", "0.7")
+    	.attr("width", w- m[4] )
+	    .attr("height", h );
+	    
+		loadbar.append("text")
+		.attr("x", (w/2-m[4]))
+		.attr("y", (h/2))
+		.attr("dx", 0) 
+		  .attr("dy", ".15em")
+		  .attr("text-anchor", "start")
+		  .attr("fill", "#000")
+		  .style("font", "20pt Arial")
+		  .style("text-shadow", "2px 2px 2px rgba(0,0,0,.3)") 
+		.text("Loading...");
 
 
 
@@ -142,6 +165,7 @@ function resetControls(){
 	//$("#maxNon").attr("class", maxno.replace('active',''));
 }
 function initLineChart(atom,update){
+	$("#loading").css("display","block");
 	resetControls();
 	currentAtom = atom;
 	callCSV ="data/linecsv.php?atom="+atom;
@@ -149,7 +173,6 @@ function initLineChart(atom,update){
 	 //penambahan supaya line tidak menyentuh pojok atas chart
 	
 d3.csv(callCSV, function(data) {
-
 //console.log("data");
 //	console.log(data);
 
@@ -201,6 +224,7 @@ d3.csv(callCSV, function(data) {
 }
 
 function initDrawLine(datasetline,datasetcircle){
+
 	linesvg.selectAll(".theLine")
       .data(datasetline)
     .enter().append("svg:g")
@@ -231,7 +255,7 @@ function initDrawLine(datasetline,datasetcircle){
 }
 
 function changeAtom(datasetline,datasetcircle){
-	
+
 	linesvg.selectAll(".symbol").remove();
 	contextsvg.selectAll(".context").remove();
 	circsvg.selectAll(".points").remove();
@@ -384,6 +408,7 @@ var c = circsvg.selectAll(".points")
    contextbacksvg.select(".xContextAxis").call(xAxisContext);
   backsvg.select(".xAxis").call(xAxis);
   backsvg.select(".yAxis").call(yAxis);
+  $("#loading").css("display","none");
 }
 
 function redraw(chartsize){
