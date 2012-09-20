@@ -1,5 +1,5 @@
-var m = [20, 30, 40, 50, 60],
-    w = 1000 ,
+var m = [20, 35, 40, 50, 60],
+    w = 1050 ,
     h = 300,
     h2 = 50 + m[0];
 
@@ -53,26 +53,42 @@ var allsvg = d3.select("#linechart").append("svg:svg")
 	    .on("mouseover.chart", circopacity(1))
 	    .on("mouseout.chart", circopacity(.1));
     //!!!!IMPORTANT, Clipping path supaya ga melebihi axis
-    //Setelah diset disini, diset lagi attr("clip-path", "url(#clip)") di elemen yang mau diisi pathnya
-    allsvg.append("defs").append("clipPath")
-	  .attr("id", "clip")
+    //(Setelah diset disini, diset lagi attr("clip-path", "url(#clip)") di elemen yang mau diisi pathnya
+   allsvg.append("defs").append("clipPath")
+  .attr("id", "clip")
 	  .append("rect")
 	  .attr("width", w - m[4])
 	  .attr("height", h);
     
-	  
+/*	 INI filter drop shadow buat line, dan udah bisa dipake, 
+ *   tinggal disetel supaya mati pas lagi digeser
+ *
+var defs = allsvg.select("defs");
+var filters= defs.append("filter").attr("id","dropshadow");
+
+	filters.append("feGaussianBlur").attr("in","SourceAlpha").attr("stdDeviation",1);
+	filters.append("feOffset").attr("dx",1).attr("dy",1).attr("result","offsetblur");
+	filters.append("feBlend").attr("in","SourceGraphic").attr("mode","normal");
+*/
+	
 var contsvg = d3.select("#context").append("svg:svg")
 	      .attr("width", w + m[1] + m[3])
 	      .attr("height", h2);
-	      
-    contsvg.append("defs").append("clipPath")
-	  .attr("id", "clip2")
-	  .append("rect")
-	  .attr("width", w - m[4])
-	  .attr("height", h);
+	
+		
 
+
+	
 /*
  *
+<filter id="drop-shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/> 
+                <feOffset dx="1" dy="1" result="offsetblur"/> 
+                <feMerge> 
+                    <feMergeNode/> 
+                    <feMergeNode in="SourceGraphic"/> 
+                </feMerge> 
+</filter>
  *
  */
 
@@ -310,6 +326,7 @@ function drawLineChart() {
   
   var g = linesvg.selectAll(".symbol")
 		.attr("clip-path", "url(#clip)");
+		
       //.attr("transform", "translate(0," + 100 + ")");
 	
 		//console.log(g);
@@ -317,6 +334,7 @@ function drawLineChart() {
     var e = d3.select(this);
 
     e.append("svg:path")
+    //.attr("filter","url(#dropshadow)")
 	.attr("class", "line")
 		.attr("id", function(d){
 		  var ids = 'line_'+d.key;

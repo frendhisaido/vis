@@ -95,7 +95,6 @@ function setInfoCircle(tanggal, jumlah, orientasi){
 	.attr("cx",10)
 	.attr("cy",10)
 	.attr("fill",function(){
-		var warna;
 		switch (orientasi){
 		case 'negatif':
 			return '#FF0000';

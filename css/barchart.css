@@ -1,14 +1,14 @@
-.xaxis path {
+.barchartxaxis path {
 	display: none;
 }
-.xaxis line {
+.barchartxaxis line {
 	display: none;
 	stroke-width: 1.5px;
 	stroke: #fff;
 }
-.xaxis text {
+.barchartxaxis text {
 	font-family: "Arial Narrow";
 }
-.bgbar {
+.barchartbgbar {
 	fill: #E6E6E6;
 }

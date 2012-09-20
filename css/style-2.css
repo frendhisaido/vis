@@ -1,5 +1,15 @@
 body{
 padding-top: 45px; /* 60px to make the container go all the way to the bottom of the topbar */  
+background: 
+    #fff
+    url(../img/bg/first_aid_kit.png)
+    repeat
+    fixed;
+}
+.inshadow {
+-moz-box-shadow: inset 0 0 9px #888;
+-webkit-box-shadow: inset 0 0 9px#888;
+box-shadow: inner 0 0 9px #888;
 }
 .well{
 background-color: #EEE;
@@ -16,8 +26,8 @@ margin-left: -20px;
 }
 
 .toggleview{
-width: 130px;
-margin: 5px 5px 0px 5px;
+width: 105px;
+margin: 5px 5x 5px 5px;
 }
 .buttonTengah{
 margin: 5px 10px 0px 30px;
@@ -36,10 +46,9 @@ margin: 5px 5px 5px 5px;
 	margin-top: 10px;
 	position: absolute;
 	background-color: #EEE;
-	height: 300px;
+	height: 600px;
 	border: 1px solid #E3E3E3;
-	width: 190px;	
-	-webkit-border-radius: 4px;
+	width: 190px;
 }
 .judulchart {
 	font-size: 1.1em;
@@ -47,13 +56,6 @@ margin: 5px 5px 5px 5px;
 	text-align: center;
 	background-color: #333;
 	color: #FFFFFF;
-}
-.barslider {
-	opacity: 0.9;
-	margin-bottom: 10px;
-}
-.barslider:hover {
-	opacity: 1;
 }
 
 #inforentang{
@@ -84,3 +86,61 @@ margin: 5px 5px 5px 5px;
 .slidercontainer select {
 	display: none;
 }
+.widget-box {
+    background: url(../img/bg/blizzard.png) repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #CDCDCD;
+    clear: both;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    position: relative;
+}
+.widget-top{
+	background: url(../img/bg/blizzard.png) repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #CDCDCD;
+    clear: both;
+    margin-top: 16px;
+    margin-bottom: 0px;
+    position: relative;
+}
+.widget-title span.icon {
+	padding: 0px 10px 8px 11px;
+	float: left;
+	opacity: .7;
+}
+.widget-title {
+	background-color: #efefef;
+	background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd), to(#eaeaea));
+	background-image: -webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -moz-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    border-bottom: 1px solid #CDCDCD;
+    height: 25px;
+}
+.widget-title h5 {
+    color: #666666;
+	text-shadow: 0 1px 0 #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 0px 10px 2px;
+}
+
+.widget-content {
+	padding: 10px 15px;
+}
+
+.nopadding {	
+	padding: 0 !important;
+}
+
+.ui-slider .ui-slider-handle {
+		height: 2.4em;
+}
+
+/* Corner radius */
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl { -moz-border-radius-topleft: 0px; -webkit-border-top-left-radius: 0px; -khtml-border-top-left-radius: 0px; border-top-left-radius: 0px; }
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr { -moz-border-radius-topright: 0px; -webkit-border-top-right-radius: 0px; -khtml-border-top-right-radius: 0px; border-top-right-radius: 0px; }
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl { -moz-border-radius-bottomleft: 0px; -webkit-border-bottom-left-radius: 0px; -khtml-border-bottom-left-radius: 0px; border-bottom-left-radius: 0px; }
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br { -moz-border-radius-bottomright: 0px; -webkit-border-bottom-right-radius: 0px; -khtml-border-bottom-right-radius: 0px; border-bottom-right-radius: 0px; }
+

@@ -1,5 +1,15 @@
-
-.bgbar {
+.barchartxaxis path {
+	display: none;
+}
+.barchartxaxis line {
+	display: none;
+	stroke-width: 1.5px;
+	stroke: #fff;
+}
+.barchartxaxis text {
+	font-family: "Arial Narrow";
+}
+.barchartbgbar {
 	fill: #E6E6E6;
 }
 #linechart {
@@ -34,6 +44,9 @@ user-select: none;
   fill: none;
   stroke: #ddd;
 }
+
+
+
 .xContextAxis text {
 	font-family: "Arial Narrow";
 	font-size: 9pt;
@@ -92,15 +105,6 @@ path {
 	  stroke: #000;
 	  stroke-width: 0px;
 }
-.barchart {
-height: 240px;
-border: 1px solid #ddd;
-margin-bottom: 0px;
-padding-top: 20px;
-}
-
-
-
 
 .selecting rect {
   fill-opacity: 1;

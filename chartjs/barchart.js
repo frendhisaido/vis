@@ -13,8 +13,8 @@ var svgbar = d3.select("#bar").append("svg")
 	.attr("width", wbar + mbar[3] + mbar[3])
 	.attr("height", hbar + mbar[3] + mbar[3])
   .append("g")
-	.attr("transform", "translate(" + mbar[1] + "," + mbar[1] + ")");
-	
+	.attr("transform", "translate(" + mbar[1] + "," + mbar[2] + ")");
+									//horizontal     vertical
   svgbar.append("rect")
 	.attr("height", 1)
 	.attr("width", wbar)
@@ -44,13 +44,13 @@ function drawbarchart(data) {
 		  .attr("transform", function(d) { return "translate(0," + hghtbar(d.orientasi) + ")"; });
   
 	  bar.append("rect")
-	  	.attr("class", "bgbar")
+	  	.attr("class", "barchartbgbar")
 	  	.attr("width", wbar)
 	  	.attr("height", hghtbar.rangeBand()-mbar[1]);
 	
 	  svgbar.append("g")
- 		.attr("class", "xaxis textUnselectable")
-		.attr("transform", "translate(0," + 9 + ")")
+ 		.attr("class", "barchartxaxis textUnselectable")
+		.attr("transform", "translate(0," + 5 + ")")
 	 	.call(xAxisbar);
 
 	  bar.append("rect")
