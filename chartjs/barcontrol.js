@@ -53,7 +53,7 @@ $.getJSON("data/datelist.php", function(result) {
 });
 
 function setInfoRentang(date1,date2){
-	var infos = d3.select("#inforentang");
+	var infos = d3.selectAll("#inforentang");
 	infos.selectAll("text").remove();
 	date1 = Number(date1.substr(8,2))+" "+nama_bulan[Number(date1.substr(5,2))];
 	date2 =	Number(date2.substr(8,2))+" "+nama_bulan[Number(date2.substr(5,2))];
@@ -68,7 +68,7 @@ function setInfoRentang(date1,date2){
 	}
 }
 
-function setInfoCircle(tanggal, jumlah, orientasi){
+function setInfoCircle(tanggal, jumlah, orientasi, per){
 	var infos = d3.select("#infoCircle");
 	infos.selectAll("button").remove();
 	
@@ -76,16 +76,14 @@ function setInfoCircle(tanggal, jumlah, orientasi){
 	.attr("class",function(){
 		switch (orientasi){
 		case 'negatif':
-			return 'btn btn-danger';
-		break;
+			return 'btn btn-danger btn-mini ';
 		case 'positif':
-			return 'btn btn-success';
-		break;
+			return 'btn btn-success btn-mini';
 		case 'nonopini':
-			return 'btn';
-		break;}
-	})
-	.style("width","180px");
+			return 'btn btn-warning btn-mini';
+		}
+	});
+	/*
 	infjml.append("svg")
 	.style("float","left")
 	.attr("width","20px")
@@ -107,21 +105,23 @@ function setInfoCircle(tanggal, jumlah, orientasi){
 		break;}
 		}
 		);
+		*/
 	infjml.append("text").text(jumlah + " tweet "+orientasi+" ");
-	var infwkt = infos.append("button").attr("class","btn").style("width","180px");
-	infwkt.append("i").attr("class","icon-time");
-	infwkt.append("text").text(" "+tanggal.getDate()+" "
-								+nama_bulan[(tanggal.getMonth()+1)]+" Jam "
-								+(tanggal.getHours() < 10 ? ('0'+ (tanggal.getHours())) : tanggal.getHours())+":"
-								+(tanggal.getMinutes() < 10 ? ('0'+ (tanggal.getMinutes())) : tanggal.getMinutes())
-								);
+	var infwkt = infos.append("button").attr("class","btn btn-mini");
+	if(per=='perday'){
+		infwkt.append("text").text(" "+tanggal.getDate()+" "
+									+nama_bulan[(tanggal.getMonth()+1)]);	
+	}else{
+		infwkt.append("text").text(" "+tanggal.getDate()+" "
+									+nama_bulan[(tanggal.getMonth()+1)]+" Jam "
+									+(tanggal.getHours() < 10 ? ('0'+ (tanggal.getHours())) : tanggal.getHours())+":"
+									+(tanggal.getMinutes() < 10 ? ('0'+ (tanggal.getMinutes())) : tanggal.getMinutes())
+									);
+	}
 }
 
 function setInfoWaktuBlank(){
 	var infos = d3.select("#infoCircle");
 	var btns = infos.selectAll("button");
-	btns.attr("class","btn").text("---");
-
-	
-	
+	btns.attr("class","btn btn-mini minwidth100 setopacity3").text("---");	
 }

@@ -45,13 +45,21 @@ var yAxisContext = d3.svg.axis()
 		  .scale(yContext)
 		  .tickSize(-w+m[4])
 		  .ticks(2);
-	
+
 var allsvg = d3.select("#linechart").append("svg:svg")
-	    .attr("class","view")
-	    .attr("width", w + m[1] + m[3])
+		.attr("class","view")
+	    .attr("width", w)
 	    .attr("height", h + m[0] + m[2])
 	    .on("mouseover.chart", circopacity(1))
-	    .on("mouseout.chart", circopacity(.1));
+	    .on("mouseout.chart", circopacity(0));
+	    
+var allbg = allsvg.append("rect")
+	  .attr("width", w - m[4])
+	  .attr("height", h)
+	  .attr("transform","translate("+m[1]+",1)")
+	  .attr("fill","#fff")
+	  .style("stroke","none");
+	    
     //!!!!IMPORTANT, Clipping path supaya ga melebihi axis
     //(Setelah diset disini, diset lagi attr("clip-path", "url(#clip)") di elemen yang mau diisi pathnya
    allsvg.append("defs").append("clipPath")
@@ -74,6 +82,14 @@ var filters= defs.append("filter").attr("id","dropshadow");
 var contsvg = d3.select("#context").append("svg:svg")
 	      .attr("width", w + m[1] + m[3])
 	      .attr("height", h2);
+	      
+var contbg = contsvg.append("rect")
+	  .attr("width", w - m[4])
+	  .attr("height", (h2 - m[0]))
+	  .attr("transform", "translate(" + m[1] + "," + 0 + ")")
+	  .attr("fill","#fff")
+	  .style("stroke","#000")
+	  .style("stroke-width","1px");
 	
 		
 
@@ -113,12 +129,22 @@ var contextsvg = contsvg.append("svg:g")
 		 .attr("class","theContexts")
 		 .attr("transform", "translate(" + m[1] + "," + 0 + ")");
 		 
+var edges = allsvg.append("rect")
+	  .attr("width", w - m[4])
+	  .attr("height", h)
+	  .attr("transform","translate("+m[1]+",1)")
+	  .attr("fill","none")
+	  .style("stroke","#000")
+	  .style("stroke-width","2px");
+	  
+
+		 
 var loadbar = allsvg.append("svg:g")
 			.attr("id","loading")
 			.style("display","none");;
 			
 		loadbar.append("rect")
-		.attr("transform","translate(30,0)")
+		.attr("transform","translate("+m[1]+",1)")
     	.attr("class","load")
     	.attr("fill","#ddd")
     	.style("opacity", "0.7")
@@ -135,6 +161,8 @@ var loadbar = allsvg.append("svg:g")
 		  .style("font", "20pt Arial")
 		  .style("text-shadow", "2px 2px 2px rgba(0,0,0,.3)") 
 		.text("Loading...");
+		
+		
 
 
 
@@ -379,7 +407,7 @@ var c = circsvg.selectAll(".points")
 		  var ids = 'circ_'+d.orientasi;
 		  return ids;
 		})
-    .attr("class", "apoint")
+    .attr("class", "apoint bringfront")
       .style("fill", function(d){ return clor(d.orientasi);})
     .attr("stroke",function(d){ return clor(d.orientasi);})
     .attr("stroke-width", "0px")
@@ -389,7 +417,7 @@ var c = circsvg.selectAll(".points")
 	    .on("mouseover.circles", function(d){
 	    	var element = this;
 			d3.select(this).attr("stroke-width","8px");
-			setInfoCircle(d.date, d.jumlah, d.orientasi);		
+			setInfoCircle(d.date, d.jumlah, d.orientasi, currentAtom);		
 			})
 		.on("click.circles",function(d){
 			var element = this;

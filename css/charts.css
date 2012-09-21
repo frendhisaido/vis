@@ -13,9 +13,7 @@
 	fill: #E6E6E6;
 }
 #linechart {
-	padding: 0;
-	border: 0px solid #000;
-	margin-top: 10px;
+	margin-top: -15px;
 }
 #context{
 	margin-top: -40px;

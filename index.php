@@ -35,16 +35,21 @@
 	<script type="text/javascript">
 		  
 		  function initjs(){
-		  
+		  //override array hari untuk axis x
+		  d3_time_weekdays = ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"];
 		  //$('#buton').popover({trigger: 'hover',
 		  //		      placement: 'bottom',
 		  //	      delay: {show: 2500, hide: 500}});
 		  $("#context").hide();
+		  $("#slider").hide();
  
 		  $('#zoombutton').click(function(){
 		      $("#context").slideToggle(250,unzoom);
 		     });
 		     
+		  $('#ubahrentang').click(function(){
+		      $("#slider").slideToggle(250);
+		     });
 		  initbarchart();
 		  initLineChart('perday',false);
 		  //$("#controlers").draggable();
@@ -78,8 +83,8 @@
             <ul class="nav">
               <li class="active"><a href="#">Dashboard</a></li>
               <li><a href="#tweets" >Tweets Viewer</a></li>
-              <li><a href="#about" onclick="$('#modalabout').modal('show');">About</a></li>
-	      	  <li><a href="#help" onclick="$('#modalhelp').modal('show');">Help</a></li>
+              <li><a href="#about" onclick="$('#modalabout').modal('show');">Tentang TWISAV</a></li>
+	      	  <li><a href="#help" onclick="$('#modalhelp').modal('show');">Bantuan</a></li>
             </ul>
           </div><!--/.nav-collapse -->
           <!-- search rede
@@ -91,23 +96,11 @@
       </div>
     </div>
 
-    <div class="container">
-	<div class="row">
-				<div class="widget-top span11">
-							
-						<div id="slider" class="widget-content inshadow">
-						
-						</div>
-						 <div id="inforentang" class="span3"></div> 
-				</div>
-	    <div title="klik untuk ubah rentang tanggal">
-							
+    <div class="container">				
 							 	<select id="dates1" class="hide" disabled>
 								</select>
 								<select id="dates2" class="hide" disabled>
 								</select>
-							
-		</div>
 	 <!-- 
 	 	<defs>
 
@@ -121,22 +114,54 @@
 </filter>
 
 </defs>
-	    <div id="contextbar"></div>
 	  -->
-	</div>
+	
 	
 	
 	<div class="row">
 	  
-	  <div class="widget-box span11">
+	  <div class="widget-box span11 box-shadow">
 	  	<div class="widget-title">
 								<span class="icon">
-									<i class="icon-file"></i>
+									<i class="icon-signal"></i>
 								</span>
-								<h5>Line Chart</h5>
-							</div>
-		<div class="widget-content inshadow">
-	    <div id="linechart"></div>
+								
+								<div class="buttons btn-group">
+								<button type="button" id="zoombutton" class="btn btn-mini btn-info"
+									style="width: 65px;"
+									data-toggle="button"
+									data-title="Fitur zoom"
+									data-content="Fokus pada grafik dengan rentang tanggal tertentu.">
+								Zoom</button>
+								 </div>
+								 <div class="buttons btn-group" data-toggle="buttons-radio">			
+		  						<button style="width: 65px;padding-left: 5px;" type="button" class="btn btn-mini" onclick="initLineChart('perday',true);">Per Hari</button>
+		  						<button style="width: 65px;padding-left: 5px;" type="button" class="btn btn-mini" onclick="initLineChart('perhour',true);">Per Jam</button>
+								</div>
+								
+								<h5><text id="inforentang" 
+									class="inforentang textUnselectable"
+									title="klik untuk tampil atau sembunyikan slider"><button id="ubahrentang" class="buttons btn btn-mini" >Ubah rentang</button></text>
+									
+									</h5>
+								
+								
+														
+		</div>
+		<div class="widget-content">
+			<div id="sliderentang" >
+							
+				<div id="slider" class="widget-content inshadow">
+						
+						</div>		
+				</div>
+		
+	    <div id="linechart">
+	    	<div id="infoCircle" class="btn-group">
+	    		<button class="btn btn-mini minwidth100 setopacity3">---</button>
+	    		<button class="btn btn-mini minwidth100 setopacity3">---</button>
+	    	</div>
+	    </div>
 	    
 	    <div id="context"></div>	
 	   </div>
@@ -148,22 +173,24 @@
     	<div class="row-fluid">
     		
 					
-					
-					<div class="widget-box span4">
+					<div class="span4">
+					<div class="widget-box box-shadow">
 							<div class="widget-title">
 								<span class="icon">
-									<i class="icon-file"></i>
+									<i class="icon-tasks"></i>
 									
 								</span>
-								<h5>Bar Chart</h5>
+								<h5><text id="inforentang"></text> ( <text id="totaltweet"></text> tweet )</h5>
+								
 							</div>
-							<div class="widget-content nopadding inshadow">
+							<div class="widget-content nopadding">
 								<div id="bar"></div>			
 							</div>
 						</div>
+						</div>
 						
-						
-						<div class="widget-box span3">
+						<div class="span3 offset4">
+						<div class="widget-box box-shadow">
 							<div class="widget-title">
 								<span class="icon">
 									<i class="icon-file"></i>
@@ -171,61 +198,35 @@
 								</span>
 								
 							</div>
-							<div class="widget-content nopadding inshadow">
+							<div class="widget-content">
+								
+								</div>
+								
 								<div id="controlers" >
 		
-		 
-		<button id="togglePositif" type="button" class="btn btn-success toggleview" data-toggle="button" onclick="toggleLine('positif')">
-		  Positif</button> 
-		<button type="button" class="btn" data-toggle="button" >
-			<i class="icon-eye-open"></i></button>
-		<button type="button" class="btn" data-toggle="button" >
+		  
+		<button id="togglePositif" type="button" class="btn btn-success toggleview" data-toggle="button"  onclick="toggleLine('positif')">
+		  <i class="icon-eye-open"></i> Positif</button> 
+		<button type="button" class="btn btn-success" data-toggle="button" >
 			Y</button>
-		</br>
+		
 		<button id="toggleNegatif" type="button" class="btn btn-danger toggleview" data-toggle="button" onclick="toggleLine('negatif')">
-		   Negatif</button>
-		<button type="button" class="btn" data-toggle="button" >
-			<i class="icon-eye-open"></i></button>
-		</br>
+		   <i class="icon-eye-open"></i> Negatif</button>
+		<button type="button" class="btn btn-danger" data-toggle="button" >
+			Y</button>
+
 		<button id="toggleNonopini" type="button" class="btn btn-warning toggleview" data-toggle="button" onclick="toggleLine('nonopini')">
-		  Non-Opini</button>
-		<button type="button" class="btn" data-toggle="button" >
-			<i class="icon-eye-open"></i></button>
-		
-		<div class="buttonTengah">
-		<button type="button" id="zoombutton" class="btn btn-info"
-			style="width: 130px;"
-			data-toggle="button"
-			data-title="Fitur zoom"
-			data-content="Fokus pada grafik dengan rentang tanggal tertentu.">
-		<i class="icon-resize-horizontal"></i>
-		  Zoom</button>
-		 </div>
-		 <div class="btn-group buttonTengah" data-toggle="buttons-radio">			
-		  			<button style="width: 65px;padding-left: 5px;" type="button" class="btn" onclick="initLineChart('perday',true);">Per Hari</button>
-		  			<button style="width: 65px;padding-left: 5px;" type="button" class="btn" onclick="initLineChart('perhour',true);">Per Jam</button>
-		</div>
-		<div id="infoCircle">
-			
-		</div>
-		
-	  
-	  </div>
-						
-							</div>
-						</div>
-						
-						  
-					 
-		</div>
-					 
+		  <i class="icon-eye-open"></i> Non-Opini</button>
+		<button type="button" class="btn btn-warning" data-toggle="button" >
+			Y</button>
 				
-	</div>
-   
-   
-    	
-     
-    </div> <!-- /container -->
+							
+						</div>	
+					</div>	 
+		</div>
+					 
+	</div><!-- /container -->
+    
     <!-- modals/ -->
 						<div id="modalhelp" class="modal hide fade">
 						  	<div class="modal-header">

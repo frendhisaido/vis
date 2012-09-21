@@ -1,146 +1,179 @@
-body{
-padding-top: 45px; /* 60px to make the container go all the way to the bottom of the topbar */  
-background: 
-    #fff
-    url(../img/bg/first_aid_kit.png)
-    repeat
-    fixed;
-}
-.inshadow {
--moz-box-shadow: inset 0 0 9px #888;
--webkit-box-shadow: inset 0 0 9px#888;
-box-shadow: inner 0 0 9px #888;
-}
-.well{
-background-color: #EEE;
-padding-bottom: 5px;
-}
-.corner{
-position: absolute;
-float:left;
-margin-left: -12px;
-margin-top: -12px;
-}
-.marginleft{
-margin-left: -20px;
-}
-
-.toggleview{
-width: 105px;
-margin: 5px 5x 5px 5px;
-}
-.buttonTengah{
-margin: 5px 10px 0px 30px;
-}
-
-.buttonPinggir{
-	position:inherit;
-	float: right;
-	top: 12px;
-	margin: 0px 0px 0px 0px;
-}
-#infoCircle{
-margin: 5px 5px 5px 5px;
-}
-.controlchart{
-	margin-top: 10px;
-	position: absolute;
+	body{
+	padding-top: 45px; /* 60px to make the container go all the way to the bottom of the topbar */  
+	background: 
+	    #fff
+	    url(../img/bg/first_aid_kit.png)
+	    repeat
+	    fixed;
+	}
+	.inshadow {
+	-moz-box-shadow: inset 0 0 9px #888;
+	-webkit-box-shadow: inset 0 0 9px#888;
+	box-shadow: inner 0 0 9px #888;
+	}
+	.well{
 	background-color: #EEE;
-	height: 600px;
-	border: 1px solid #E3E3E3;
-	width: 190px;
-}
-.judulchart {
-	font-size: 1.1em;
-	padding: 5px 0px 5px 0px;
-	text-align: center;
-	background-color: #333;
-	color: #FFFFFF;
-}
-
-#inforentang{
-	position: relative;
-	left: 40%;
+	padding-bottom: 5px;
+	}
+	.corner{
+	position: absolute;
+	float:left;
+	margin-left: -12px;
+	margin-top: -12px;
+	}
+	.marginleft{
+	margin-left: -20px;
+	}
 	
-	font-size: large;
-	font-weight: lighter;
-	margin: 5px 0px 5px 0px;
-}
-
-.blingyo{
-	text-shadow: 0 0 0.2em #87F, 0 0 0.2em #87F,
-        0 0 0.2em #87F
-}
-
-.textrentang{
-	font-weight: 600;
-}
-.slidercontainer {
-	padding-left: 15px;
-	padding-right: 20px;
-	padding-top: 2px;
-	margin-bottom: 2px;
-	text-align: center;
-	font-size: 0.9em;
-}
-.slidercontainer select {
-	display: none;
-}
-.widget-box {
-    background: url(../img/bg/blizzard.png) repeat scroll 0 0 #FFFFFF;
-    border: 1px solid #CDCDCD;
-    clear: both;
-    margin-top: 16px;
-    margin-bottom: 16px;
-    position: relative;
-}
-.widget-top{
-	background: url(../img/bg/blizzard.png) repeat scroll 0 0 #FFFFFF;
-    border: 1px solid #CDCDCD;
-    clear: both;
-    margin-top: 16px;
-    margin-bottom: 0px;
-    position: relative;
-}
-.widget-title span.icon {
-	padding: 0px 10px 8px 11px;
-	float: left;
-	opacity: .7;
-}
-.widget-title {
-	background-color: #efefef;
-	background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd), to(#eaeaea));
-	background-image: -webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-    background-image: -moz-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-    background-image: -ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-    background-image: -o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-    background-image: -linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-    border-bottom: 1px solid #CDCDCD;
-    height: 25px;
-}
-.widget-title h5 {
-    color: #666666;
-	text-shadow: 0 1px 0 #ffffff;
-    font-size: 12px;
-    font-weight: bold;
-    padding: 0px 10px 2px;
-}
-
-.widget-content {
-	padding: 10px 15px;
-}
-
-.nopadding {	
-	padding: 0 !important;
-}
-
-.ui-slider .ui-slider-handle {
-		height: 2.4em;
-}
-
-/* Corner radius */
-.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl { -moz-border-radius-topleft: 0px; -webkit-border-top-left-radius: 0px; -khtml-border-top-left-radius: 0px; border-top-left-radius: 0px; }
-.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr { -moz-border-radius-topright: 0px; -webkit-border-top-right-radius: 0px; -khtml-border-top-right-radius: 0px; border-top-right-radius: 0px; }
-.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl { -moz-border-radius-bottomleft: 0px; -webkit-border-bottom-left-radius: 0px; -khtml-border-bottom-left-radius: 0px; border-bottom-left-radius: 0px; }
-.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br { -moz-border-radius-bottomright: 0px; -webkit-border-bottom-right-radius: 0px; -khtml-border-bottom-right-radius: 0px; border-bottom-right-radius: 0px; }
-
+	.toggleview{
+	width: 120px;
+	margin: 5px 5x 5px 5px;
+	}
+	.buttonTengah{
+	margin: 5px 10px 0px 30px;
+	}
+	
+	.buttonPinggir{
+		position:inherit;
+		float: right;
+		top: 12px;
+		margin: 0px 0px 0px 0px;
+	}
+	#infoCircle{
+	position: relative;
+	float: right;
+	top: 30px;
+	right: 20px;
+	z-index: 1;
+	}
+	.controlchart{
+		margin-top: 10px;
+		position: absolute;
+		background-color: #EEE;
+		height: 600px;
+		border: 1px solid #E3E3E3;
+		width: 190px;
+	}
+	.judulchart {
+		font-size: 1.1em;
+		padding: 5px 0px 5px 0px;
+		text-align: center;
+		background-color: #333;
+		color: #FFFFFF;
+	}
+	
+	.inforentang{
+		position: relative;
+		left: 37%;
+		margin: 5px 0px 5px 0px;
+		font-size: large;
+		font-weight: lighter;
+	}
+	.inforentang button{
+		position: absolute;
+		left: -34%;
+	}
+	
+	.blingyo{
+		text-shadow: 0 0 0.2em #87F, 0 0 0.2em #87F,
+	        0 0 0.2em #87F
+	}
+	
+	.textrentang{
+		
+		font-weight: 600;
+	}
+	.slidercontainer {
+		padding-left: 15px;
+		padding-right: 20px;
+		padding-top: 2px;
+		margin-bottom: 2px;
+		text-align: center;
+		font-size: 0.9em;
+	}
+	.slidercontainer select {
+		display: none;
+	}
+	.widget-box {
+	    background: url(../img/bg/blizzard.png) repeat scroll 0 0 #FFFFFF;
+	    border: 1px solid #CDCDCD;
+	    clear: both;
+	    margin-top: 5px;
+		margin-bottom: 5px;
+	    position: relative;
+	}
+	.widget-top{
+		background: url(../img/bg/blizzard.png) repeat scroll 0 0 #FFFFFF;
+	    border: 1px solid #CDCDCD;
+	    clear: both;
+	    margin-top: 16px;
+	    margin-bottom: 0px;
+	    position: relative;
+	}
+	.widget-title span.icon {
+		padding: 0px 10px 8px 11px;
+		float: left;
+		opacity: .7;
+	}
+	.widget-title {
+		background-color: #efefef;
+		background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd), to(#eaeaea));
+		background-image: -webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+	    background-image: -moz-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+	    background-image: -ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+	    background-image: -o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+	    background-image: -linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+	    border-bottom: 1px solid #CDCDCD;
+	    height: 25px;
+	}
+	.widget-title h5 {
+	    color: #666666;
+		text-shadow: 0 1px 0 #ffffff;
+	    font-size: 12px;
+	    font-weight: bold;
+	    padding: 0px 10px 2px;
+	}
+	.widget-title .buttons {
+	float: right;
+	margin: 8px 10px 0 0;
+	top: -10px;
+	}
+	.widget-content {
+		padding: 10px 15px;
+	}
+	
+	.nopadding {	
+		padding: 0 !important;
+	}
+	
+	.ui-slider .ui-slider-handle {
+			height: 2.5em;
+	}
+	
+	/* Corner radius */
+	.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl { -moz-border-radius-topleft: 0px; -webkit-border-top-left-radius: 0px; -khtml-border-top-left-radius: 0px; border-top-left-radius: 0px; }
+	.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr { -moz-border-radius-topright: 0px; -webkit-border-top-right-radius: 0px; -khtml-border-top-right-radius: 0px; border-top-right-radius: 0px; }
+	.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl { -moz-border-radius-bottomleft: 0px; -webkit-border-bottom-left-radius: 0px; -khtml-border-bottom-left-radius: 0px; border-bottom-left-radius: 0px; }
+	.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br { -moz-border-radius-bottomright: 0px; -webkit-border-bottom-right-radius: 0px; -khtml-border-bottom-right-radius: 0px; border-bottom-right-radius: 0px; }
+	
+	
+	.box-shadow{
+	  -webkit-box-shadow: 2px 2px 10px 3px #ccc;
+	  -moz-box-shadow: 2px 2px 10px 3px #ccc;
+	  box-shadow: 2px 2px 10px 3px #ccc;
+	}
+	
+	.minwidth100 {
+		min-width: 100px;
+	}
+	
+	.linkcursor {
+		cursor: pointer;
+	}
+	
+	.setopacity3{
+		opacity: .3;
+	}
+	.bringfront{
+		z-index: 1;
+	}

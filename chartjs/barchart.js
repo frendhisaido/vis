@@ -70,7 +70,7 @@ function drawbarchart(data) {
 		  .attr("text-anchor", "start")
 		  .attr("fill", function(d) { return clorbar(d.orientasi);})
 		  .style("font", "8pt Arial")
-		  .style("text-shadow", "2px 2px 2px rgba(0,0,0,.3)") 
+		  .style("text-shadow", "1px 1px 1px rgba(0,0,0,.3)") 
 		  .text(function(d,i) { return txbar(i) });
 	  
 	  bar.append("text")
@@ -88,17 +88,8 @@ function drawbarchart(data) {
 		.transition().delay(100).duration(1500)
 		  .attr("dx",function(d) { return wdthbar(d.jumlah)+2; }); 	  
   		
-	  svgbar.append("text")
-		  .attr("class", "values")
-		  .attr("id","teksjumlah")
-		  .attr("x", "90%")
-		  .attr("y", hbar)
-		  .attr("dx", -15)
-		  .attr("dy", ".35em")
-		  .attr("text-anchor", "end")
-		  .style("font", "10pt Arial Narrow")
-		  .style("text-shadow", "1px 1px 1px rgba(0,0,0,.4)") 
-		  .text("Jumlah total tweet : "+d3.sum(data, function(d) { return d.jumlah; }));	
+	var totaltweet = d3.select("#totaltweet").append("text")
+		  .text(d3.sum(data, function(d) { return d.jumlah; }));	
 }
 
 function updatebarchart(date1, date2) {
@@ -116,7 +107,7 @@ function redrawbarchart(data) {
 	  console.log("Array datanew: ");
 	  console.log(data);*/
 	  var updatebar = svgbar.selectAll("#activebar").data(data);
-	  var updateteksjumlah = svgbar.selectAll("#teksjumlah");
+	  var updateteksjumlah = d3.select("#totaltweet");
 	  var updatetiapjumlah = svgbar.selectAll("#jumlahtiap").data(data);
 
 	  updatetiapjumlah.transition().delay(100).duration(1500)
@@ -124,7 +115,7 @@ function redrawbarchart(data) {
 		  	.attr("dx",function(d) { return wdthbar(d.jumlah)+2; }); 
   		
 	  updateteksjumlah.transition().duration(500)
-	  		.text("Jumlah total tweet :"+d3.sum(data, function(d) { 
+	  		.text(d3.sum(data, function(d) { 
 	  		//console.log("Teks Jumlah: "+ d.jumlah);
 	  		return d.jumlah; }));
   		
