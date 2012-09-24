@@ -38,7 +38,7 @@ if($full=='y'){
 	for ($i = 1; $i <= 3; $i++) {
     	echo $splits[$i];
 		if($i<3){
-			echo ", ";
+			echo ",";
 		}
 	}	
 }

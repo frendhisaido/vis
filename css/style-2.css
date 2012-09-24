@@ -21,57 +21,46 @@
 	margin-left: -12px;
 	margin-top: -12px;
 	}
-	.marginleft{
-	margin-left: -20px;
-	}
 	
-	.toggleview{
-	width: 120px;
-	margin: 5px 5x 5px 5px;
-	}
-	.buttonTengah{
-	margin: 5px 10px 0px 30px;
-	}
-	
-	.buttonPinggir{
-		position:inherit;
-		float: right;
-		top: 12px;
-		margin: 0px 0px 0px 0px;
-	}
 	#infoCircle{
 	position: relative;
-	float: right;
-	top: 30px;
-	right: 20px;
-	z-index: 1;
+	float: left;
+	right: 0px;
 	}
-	.controlchart{
-		margin-top: 10px;
-		position: absolute;
-		background-color: #EEE;
-		height: 600px;
-		border: 1px solid #E3E3E3;
-		width: 190px;
+	
+	.topButton {
+		width: 65px;
+		padding-left: 5px;
 	}
-	.judulchart {
-		font-size: 1.1em;
-		padding: 5px 0px 5px 0px;
-		text-align: center;
-		background-color: #333;
-		color: #FFFFFF;
+	
+	#viewcontrols{
+		position: relative;
+		top: -10px;
+	}
+	#viewcontrols button{
+		width: 90px;
+	}
+	#ubahrentang {
+		position: relative;
+		float: left;
+		top: -10px;
+	}
+	#sliderentang {
+		margin-left: 42px;
+		max-width: 1074px;
 	}
 	
 	.inforentang{
 		position: relative;
-		left: 37%;
-		margin: 5px 0px 5px 0px;
+		float: left;
+		left: 0px;
 		font-size: large;
 		font-weight: lighter;
 	}
 	.inforentang button{
 		position: absolute;
-		left: -34%;
+		top: -10%;
+		left: 100%;
 	}
 	
 	.blingyo{
@@ -80,35 +69,17 @@
 	}
 	
 	.textrentang{
-		
 		font-weight: 600;
 	}
-	.slidercontainer {
-		padding-left: 15px;
-		padding-right: 20px;
-		padding-top: 2px;
-		margin-bottom: 2px;
-		text-align: center;
-		font-size: 0.9em;
-	}
-	.slidercontainer select {
-		display: none;
-	}
 	.widget-box {
-	    background: url(../img/bg/blizzard.png) repeat scroll 0 0 #FFFFFF;
+	    background-color: #FFFFFF;
 	    border: 1px solid #CDCDCD;
 	    clear: both;
 	    margin-top: 5px;
 		margin-bottom: 5px;
 	    position: relative;
-	}
-	.widget-top{
-		background: url(../img/bg/blizzard.png) repeat scroll 0 0 #FFFFFF;
-	    border: 1px solid #CDCDCD;
-	    clear: both;
-	    margin-top: 16px;
-	    margin-bottom: 0px;
-	    position: relative;
+	    min-height: 300px;
+	    padding-top: 0px;
 	}
 	.widget-title span.icon {
 		padding: 0px 10px 8px 11px;
@@ -116,13 +87,13 @@
 		opacity: .7;
 	}
 	.widget-title {
-		background-color: #efefef;
-		background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd), to(#eaeaea));
-		background-image: -webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-	    background-image: -moz-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-	    background-image: -ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-	    background-image: -o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-	    background-image: -linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+		background-color: #FFFFFF;
+		background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#ffffff), to(#F9F9F3));
+		background-image: -webkit-linear-gradient(top, #ffffff 0%, #F3F3F3 100%);
+	    background-image: -moz-linear-gradient(top, #ffffff 0%, #F3F3F3 100%);
+	    background-image: -ms-linear-gradient(top, #ffffff 0%, #F3F3F3 100%);
+	    background-image: -o-linear-gradient(top, #ffffff 0%, #F3F3F3 100%);
+	    background-image: -linear-gradient(top, #ffffff 0%, #F3F3F3 100%);
 	    border-bottom: 1px solid #CDCDCD;
 	    height: 25px;
 	}
@@ -158,22 +129,30 @@
 	
 	
 	.box-shadow{
-	  -webkit-box-shadow: 2px 2px 10px 3px #ccc;
-	  -moz-box-shadow: 2px 2px 10px 3px #ccc;
-	  box-shadow: 2px 2px 10px 3px #ccc;
+	  -webkit-box-shadow: 1px 1px 8px 2px #ccc;
+	  -moz-box-shadow: 1px 1px 8px 2px #ccc;
+	  box-shadow: 1px 1px 8px 2px #ccc;
 	}
 	
 	.minwidth100 {
 		min-width: 100px;
 	}
 	
+	
 	.linkcursor {
 		cursor: pointer;
 	}
 	
-	.setopacity3{
-		opacity: .3;
+	.setback1{
+		z-index: -9;
 	}
 	.bringfront{
 		z-index: 1;
+	}
+	.table{
+		margin-bottom: 0px;
+	}
+	.table th, .table td {
+		line-height: 10px;
+		font-size: smaller;
 	}

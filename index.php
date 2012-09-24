@@ -33,21 +33,90 @@
     
     -->
 	<script type="text/javascript">
-		  
-		  function initjs(){
+		  var tog = [
+		  	{ orn: "negatif",eye: "#negeye", id: "#toggleNegatif", view : true},
+		  	{ orn: "positif",eye: "#poseye", id: "#togglePositif", view : true},
+		  	{ orn: "nonopini",eye: "#noneye", id: "#toggleNonopini", view : true}
+		  ];
 		  //override array hari untuk axis x
 		  d3_time_weekdays = ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"];
+		  
+		  
+		  
+		  function initjs(){
+		  
+		  
 		  //$('#buton').popover({trigger: 'hover',
 		  //		      placement: 'bottom',
 		  //	      delay: {show: 2500, hide: 500}});
 		  $("#context").hide();
 		  $("#slider").hide();
- 
-		  $('#zoombutton').click(function(){
+		  
+		  
+ 		  var negopen = true,posopen = true,nonopen = true;
+ 		  $("#toggleNegatif").click(function(){
+ 		  	toggleLine("negatif");
+ 		  	if(tog[0].view){
+	 		  	$(tog[0].eye).attr("class","icon-eye-close");
+	 		  	tog[0].view = false; 
+	 		  	}else{
+	 		  	$(tog[0].eye).attr("class","icon-eye-open");
+	 		  	tog[0].view = true;  	
+ 		  	}
+ 		  	isAlone();		  	
+ 		  });
+ 		   $("#togglePositif").click(function(){
+ 		  	toggleLine("positif");
+ 		  	if(tog[1].view){
+	 		  	$(tog[1].eye).attr("class","icon-eye-close");
+	 		  	tog[1].view = false; 
+	 		  	}else{
+	 		  	$(tog[1].eye).attr("class","icon-eye-open");
+	 		  	tog[1].view = true;
+ 		  	}
+ 		  	isAlone();  	
+ 		  });
+ 		   $("#toggleNonopini").click(function(){
+ 		  	toggleLine("nonopini");
+	 		if(tog[2].view){
+	 		  	$(tog[2].eye).attr("class","icon-eye-close");
+	 		  	tog[2].view = false; 
+	 		  	}else{
+	 		  	$(tog[2].eye).attr("class","icon-eye-open");
+	 		  	tog[2].view = true;
+	 		  }
+	 		  isAlone();  	
+ 		  });
+ 		  
+ 		  function isAlone(){
+ 		  	var countrue=0;
+ 		  	var alone=0;
+ 		  	for (i=0; i < tog.length; i++){
+ 		  		if(tog[i].view == true){
+ 		  			countrue++;
+ 		  		}
+ 		  	}
+ 		  	if(countrue == 1){
+ 		  		for (i=0; i < tog.length; i++){
+ 		  			if(tog[i].view == true){
+ 		  			$(tog[i].id).attr("disabled","");
+ 		  			toggleMaxY(tog[i].orn);
+ 		  			}
+ 		  		}
+ 		  	}
+ 		  	if(countrue >1){
+ 		  		$("#viewcontrols button").removeAttr("disabled");
+ 		  		toggleMaxY("default");
+ 		  	}
+ 		  }
+ 		  
+ 		  
+ 		  
+		  $("#zoombutton").click(function(){
 		      $("#context").slideToggle(250,unzoom);
 		     });
 		     
-		  $('#ubahrentang').click(function(){
+		  $("#ubahrentang").click(function(){
 		      $("#slider").slideToggle(250);
 		     });
 		  initbarchart();
@@ -61,7 +130,7 @@
     
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
+    <!--[if lt IE 9]
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
@@ -101,70 +170,57 @@
 								</select>
 								<select id="dates2" class="hide" disabled>
 								</select>
-	 <!-- 
-	 	<defs>
-
-<filter id="drop-shadow">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/> 
-                <feOffset dx="1" dy="1" result="offsetblur"/> 
-                <feMerge> 
-                    <feMergeNode/> 
-                    <feMergeNode in="SourceGraphic"/> 
-                </feMerge> 
-</filter>
-
-</defs>
-	  -->
-	
-	
-	
 	<div class="row">
 	  
-	  <div class="widget-box span11 box-shadow">
+	  <div class="widget-box span12 box-shadow">
 	  	<div class="widget-title">
 								<span class="icon">
 									<i class="icon-signal"></i>
 								</span>
 								
 								<div class="buttons btn-group">
-								<button type="button" id="zoombutton" class="btn btn-mini btn-info"
-									style="width: 65px;"
+								<button type="button" id="zoombutton" class="btn btn-mini btn-info topButton"
 									data-toggle="button"
 									data-title="Fitur zoom"
 									data-content="Fokus pada grafik dengan rentang tanggal tertentu.">
 								Zoom</button>
 								 </div>
 								 <div class="buttons btn-group" data-toggle="buttons-radio">			
-		  						<button style="width: 65px;padding-left: 5px;" type="button" class="btn btn-mini" onclick="initLineChart('perday',true);">Per Hari</button>
-		  						<button style="width: 65px;padding-left: 5px;" type="button" class="btn btn-mini" onclick="initLineChart('perhour',true);">Per Jam</button>
+		  						<button type="button" class="btn btn-mini topButton" onclick="initLineChart('perday',true);">Per Hari</button>
+		  						<buttontype="button" class="btn btn-mini topButton" onclick="initLineChart('perhour',true);">Per Jam</button>
 								</div>
-								
+								<div id="viewcontrols" class="buttons">
+										<button id="toggleNegatif" type="button" class="btn btn-mini" data-toggle="button">
+										   <i id="negeye" class="icon-eye-open"></i> Negatif</button>
+										
+										<button id="togglePositif" type="button" class="btn btn-mini" data-toggle="button">
+										  <i id="poseye" class="icon-eye-open"></i> Positif</button> 
+										
+										<button id="toggleNonopini" type="button" class="btn btn-mini" data-toggle="button">
+										  <i id="noneye" class="icon-eye-open"></i> Non-Opini</button>
+	  							 </div>
+								<button id="ubahrentang" class="buttons btn btn-mini" data-toggle="button" title="klik untuk tampil atau sembunyikan slider">Ubah</button>
 								<h5><text id="inforentang" 
-									class="inforentang textUnselectable"
-									title="klik untuk tampil atau sembunyikan slider"><button id="ubahrentang" class="buttons btn btn-mini" >Ubah rentang</button></text>
-									
-									</h5>
+									class="inforentang textUnselectable"></text>
+								</h5>
 								
 								
 														
 		</div>
 		<div class="widget-content">
-			<div id="sliderentang" >
-							
-				<div id="slider" class="widget-content inshadow">
-						
-						</div>		
-				</div>
+		
+			<div id="sliderentang" >			
+				<div id="slider" class="widget-content inshadow"></div>		
+			</div>
 		
 	    <div id="linechart">
-	    	<div id="infoCircle" class="btn-group">
-	    		<button class="btn btn-mini minwidth100 setopacity3">---</button>
-	    		<button class="btn btn-mini minwidth100 setopacity3">---</button>
-	    	</div>
+	    	
+	    	
 	    </div>
 	    
 	    <div id="context"></div>	
 	   </div>
+	   
 			
 	  </div>
 
@@ -187,43 +243,43 @@
 								<div id="bar"></div>			
 							</div>
 						</div>
-						</div>
+						</div
 						
-						<div class="span3 offset4">
+						><div class="span8">
 						<div class="widget-box box-shadow">
 							<div class="widget-title">
 								<span class="icon">
 									<i class="icon-file"></i>
-									
 								</span>
-								
+								<div id="infoCircle" class="btn-group buttons">
+						    		<button class="btn btn-mini minwidth100">---</button>
+						    		<button class="btn btn-mini minwidth100">---</button>
+						    	</div>
+						    	<h5>
+						    		| <text id="fullkeyword"></text>
+						    	</h5>
 							</div>
-							<div class="widget-content">
+							<div class="widget-content  nopadding">
 								
+								<table class="table table-striped">
+								  <tbody id="tweetview">
+								
+								  </tbody>
+								</table>
+<div class="pagination pagination-centered hide">
+  <ul>
+    <li><a href="#">Prev</a></li>
+    <li><a href="#">1</a></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">4</a></li>
+    <li><a href="#">Next</a></li>
+  </ul>
+</div>
 								</div>
-								
-								<div id="controlers" >
-		
-		  
-		<button id="togglePositif" type="button" class="btn btn-success toggleview" data-toggle="button"  onclick="toggleLine('positif')">
-		  <i class="icon-eye-open"></i> Positif</button> 
-		<button type="button" class="btn btn-success" data-toggle="button" >
-			Y</button>
-		
-		<button id="toggleNegatif" type="button" class="btn btn-danger toggleview" data-toggle="button" onclick="toggleLine('negatif')">
-		   <i class="icon-eye-open"></i> Negatif</button>
-		<button type="button" class="btn btn-danger" data-toggle="button" >
-			Y</button>
-
-		<button id="toggleNonopini" type="button" class="btn btn-warning toggleview" data-toggle="button" onclick="toggleLine('nonopini')">
-		  <i class="icon-eye-open"></i> Non-Opini</button>
-		<button type="button" class="btn btn-warning" data-toggle="button" >
-			Y</button>
-				
-							
-						</div>	
 					</div>	 
-		</div>
+						</div>
+						
 					 
 	</div><!-- /container -->
     
@@ -234,7 +290,9 @@
 						    <h3>Dashboard help</h3>
 						  </div>
 						  <div class="modal-body">
-						    <p>Cara menggunakan dijelaskan disini..</p>
+						    <blockquote>
+  <p>Penjelasan mengenai fitur-fitur di dashboard ini.</p>
+</blockquote>
 						    <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
 
 Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.

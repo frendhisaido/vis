@@ -13,11 +13,12 @@
 	fill: #E6E6E6;
 }
 #linechart {
-	margin-top: -15px;
+	margin-top: 5px;
+	margin-bottom: -25px;
 }
 #context{
 	margin-top: -40px;
-	width: 1000px;
+	width: 100%;
 }
 .xAxis {
   fill: none;

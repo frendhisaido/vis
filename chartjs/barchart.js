@@ -13,7 +13,7 @@ var svgbar = d3.select("#bar").append("svg")
 	.attr("width", wbar + mbar[3] + mbar[3])
 	.attr("height", hbar + mbar[3] + mbar[3])
   .append("g")
-	.attr("transform", "translate(" + mbar[1] + "," + mbar[2] + ")");
+	.attr("transform", "translate(" + mbar[1] + "," + mbar[3] + ")");
 									//horizontal     vertical
   svgbar.append("rect")
 	.attr("height", 1)

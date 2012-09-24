@@ -1,5 +1,5 @@
 var m = [20, 35, 40, 50, 60],
-    w = 1050 ,
+    w = 1150 ,
     h = 300,
     h2 = 50 + m[0];
 
@@ -11,8 +11,11 @@ var duration = [100,200,500,1000,1500],
     delay = [500,1000];
     
 var stillpositif,stillnegatif,stillnonop,stillhover;
-var maxpositif,maxnegatif,maxnonopini,maxYcurrent,maxgrouped;
+var maxValue,maxpositif,maxnegatif,maxnonopini,maxYcurrent,maxgrouped;
 var maxdate, mindate,currentAtom,callCSV;
+
+var getTweetUrl = "data/gettweets.php";
+var getKeywUrl = "data/getKeyword.php";
 
 var monthNames = [ "January", "February", "March", "April", "May", "June",
 	 "July", "August", "September", "October", "November", "December" ];
@@ -192,25 +195,17 @@ var brush = d3.svg.brush()
 	  .x(xContext)
 	  .on("brush", redraw);
 
-function resetControls(){
-	var ng = $("#toggleNegatif").attr("class");
-	var po = $("#togglePositif").attr("class");
-	var no = $("#toggleNonopini").attr("class");
-	//var maxng = $("#maxNeg").attr("class");
-	//var maxpo = $("#maxPos").attr("class");
-	//var maxno = $("#maxNon").attr("class");
-	
-	$("#toggleNegatif").attr("class", ng.replace('active',''));
-	$("#togglePositif").attr("class", po.replace('active',''));
-	$("#toggleNonopini").attr("class", no.replace('active',''));
-	
-	//$("#maxNeg").attr("class", maxng.replace('active',''));
-	//$("#maxPos").attr("class", maxpo.replace('active',''));
-	//$("#maxNon").attr("class", maxno.replace('active',''));
-}
+function resetViewControls() {
+ 		  	for (i=0; i < tog.length; i++){
+ 		  		tog[i].view = true;
+ 		  		$(tog[i].eye).attr("class","icon-eye-open");
+ 		  	}
+ 		  		$("#viewcontrols button").attr("class","btn btn-mini");
+ 		  		$("#viewcontrols button").removeAttr("disabled");
+ 		  }
+ 		  
 function initLineChart(atom,update){
 	$("#loading").css("display","block");
-	resetControls();
 	currentAtom = atom;
 	callCSV ="data/linecsv.php?atom="+atom;
 	var addtop = atom == 'perday'? 100 : 10;
@@ -299,7 +294,8 @@ function initDrawLine(datasetline,datasetcircle){
 }
 
 function changeAtom(datasetline,datasetcircle){
-
+	resetViewControls();
+	
 	linesvg.selectAll(".symbol").remove();
 	contextsvg.selectAll(".context").remove();
 	circsvg.selectAll(".points").remove();
@@ -421,22 +417,34 @@ var c = circsvg.selectAll(".points")
 			})
 		.on("click.circles",function(d){
 			var element = this;
+
 			if(currentAtom=='perday'){
-				var request = "data/getKeyword.php?tg="+d.tgl+"&or="+d.orientasi+"&full=n";
-				var wow = function(){
+				var request = getKeywUrl +"?tg="+d.tgl+"&or="+d.orientasi+"&full=n";
 					d3.text(request, function(keyWords){	
 						$(element).tooltip({
 							title: keyWords
 						});
 						$(element).tooltip('show');
+						$("#fullkeyword").text(keyWords);
+						reqTweet = getTweetUrl +"?tg="+d.tgl+"&or="+d.orientasi+"&atom="+currentAtom+"&kw="+keyWords+",";
+						console.log(reqTweet);
+						$("#tweetview").load(reqTweet);
 						});
-				};
-				wow();
+						console.log("out");
+			}else{
+				request = getTweetUrl +"?tg="+(d.tgl.replace(" ","%20"))+"&or="+d.orientasi+"&atom="+currentAtom+"&kw=none";
+				console.log(request);
+				$("#tweetview").load(request);
 			}
+			
+		
+					
+			/*buggy
 			d3.select(this)
 				.attr("r", (circlesize()+5))
 				.transition().duration(duration[2])
 				.attr("r",circlesize());
+			*/
 				
 		})
 		.on("mouseout.circles", function(d){
@@ -446,7 +454,6 @@ var c = circsvg.selectAll(".points")
 				$(element).tooltip('destroy');
 			}
 			d3.select(this).attr("stroke-width","0px");
-			setInfoWaktuBlank();
 		});
     
   });
@@ -531,51 +538,14 @@ function unzoom(){
 
 function toggleLine(orient){
 	
-	/*
-	 * $("#element").css("display");
-	 * Mungkin bisa dideteksi dari sini?
-	 * 
-	 */
-  var elementName = "#line_"+orient; 
-  //console.log("elementName: "+elementName);
+  var elementName = "#line_"+orient;
   var isBlock ="";
   getDisplay = $(elementName).css("display");
-    //console.log("isBlock: "+ isBlock);
   if (getDisplay == "block" || getDisplay == "inline"){
   	hideline(orient);
-  	//console.log("hiding");
   }else if(getDisplay == "none"){
   	showline(orient);
-  	//console.log("showing");
   }
-  /*
-  if(orient=="positif"){
-  	getDisplay = $(elementName).css("display");
-    if(getDisplay == "block"){
-	stillpositif = true;
-	hideline("positif");
-    }else{
-	stillpositif = false;
-	showline("positif");
-    }
-    if(!stillnegatif){
-	stillnegatif = true;
-	hideline("negatif");
-    }else{
-	stillnegatif = false;
-	showline("negatif");
-    }
-  }else{
-     if(!stillnonop){
-	stillnonop = true;
-	hideline("nonopini");
-    }else{
-	stillnonop = false;
-	showline("nonopini");
-    }
-  }
-  */  
-   //maxYcurrent = !stillnonop && !stillnegatif ? maxYcurrent : maxpositif;
   redraw();
 }
 
@@ -590,15 +560,12 @@ function toggleMaxY(ornt){
 		case "nonopini":
 			maxYcurrent = maxnonopini;
 		break;
+		case "default":
+			maxYcurrent = maxValue;
+		break;
 	}
 	
 	redraw();
-}
-
-function showAll(){
-  
-  
-  redraw();
 }
 
 function hideline(ornt) {

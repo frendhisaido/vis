@@ -28,6 +28,7 @@ $.getJSON("data/datelist.php", function(result) {
 				values : [1,totaldates],
 				range: true,
 				start: function(event, ui){
+					$(".textrentang").css("color","#49AFCD");
 				},
 				slide: function( event, ui ) {
 					select1[ 0 ].selectedIndex = ui.values[0] -1;
@@ -36,6 +37,7 @@ $.getJSON("data/datelist.php", function(result) {
 						$("#dates1 option:selected").val(),
 						$("#dates2 option:selected").val()
 					);
+					$(".textrentang").css("color","#49AFCD");
 				},
 				change: function( event, ui ) {
 					var dd1 = $("#dates1 option:selected").val()+" 00";
@@ -47,6 +49,9 @@ $.getJSON("data/datelist.php", function(result) {
 						$("#dates1 option:selected").val(),
 						$("#dates2 option:selected").val()
 					);
+				},
+				stop: function ( event, ui){
+					$(".textrentang").removeAttr("style");
 				}
 			});
 			
