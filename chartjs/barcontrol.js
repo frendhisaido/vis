@@ -44,7 +44,7 @@ $.getJSON("data/datelist.php", function(result) {
 					var dd2 = $("#dates2 option:selected").val()+" 23";
 					var passDomain = [dd1, dd2];
 					//console.log(passDomain);
-					passingDomain(passDomain);
+					passingDomain(passDomain,true);
 					updatebarchart(
 						$("#dates1 option:selected").val(),
 						$("#dates2 option:selected").val()

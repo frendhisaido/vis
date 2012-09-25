@@ -246,8 +246,7 @@ d3.csv(callCSV, function(data) {
 	
 	maxdate = d3.max(orientasi, function(d) { return d.values[d.values.length - 1].date; });
 	mindate = d3.min(orientasi, function(d) { return d.values[0].date; });
-	x.domain([ mindate , maxdate ]);
-	xContext.domain(x.domain());
+	
 	y.domain([0,maxValue]);
 	yContext.domain(y.domain());
 	maxYcurrent = maxValue;
@@ -256,14 +255,16 @@ d3.csv(callCSV, function(data) {
 	if(update){
 		changeAtom(orientasi,data);
 	}else{
-	initDrawLine(orientasi,data);
+		initDrawLine(orientasi,data,mindate,maxdate);
 	}
 });
 
 }
 
-function initDrawLine(datasetline,datasetcircle){
-
+function initDrawLine(datasetline,datasetcircle,date1,date2){
+	x.domain([ date1 , date2 ]);
+	xContext.domain(x.domain());
+	
 	linesvg.selectAll(".theLine")
       .data(datasetline)
     .enter().append("svg:g")
@@ -295,6 +296,11 @@ function initDrawLine(datasetline,datasetcircle){
 
 function changeAtom(datasetline,datasetcircle){
 	resetViewControls();
+	var dd1 = $("#dates1 option:selected").val()+" 00";
+	var dd2 = $("#dates2 option:selected").val()+" 23";
+	var passDomain = [dd1, dd2];
+	x.domain(passingDomain(passDomain,false));
+	xContext.domain(x.domain());
 	
 	linesvg.selectAll(".symbol").remove();
 	contextsvg.selectAll(".context").remove();
@@ -611,7 +617,7 @@ function circopacity(opacity){
 	
 }
 
-function passingDomain(passDomain){
+function passingDomain(passDomain, fromSlider){
 	var dd1 = parseJam(passDomain[0]);
 	var dd2 = parseJam(passDomain[1]);
 	if(dd1.getDate()==mindate.getDate()){
@@ -620,15 +626,17 @@ function passingDomain(passDomain){
 	if(dd2.getDate()==maxdate.getDate()){
 		dd2 = maxdate;	
 	};
-	
 	var newDomain = [dd1, dd2];
+	
+	if(fromSlider){
 	x.domain(newDomain);
 	xContext.domain(newDomain);
-
-	
 	redraw(
 	       selisih(newDomain)
 	       );
+	}else{
+		return newDomain;
+	}
 }
 
 function selisih(dates){
