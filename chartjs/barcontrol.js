@@ -28,7 +28,7 @@ $.getJSON("data/datelist.php", function(result) {
 				values : [1,totaldates],
 				range: true,
 				start: function(event, ui){
-					$(".textrentang").css("color","#49AFCD");
+					$(".textrentang").css("color","#FF0000");
 				},
 				slide: function( event, ui ) {
 					select1[ 0 ].selectedIndex = ui.values[0] -1;
@@ -37,7 +37,7 @@ $.getJSON("data/datelist.php", function(result) {
 						$("#dates1 option:selected").val(),
 						$("#dates2 option:selected").val()
 					);
-					$(".textrentang").css("color","#49AFCD");
+					$(".textrentang").css("color","#FF0000");
 				},
 				change: function( event, ui ) {
 					var dd1 = $("#dates1 option:selected").val()+" 00";
@@ -76,42 +76,6 @@ function setInfoRentang(date1,date2){
 function setInfoCircle(tanggal, jumlah, orientasi, per){
 	var infos = d3.select("#infoCircle");
 	infos.selectAll("button").remove();
-	
-	var infjml = infos.append("button")
-	.attr("class",function(){
-		switch (orientasi){
-		case 'negatif':
-			return 'btn btn-danger btn-mini ';
-		case 'positif':
-			return 'btn btn-success btn-mini';
-		case 'nonopini':
-			return 'btn btn-warning btn-mini';
-		}
-	});
-	/*
-	infjml.append("svg")
-	.style("float","left")
-	.attr("width","20px")
-	.attr("height","20px")
-	.append("circle")
-	.attr("r","6px")
-	.attr("cx",10)
-	.attr("cy",10)
-	.attr("fill",function(){
-		switch (orientasi){
-		case 'negatif':
-			return '#FF0000';
-		break;
-		case 'positif':
-			return '#009900';
-		break;
-		case 'nonopini':
-			return '#969395';
-		break;}
-		}
-		);
-		*/
-	infjml.append("text").text(jumlah + " tweet "+orientasi+" ");
 	var infwkt = infos.append("button").attr("class","btn btn-mini");
 	if(per=='perday'){
 		infwkt.append("text").text(" "+tanggal.getDate()+" "
@@ -123,6 +87,19 @@ function setInfoCircle(tanggal, jumlah, orientasi, per){
 									+(tanggal.getMinutes() < 10 ? ('0'+ (tanggal.getMinutes())) : tanggal.getMinutes())
 									);
 	}
+	var infjml = infos.append("button")
+	.attr("class",function(){
+		switch (orientasi){
+		case 'negatif':
+			return 'btn btn-danger btn-mini ';
+		case 'positif':
+			return 'btn btn-success btn-mini';
+		case 'nonopini':
+			return 'btn btn-warning btn-mini';
+		}
+	});
+	infjml.append("text").text(jumlah + " tweet "+orientasi+" ");
+	
 }
 
 function setInfoWaktuBlank(){

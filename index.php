@@ -172,7 +172,7 @@
 								</select>
 	<div class="row">
 	  
-	  <div class="widget-box span12 box-shadow">
+	  <div id="linecontainer" class="widget-box span12 box-shadow">
 	  	<div class="widget-title">
 								<span class="icon">
 									<i class="icon-signal"></i>
@@ -217,7 +217,6 @@
 	    	
 	    	
 	    </div>
-	    
 	    <div id="context"></div>	
 	   </div>
 	   
@@ -229,7 +228,7 @@
     	<div class="row-fluid">
     		
 					
-					<div class="span4">
+					<div id="barcontainer" class="span4">
 					<div class="widget-box box-shadow">
 							<div class="widget-title">
 								<span class="icon">
@@ -243,9 +242,9 @@
 								<div id="bar"></div>			
 							</div>
 						</div>
-						</div
+						</div>
 						
-						><div class="span8">
+						<div class="span8">
 						<div class="widget-box box-shadow">
 							<div class="widget-title">
 								<span class="icon">
@@ -260,23 +259,12 @@
 						    	</h5>
 							</div>
 							<div class="widget-content  nopadding">
+								<div id="tweetcontainer">
 								
-								<table class="table table-striped">
-								  <tbody id="tweetview">
 								
-								  </tbody>
-								</table>
-<div class="pagination pagination-centered hide">
-  <ul>
-    <li><a href="#">Prev</a></li>
-    <li><a href="#">1</a></li>
-    <li><a href="#">2</a></li>
-    <li><a href="#">3</a></li>
-    <li><a href="#">4</a></li>
-    <li><a href="#">Next</a></li>
-  </ul>
-</div>
+								  
 								</div>
+							</div>
 					</div>	 
 						</div>
 						

@@ -9,52 +9,24 @@ $tanggal = $_GET['tg'];
 $full = $_GET['full'];
 $atom = $_GET['atom'];
 $keywords = $_GET['kw'];
+$page = $_GET['pg'];
+$rowscount = $_GET['rc'];
 
 @mysql_select_db($dsn) or die( "Unable to select database");
 
 
-if($keywords!='none'){
-		$splits = explode(',', $keywords,-1);
-		$count = count($splits);
-		$i=0;
-		$search="";
-		while ($i < $count) {
-			$search .= "content LIKE '%" .$splits[$i]."%' ";
-			if($i<$count-1){
-			$search .= " OR ";
-			}
-			$i++;
-		}
-		//AND content LIKE '%pending%' OR content LIKE '%sinyal%'
+if (!(isset($page))) { 
+ $page = 0; 
+ } 
+ 
+ $limitrows = 9;
+
+
+		?>
+		<table class="table table-hover">
+		<tbody >
 		
-		if($atom == 'perday'){ 
-		$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam, content
-		FROM  `dataset` 
-		WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d' ) =  '$tanggal'
-		AND orientasi =  '$orientasi' AND
-		$search
-		ORDER BY jam
-		LIMIT 0,3";
-		}else{
-		$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam, content
-		FROM  `dataset` 
-		WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d %H' ) =  '$tanggal'
-		AND orientasi =  '$orientasi' AND
-		$search
-		ORDER BY jam
-		LIMIT 0,3";	
-		}
-		
-		
-		$result = mysql_query($query);
-		while ($row = mysql_fetch_assoc($result)) { 
-		 ?>
-		 <tr id="tweets" class="toptweet">
-		      <td><?php echo $row["jam"]?></td>
-		      <td><?php echo $row["content"]?></td>
-		 </tr>
-		 <?php
-		};
+		<?php
 		
 		if($atom == 'perday'){ 
 		$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam, content
@@ -62,55 +34,78 @@ if($keywords!='none'){
 		WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d' ) =  '$tanggal'
 		AND orientasi =  '$orientasi'
 		ORDER BY jam
-		LIMIT 0,6";
+		LIMIT $page,$limitrows";
 		}else{
 		$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam, content
 		FROM  `dataset` 
 		WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d %H' ) =  '$tanggal'
 		AND orientasi =  '$orientasi'
 		ORDER BY jam
-		LIMIT 0,6";	
+		LIMIT $page,$limitrows";	
 		}
-		
+		$numbers = $page+1;
 		$result = mysql_query($query);
 		while ($row = mysql_fetch_assoc($result)) { 
 		 ?>
 		 <tr id="tweets">
-		      <td><?php echo $row["jam"]?></td>
+		      <td class="jamtweet"><?php echo $row["jam"]?></td>
 		      <td><?php echo $row["content"]?></td>
+		      <td class="numbtweet"><small>[<?php echo $numbers?>]</small></td>
 		 </tr>
 		 <?php
+		 $numbers++;
 		};
-		
-		
-		
-}else{
+		?>
+		</tbody>
+		</table>
+		<?php
+		if($rowscount>6){
+			if($atom=='perhour'){
+				$tanggal = str_replace(" ", "%20", $tanggal);
+			}
+			//echo "rc:".$rowscount;
+			$isover = $page + $limitrows;
+			$isless = $page - $limitrows;
+			//echo " isov:".$isover;
+			//echo " isls:".$isless;
+			
+				if($isover<$rowscount){
+					$nextpage = $page + $limitrows;
+					$nexturl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$nextpage&atom=$atom";
+					$nextonclick =  "\$('#tweetcontainer').html('<h1>LOADING</h1>').load('$nexturl');";
+					$nextstyle = "";
+					$nextlabel = ">>";
+				}else{
+					$nextstyle = "background-color: #ddd";
+					$nextonclick = "";
+					$nextlabel = "||";
+				}
+				if($isless>=$limitrows || $isless==0){
+					$prevpage = $page - $limitrows;
+					$prevurl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$prevpage&atom=$atom";
+					$prevonclick =  "\$('#tweetcontainer').html('<h1>LOADING</h1>').load('$prevurl');";
+					$prevstyle = "";
+					$prevlabel = "<<";
+				}else{
+					$prevstyle = "background-color: #ddd";
+					$prevonclick = "";
+					$prevlabel = "||";
+				}
+		?>
+		<div id="pagingbutton" class="pagination pagination-centered">
+									  <ul>
+									  	<li><a href="#" onclick="<?php echo $prevonclick;?>" style="<?php echo $prevstyle;?>">
+									  		<?php echo $prevlabel;?>
+									  		</a>
+									    </li>
+									    <li><a href="#" onclick="<?php echo $nextonclick;?>" style="<?php echo $nextstyle;?>">
+									    	<?php echo $nextlabel;?>
+									    	</a>
+									    </li>
+									  </ul>
+		</div>
+			
+		<?php
+		}
 
-if($atom == 'perday'){ 
-$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam, content
-FROM  `dataset` 
-WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d' ) =  '$tanggal'
-AND orientasi =  '$orientasi'
-ORDER BY jam
-LIMIT 0,9";
-}else{
-$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam, content
-FROM  `dataset` 
-WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d %H' ) =  '$tanggal'
-AND orientasi =  '$orientasi'
-ORDER BY jam
-LIMIT 0,9";	
-}
-
-$result = mysql_query($query);
-
-while ($row = mysql_fetch_assoc($result)) { 
- ?>
- <tr id="tweets">
-      <td><?php echo $row["jam"]?></td>
-      <td><?php echo $row["content"]?></td>
- </tr>
- <?php
-};
-}
 ?>

@@ -155,4 +155,32 @@
 	.table th, .table td {
 		line-height: 10px;
 		font-size: smaller;
+		padding-top: 11px;
+	}
+	
+	#linecontainer {
+		min-width: 1170px;
+	}
+	
+	#barcontainer{
+		min-width: 370px;
+	}
+	
+	#pagingbutton{
+		position: absolute;
+		float: right;
+		top: -15px;
+		right: 10px;
+	}
+	.pagination a, .pagination span {
+		line-height: 25px;
+	}
+	.jamtweet {
+		width: 25px;
+		background-color: #AABBCC;
+	}
+	.numbtweet {
+		width: 20px;
+		max-width: 30px;
+		background-color: #BBBBBB;
 	}

@@ -13,7 +13,8 @@ var duration = [100,200,500,1000,1500],
 var stillpositif,stillnegatif,stillnonop,stillhover;
 var maxValue,maxpositif,maxnegatif,maxnonopini,maxYcurrent,maxgrouped;
 var maxdate, mindate,currentAtom,callCSV;
-
+var requestKeyWords, reqTweet, keyWords;
+var bubbles;
 var getTweetUrl = "data/gettweets.php";
 var getKeywUrl = "data/getKeyword.php";
 
@@ -25,7 +26,8 @@ var clor = d3.scale.ordinal().domain(["negatif","positif","nonopini"]).range(["#
 var x = d3.time.scale().range([0, w - m[4] ]),
     xContext = d3.time.scale().range([0, w - m[4] ]),
     y = d3.scale.linear().range([h , 0]),
-    yContext = d3.scale.linear().range([h2, 0]);
+    yContext = d3.scale.linear().range([h2, 0])
+    bubbleScale = d3.scale.linear().range([0, h/4]) ;
 	
 var xAxis = d3.svg.axis()
 		.scale(x)
@@ -55,13 +57,15 @@ var allsvg = d3.select("#linechart").append("svg:svg")
 	    .attr("height", h + m[0] + m[2])
 	    .on("mouseover.chart", circopacity(1))
 	    .on("mouseout.chart", circopacity(0));
-	    
+
 var allbg = allsvg.append("rect")
 	  .attr("width", w - m[4])
 	  .attr("height", h)
 	  .attr("transform","translate("+m[1]+",1)")
 	  .attr("fill","#fff")
 	  .style("stroke","none");
+	  
+
 	    
     //!!!!IMPORTANT, Clipping path supaya ga melebihi axis
     //(Setelah diset disini, diset lagi attr("clip-path", "url(#clip)") di elemen yang mau diisi pathnya
@@ -81,7 +85,14 @@ var filters= defs.append("filter").attr("id","dropshadow");
 	filters.append("feOffset").attr("dx",1).attr("dy",1).attr("result","offsetblur");
 	filters.append("feBlend").attr("in","SourceGraphic").attr("mode","normal");
 */
-	
+var bubblesground = allsvg.append("svg:g")
+	  .attr("class","theBubbles")
+	  .attr("width", w)
+	  .attr("height", h)
+	  .attr("transform","translate("+m[1]+",1)")
+	  .attr("fill","#fff")
+	  .style("stroke","none");
+
 var contsvg = d3.select("#context").append("svg:svg")
 	      .attr("width", w + m[1] + m[3])
 	      .attr("height", h2);
@@ -203,6 +214,16 @@ function resetViewControls() {
  		  		$("#viewcontrols button").attr("class","btn btn-mini");
  		  		$("#viewcontrols button").removeAttr("disabled");
  		  }
+function saddtop(maxY){
+	if(maxY<50){
+		maxY = maxY + 10;
+	}else if(maxY > 500){
+		maxY = maxY + 20;
+	}else if(maxY > 1000){
+		maxY = maxY + 100;
+	}
+	return maxY;
+}
  		  
 function initLineChart(atom,update){
 	$("#loading").css("display","block");
@@ -237,11 +258,11 @@ d3.csv(callCSV, function(data) {
 	maxValue = d3.max(orientasi.map(function(d){ return d.maxJumlah}),
 			 function(d){ return d;}) + addtop; 
 	maxpositif = d3.max(orientasi.map(function(d){ return d.key == "positif"? d.maxJumlah : 0},
-					  function(d){ return d;})) + 5;
+					  function(d){ return d;})) + (addtop- atom == 'perday'? 5 : 5);
 	maxnegatif = d3.max(orientasi.map(function(d){ return d.key == "negatif"? d.maxJumlah : 0},
-					  function(d){ return d;})) + 5;
+					  function(d){ return d;})) + addtop;
 	maxnonopini = d3.max(orientasi.map(function(d){ return d.key == "nonopini"? d.maxJumlah : 0},
-					  function(d){ return d;})) + 5;
+					  function(d){ return d;})) + addtop;
 	
 	
 	maxdate = d3.max(orientasi, function(d) { return d.values[d.values.length - 1].date; });
@@ -418,47 +439,54 @@ var c = circsvg.selectAll(".points")
 		.style("opacity", "0")
 	    .on("mouseover.circles", function(d){
 	    	var element = this;
-			d3.select(this).attr("stroke-width","8px");
-			setInfoCircle(d.date, d.jumlah, d.orientasi, currentAtom);		
+			d3.select(this).attr("stroke-width","8px");		
 			})
 		.on("click.circles",function(d){
+			setInfoCircle(d.date, d.jumlah, d.orientasi, currentAtom);
 			var element = this;
-
-			if(currentAtom=='perday'){
-				var request = getKeywUrl +"?tg="+d.tgl+"&or="+d.orientasi+"&full=n";
-					d3.text(request, function(keyWords){	
-						$(element).tooltip({
-							title: keyWords
-						});
-						$(element).tooltip('show');
-						$("#fullkeyword").text(keyWords);
-						reqTweet = getTweetUrl +"?tg="+d.tgl+"&or="+d.orientasi+"&atom="+currentAtom+"&kw="+keyWords+",";
-						console.log(reqTweet);
-						$("#tweetview").load(reqTweet);
-						});
-						console.log("out");
-			}else{
-				request = getTweetUrl +"?tg="+(d.tgl.replace(" ","%20"))+"&or="+d.orientasi+"&atom="+currentAtom+"&kw=none";
-				console.log(request);
-				$("#tweetview").load(request);
-			}
-			
-		
+						if(currentAtom=='perday'){
+							requestKeyWords = getKeywUrl +"?tg="+(d.tgl+"%2000")+"&or="+d.orientasi+"&full=n&track=no";
+							d3.text(requestKeyWords, function(keys){
+								keyWords = keys;
+								$(element).tooltip({
+									title: keyWords,
+									delay: {show: 0,hide: 1000}
+								});
+								reqTweet = getTweetUrl +"?tg="+d.tgl+"&or="+d.orientasi+"&atom="+currentAtom+"&rc="+d.jumlah+"&kw="+keyWords+",";
+					
+									$(element).tooltip('show');
+									$("#fullkeyword").text(keyWords);
+									console.log("getKw: "+requestKeyWords);
+									console.log("getTw: "+reqTweet);
+									$("#tweetcontainer").html("<h1> LOADING</h1>").load(reqTweet);
+							});
+						}else{
+							requestKeyWords = getKeywUrl +"?tg="+(d.tgl)+"&or="+d.orientasi+"&full=n&track=no";
+							d3.text(requestKeyWords, function(keys){
+								keyWords = keys;
+								$(element).tooltip({
+									title: keyWords,
+									delay: {show: 0,hide: 1000}
+								});
+								reqTweet = getTweetUrl +"?tg="+(d.tgl.replace(" ","%20"))+"&or="+d.orientasi+"&atom="+currentAtom+"&rc="+d.jumlah+"&kw="+keyWords+",";	
+									$(element).tooltip('show');
+									$("#fullkeyword").text(keyWords);
+									//console.log("getKw: "+requestKeyWords);
+									console.log("getTw: "+reqTweet);
+									$("#tweetcontainer").html("<h1> LOADING</h1>").load(reqTweet);
+							});
+						}
+						
+					
 					
 			/*buggy
 			d3.select(this)
 				.attr("r", (circlesize()+5))
 				.transition().duration(duration[2])
 				.attr("r",circlesize());
-			*/
-				
+			*/	
 		})
 		.on("mouseout.circles", function(d){
-			var element = this;
-			if(currentAtom=='perday'){
-				
-				$(element).tooltip('destroy');
-			}
 			d3.select(this).attr("stroke-width","0px");
 		});
     
@@ -645,5 +673,80 @@ function selisih(dates){
 			 );
 }
 
+function keywordbubbles(key){
+
+	var request = "data/getKeyword.php?track=yes&key="+key;
+	console.log(request);
+	d3.json(request, function(data){
+		
+		
+		data.forEach(function(d){
+			d.tanggal = parseTanggal(d.tanggal);
+			d.jumlah = +d.jumlah;
+		});
+		var maxJum = d3.max(data.map(function(d){ return d.jumlah}),function(d){ return d;});
+		//console.log(d3.max(data.map(function(d){ return d.jumlah}),function(d){ return d;}));
+		bubbleScale.domain([0, maxJum ]);
+		//console.log(data);
+		
+		
+		
+		bubbles = bubblesground.selectAll(".keywordcirc")
+				.data(data).enter().append("svg:g")
+				.attr("clip-path", "url(#clip)");	
+		
+		bubbles.append("svg:ellipse")
+		    .attr("ry", function(d){
+		    	console.log(d.jumlah+" : "+bubbleScale(d.jumlah)); 
+		    	return bubbleScale(d.jumlah);
+		    	})
+		    .attr("rx", function(d){
+		    	var rx = bubbleScale(d.jumlah)-(bubbleScale(d.jumlah) * 0.20); 
+		    	return rx;
+		    })
+		    .attr("class", "onebubble")
+		      .style("fill", "#EEEEEE")
+		      .style("fill-opacity","0.2")
+		    .attr("stroke","#ddd")
+		    .attr("stroke-opacity","0.3")
+		    .attr("stroke-width", "1px")
+		    .attr("cx" , function(d){
+		    	return x(d.tanggal);	
+		    	})
+		    .attr("cy" , h/2)
+		    .on("mouseover.ellipse",function(d,i){
+		    	var textDom = "#bubbletext_"+i;
+		    	$(textDom).slideToggle(100);
+		    	d3.select(this).attr("stroke-opacity","1");
+		    })
+		    .on("mouseout.ellipse",function(d,i){
+		    	var textDom = "#bubbletext_"+i;
+		    	$(textDom).slideToggle(100);
+
+		    	d3.select(this).attr("stroke-opacity","0.3");
+		    });
+		
+	    bubbles.append("text")
+	    	   .text(function(d){
+	    			return d.jumlah;
+	    		})
+	      .attr("class","hide")
+	      .attr("id",function(d,i){
+	      	return "bubbletext_"+i;
+	      })
+	      .attr("x", function(d){
+		    	return x(d.tanggal);	
+		    	}) 
+		  .attr("y", h/2)
+		  .attr("dx", 0) 
+		  .attr("dy", ".15em")
+		  .attr("text-anchor", "middle")
+		  .attr("fill", "#000")
+		  .style("font", "8pt Helvetica");
+		
+	});
+	
+return null;   
+}
 
 

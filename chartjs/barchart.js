@@ -82,7 +82,7 @@ function drawbarchart(data) {
 		  .attr("dy", ".15em")
 		  .attr("text-anchor", "start")
 		  .attr("fill", function(d) { return clorbar(d.orientasi);})
-		  .style("text-shadow", "2px 2px 2px rgba(0,0,0,0.2)") 
+		  .style("text-shadow", "1px 1px 1px rgba(0,0,0,0.1)") 
 		  .style("font", "10pt Arial Narrow")
 		  .text(function(d) { return format(d.jumlah); })
 		.transition().delay(100).duration(1500)
