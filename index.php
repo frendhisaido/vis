@@ -44,7 +44,11 @@
 		  
 		  
 		  function initjs(){
-		  
+		 		 $('input.deletable').wrap('<span class="deleteicon" />').after($('<span/>').click(function() {
+		 		 	resetbgkeyword();
+                    $(this).prev('input').val('').focus();
+                }));
+	
 		  
 		  //$('#buton').popover({trigger: 'hover',
 		  //		      placement: 'bottom',
@@ -110,9 +114,15 @@
  		  	}
  		  }
  		  
- 		  
+ 		  $("#searchkeyword").keypress(function(k){
+ 		  	if(k.which == 13){
+ 		  		searchkeyword($("#searchkeyword").val());
+ 		  		return false;
+ 		  	}
+ 		  });
  		  
 		  $("#zoombutton").click(function(){
+		  		
 		      $("#context").slideToggle(250,unzoom);
 		     });
 		     
@@ -156,11 +166,11 @@
 	      	  <li><a href="#help" onclick="$('#modalhelp').modal('show');">Bantuan</a></li>
             </ul>
           </div><!--/.nav-collapse -->
-          <!-- search rede
-	  	<form class="navbar-search pull-right">
-  		<input type="text" class="search-query" placeholder="Search">
+          
+	  	<form class="navbar-form pull-right">
+  		<input id="searchkeyword" type="text" class="search-query deletable" placeholder="Masukan keyword...">
 		</form>
-		-->
+
         </div>
       </div>
     </div>
@@ -255,14 +265,19 @@
 						    		<button class="btn btn-mini minwidth100">---</button>
 						    	</div>
 						    	<h5>
-						    		|<div class="input-append">
-  										<input class="minwidth100" id="appendedInputButton" size="16" type="text"><button class="btn" type="button">Go!</button>
-									</div>
+						    		| Kata kunci terkait: <i><text id="fullkeyword"></text></i>
 						    	</h5>
+						    	<!--
+						    	<div id="searchkeyword" class="input-append minwidth100">
+  										<input id="appendedInputButton" size="16" type="text"><button class="btn" type="button">Go!</button>
+								</div>
+								-->
 							</div>
 							<div class="widget-content  nopadding">
 								<div id="tweetcontainer">
-								
+								<div class="alert alert-info">
+  									Klik pada lingkaran di line chart untuk menampilkan tweet disini.
+								</div>
 								
 								  
 								</div>

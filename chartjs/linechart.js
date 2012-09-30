@@ -14,7 +14,8 @@ var stillpositif,stillnegatif,stillnonop,stillhover;
 var maxValue,maxpositif,maxnegatif,maxnonopini,maxYcurrent,maxgrouped;
 var maxdate, mindate,currentAtom,callCSV;
 var requestKeyWords, reqTweet, keyWords;
-var rectkeyword;
+var rectkeyword,datakeyword;
+
 var getTweetUrl = "data/gettweets.php";
 var getKeywUrl = "data/getKeyword.php";
 
@@ -93,7 +94,8 @@ var keywordground = allsvg.append("svg:g")
 	  .attr("height", h)
 	  .attr("transform","translate("+m[1]+",1)")
 	  .attr("fill","#fff")
-	  .style("stroke","none");
+	  .style("stroke","none")
+	  .attr("clip-path", "url(#clip)");
 
 var contsvg = d3.select("#context").append("svg:svg")
 	      .attr("width", w + m[1] + m[3])
@@ -229,6 +231,7 @@ function saddtop(maxY){
  		  
 function initLineChart(atom,update){
 	$("#loading").css("display","block");
+	
 	currentAtom = atom;
 	callCSV ="data/linecsv.php?atom="+atom;
 	var addtop = atom == 'perday'? 100 : 10;
@@ -343,12 +346,12 @@ function changeAtom(datasetline,datasetcircle){
 		.data(datasetcircle)
 	.enter().append("svg:g")
 		.attr("class","points");
-  
+
+  if(!isKeywordEmpty()){
+  	resetbgkeyword();
+  }
   drawLineChart();
- 
-  /*
-  
-  */
+
 }
 
 
@@ -502,6 +505,8 @@ var c = circsvg.selectAll(".points")
 
 function redraw(chartsize){
   
+  
+  
   var currentDomain = brush.empty() ? xContext.domain() : brush.extent();
   
   if(chartsize==null){
@@ -539,6 +544,10 @@ function redraw(chartsize){
   contextbacksvg.select(".xContextAxis").call(xAxisContext);
   backsvg.select(".xAxis").call(xAxis);
   backsvg.select(".yAxis").call(yAxis);
+  if(!isKeywordEmpty()){
+  	resetbgkeyword();
+  	drawbgkeyword();
+  }  
 }
 
 
@@ -675,56 +684,60 @@ function selisih(dates){
 			 );
 }
 
-function keywordbubbles(key){
-
+function searchkeyword(key){	
+	rectkeyword == null ? null : resetbgkeyword();
 	var request = "data/getKeyword.php?track=yes&key="+key;
 	console.log(request);
 	d3.json(request, function(data){
+		if(data[0]==null){
+			alert("Kata kunci "+key+" tidak ditemukan");
+		}else{
+			data.forEach(function(d){
+				d.tanggal = parseTanggal(d.tanggal);
+				d.jumlah = +d.jumlah;
+			});
+			var maxJum = d3.max(data.map(function(d){ return d.jumlah}),function(d){ return d;});
+			var lastdate = d3.max(data, function(d) { return d.tanggal; });
+			var firstdate = d3.min(data, function(d) { return d.tanggal; });
+			kwrectwidth.domain([firstdate, lastdate]);
+			kwScale.domain([0, maxJum ]);
+			kwrectclor.domain(kwScale.domain());
+			datakeyword = data;
+			
+			drawbgkeyword();
+		}
+	});
+	
+return null;   
+}
+
+function drawbgkeyword(){
+	
 		
-		
-		data.forEach(function(d){
-			d.tanggal = parseTanggal(d.tanggal);
-			d.jumlah = +d.jumlah;
-		});
-		var maxJum = d3.max(data.map(function(d){ return d.jumlah}),function(d){ return d;});
-		var lastdate = d3.max(data, function(d) { return d.tanggal; });
-		var firstdate = d3.min(data, function(d) { return d.tanggal; });
-		//console.log(lastdate+" "+firstdate);
-		//console.log(d3.max(data.map(function(d){ return d.jumlah}),function(d){ return d;}));
-		kwrectwidth.domain([firstdate, lastdate]);
-		kwScale.domain([0, maxJum ]);
-		kwrectclor.domain(kwScale.domain());
-		//console.log(data);
-		
-		
-		
-		rectkeyword = keywordground.selectAll(".keywordcirc")
-				.data(data).enter().append("svg:g")
-				.attr("clip-path", "url(#clip)");
-					
-		rectkeyword.append("svg:rect")
-				.attr("width", (kwrectwidth.rangeBand()))
-				.attr("height", h)
-				.attr("x",function(d){
+		rectkeyword = keywordground.selectAll(".keywordrect")
+				.data(datakeyword).enter().append("svg:rect")
+	    			.attr("class","onerect")
+	    			.attr("height", h)
+	    			.on("mouseover.rect",function(d,i){
+						$("#jumkw_"+i).show();
+					})
+					.attr("fill",function(d){
+						return kwrectclor(d.jumlah);
+					})
+					.attr("width", (kwrectwidth.rangeBand()))
+					.attr("x",function(d){
 							return x(d.tanggal);
-						})	
-				.attr("fill",function(d){
-					return kwrectclor(d.jumlah);
-				})
-				.on("mouseover.rect",function(d){
-					console.log(d.jumlah);
-				});
+						});
 					
 				
 				
-		/*
+		
 	    rectkeyword.append("text")
 	    	   .text(function(d){
 	    			return d.jumlah;
 	    		})
-	      .attr("class","hide")
 	      .attr("id",function(d,i){
-	      	return "bubbletext_"+i;
+	      	return "jumkw_"+i;
 	      })
 	      .attr("x", function(d){
 		    	return x(d.tanggal);	
@@ -735,10 +748,18 @@ function keywordbubbles(key){
 		  .attr("text-anchor", "middle")
 		  .attr("fill", "#000")
 		  .style("font", "8pt Helvetica");
-		*/
-	});
+		
 	
-return null;   
 }
 
-
+function resetbgkeyword(){
+	rectkeyword.remove();
+	console.log("rectremoved!");
+}
+function isKeywordEmpty(){
+	if($("#searchkeyword").val()!=""){
+		return false;
+	}else{
+		return true;
+	}
+}
