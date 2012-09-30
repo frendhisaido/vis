@@ -14,7 +14,7 @@ var stillpositif,stillnegatif,stillnonop,stillhover;
 var maxValue,maxpositif,maxnegatif,maxnonopini,maxYcurrent,maxgrouped;
 var maxdate, mindate,currentAtom,callCSV;
 var requestKeyWords, reqTweet, keyWords;
-var bubbles;
+var rectkeyword;
 var getTweetUrl = "data/gettweets.php";
 var getKeywUrl = "data/getKeyword.php";
 
@@ -27,7 +27,9 @@ var x = d3.time.scale().range([0, w - m[4] ]),
     xContext = d3.time.scale().range([0, w - m[4] ]),
     y = d3.scale.linear().range([h , 0]),
     yContext = d3.scale.linear().range([h2, 0])
-    bubbleScale = d3.scale.linear().range([0, h/4]) ;
+    kwScale = d3.scale.linear().range([0, h/4])
+    kwrectwidth = d3.scale.ordinal().rangeRoundBands([0, w-m[4] ], .1)
+    kwrectclor = d3.scale.linear().interpolate(d3.interpolateRgb).range(["#ffffff", "#c4c4c4"]);
 	
 var xAxis = d3.svg.axis()
 		.scale(x)
@@ -85,8 +87,8 @@ var filters= defs.append("filter").attr("id","dropshadow");
 	filters.append("feOffset").attr("dx",1).attr("dy",1).attr("result","offsetblur");
 	filters.append("feBlend").attr("in","SourceGraphic").attr("mode","normal");
 */
-var bubblesground = allsvg.append("svg:g")
-	  .attr("class","theBubbles")
+var keywordground = allsvg.append("svg:g")
+	  .attr("class","theKeywordBG")
 	  .attr("width", w)
 	  .attr("height", h)
 	  .attr("transform","translate("+m[1]+",1)")
@@ -685,48 +687,38 @@ function keywordbubbles(key){
 			d.jumlah = +d.jumlah;
 		});
 		var maxJum = d3.max(data.map(function(d){ return d.jumlah}),function(d){ return d;});
+		var lastdate = d3.max(data, function(d) { return d.tanggal; });
+		var firstdate = d3.min(data, function(d) { return d.tanggal; });
+		//console.log(lastdate+" "+firstdate);
 		//console.log(d3.max(data.map(function(d){ return d.jumlah}),function(d){ return d;}));
-		bubbleScale.domain([0, maxJum ]);
+		kwrectwidth.domain([firstdate, lastdate]);
+		kwScale.domain([0, maxJum ]);
+		kwrectclor.domain(kwScale.domain());
 		//console.log(data);
 		
 		
 		
-		bubbles = bubblesground.selectAll(".keywordcirc")
+		rectkeyword = keywordground.selectAll(".keywordcirc")
 				.data(data).enter().append("svg:g")
-				.attr("clip-path", "url(#clip)");	
-		
-		bubbles.append("svg:ellipse")
-		    .attr("ry", function(d){
-		    	console.log(d.jumlah+" : "+bubbleScale(d.jumlah)); 
-		    	return bubbleScale(d.jumlah);
-		    	})
-		    .attr("rx", function(d){
-		    	var rx = bubbleScale(d.jumlah)-(bubbleScale(d.jumlah) * 0.20); 
-		    	return rx;
-		    })
-		    .attr("class", "onebubble")
-		      .style("fill", "#EEEEEE")
-		      .style("fill-opacity","0.2")
-		    .attr("stroke","#ddd")
-		    .attr("stroke-opacity","0.3")
-		    .attr("stroke-width", "1px")
-		    .attr("cx" , function(d){
-		    	return x(d.tanggal);	
-		    	})
-		    .attr("cy" , h/2)
-		    .on("mouseover.ellipse",function(d,i){
-		    	var textDom = "#bubbletext_"+i;
-		    	$(textDom).slideToggle(100);
-		    	d3.select(this).attr("stroke-opacity","1");
-		    })
-		    .on("mouseout.ellipse",function(d,i){
-		    	var textDom = "#bubbletext_"+i;
-		    	$(textDom).slideToggle(100);
-
-		    	d3.select(this).attr("stroke-opacity","0.3");
-		    });
-		
-	    bubbles.append("text")
+				.attr("clip-path", "url(#clip)");
+					
+		rectkeyword.append("svg:rect")
+				.attr("width", (kwrectwidth.rangeBand()))
+				.attr("height", h)
+				.attr("x",function(d){
+							return x(d.tanggal);
+						})	
+				.attr("fill",function(d){
+					return kwrectclor(d.jumlah);
+				})
+				.on("mouseover.rect",function(d){
+					console.log(d.jumlah);
+				});
+					
+				
+				
+		/*
+	    rectkeyword.append("text")
 	    	   .text(function(d){
 	    			return d.jumlah;
 	    		})
@@ -743,7 +735,7 @@ function keywordbubbles(key){
 		  .attr("text-anchor", "middle")
 		  .attr("fill", "#000")
 		  .style("font", "8pt Helvetica");
-		
+		*/
 	});
 	
 return null;   

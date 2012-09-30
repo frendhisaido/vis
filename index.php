@@ -255,7 +255,9 @@
 						    		<button class="btn btn-mini minwidth100">---</button>
 						    	</div>
 						    	<h5>
-						    		| <text id="fullkeyword"></text>
+						    		|<div class="input-append">
+  										<input class="minwidth100" id="appendedInputButton" size="16" type="text"><button class="btn" type="button">Go!</button>
+									</div>
 						    	</h5>
 							</div>
 							<div class="widget-content  nopadding">
@@ -264,7 +266,6 @@
 								
 								  
 								</div>
-							</div>
 					</div>	 
 						</div>
 						
