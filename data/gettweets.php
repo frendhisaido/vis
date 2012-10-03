@@ -9,17 +9,25 @@ $tanggal = $_GET['tg'];
 $full = $_GET['full'];
 $atom = $_GET['atom'];
 $keywords = $_GET['kw'];
-$page = $_GET['pg'];
 $rowscount = $_GET['rc'];
+$page = $_GET['pg'];
+$top = $_GET['top'];
 
 @mysql_select_db($dsn) or die( "Unable to select database");
 
-
+if(!(isset($rowscount))){
+$checkcount = mysql_query("SELECT COUNT(IF
+		(MATCH (orientasi,content) AGAINST ('$keywords'), 1, NULL)) as count
+		FROM `dataset` 
+		WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d' ) =  '$tanggal'
+		AND orientasi = '$orientasi'");
+$rowscount= mysql_result($checkcount, 0);
+}
 if (!(isset($page))) { 
  $page = 0; 
  } 
  
- $limitrows = 9;
+ $limitrows = 8;
 
 
 		?>
@@ -28,20 +36,24 @@ if (!(isset($page))) {
 		
 		<?php
 		
-		if($atom == 'perday'){ 
-		$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam, content
-		FROM  `dataset` 
-		WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d' ) =  '$tanggal'
-		AND orientasi =  '$orientasi'
-		ORDER BY jam
-		LIMIT $page,$limitrows";
+		if($atom == 'perday'){
+		$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam,
+				content,
+				MATCH (orientasi,content) AGAINST ('$keywords') as cocok
+				FROM `dataset` 
+				WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d' ) =  '$tanggal'
+				AND orientasi = '$orientasi'
+				ORDER BY cocok DESC
+				LIMIT $page,$limitrows"; 
 		}else{
-		$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam, content
-		FROM  `dataset` 
-		WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d %H' ) =  '$tanggal'
-		AND orientasi =  '$orientasi'
-		ORDER BY jam
-		LIMIT $page,$limitrows";	
+		$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam,
+				content,
+				MATCH (orientasi,content) AGAINST ('$keywords') as cocok
+				FROM `dataset` 
+				WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d %H' ) =  '$tanggal'
+				AND orientasi = '$orientasi'
+				ORDER BY cocok DESC
+				LIMIT $page,$limitrows";	
 		}
 		$numbers = $page+1;
 		$result = mysql_query($query);
@@ -71,7 +83,7 @@ if (!(isset($page))) {
 			
 				if($isover<$rowscount){
 					$nextpage = $page + $limitrows;
-					$nexturl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$nextpage&atom=$atom";
+					$nexturl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$nextpage&atom=$atom&kw=$keywords";
 					$nextonclick =  "\$('#tweetcontainer').html('<h1>LOADING</h1>').load('$nexturl');";
 					$nextstyle = "";
 					$nextlabel = ">>";
@@ -82,7 +94,7 @@ if (!(isset($page))) {
 				}
 				if($isless>=$limitrows || $isless==0){
 					$prevpage = $page - $limitrows;
-					$prevurl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$prevpage&atom=$atom";
+					$prevurl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$prevpage&atom=$atom&kw=$keywords";
 					$prevonclick =  "\$('#tweetcontainer').html('<h1>LOADING</h1>').load('$prevurl');";
 					$prevstyle = "";
 					$prevlabel = "<<";

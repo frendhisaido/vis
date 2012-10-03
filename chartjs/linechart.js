@@ -5,7 +5,7 @@ var m = [20, 35, 40, 50, 60],
 
 var parseJam = d3.time.format("%Y-%m-%d %H").parse;
 var parseTanggal = d3.time.format("%Y-%m-%d").parse;
-
+var blurEffect = 15;
 
 var duration = [100,200,500,1000,1500],
     delay = [500,1000];
@@ -31,11 +31,12 @@ var x = d3.time.scale().range([0, w - m[4] ]),
     kwScale = d3.scale.linear().range([0, h/4])
     kwrectwidth = d3.scale.ordinal().rangeRoundBands([0, w-m[4] ], .1)
     kwrectclor = d3.scale.linear().interpolate(d3.interpolateRgb).range(["#ffffff", "#c4c4c4"]);
-	
+	//http://www.colorhexa.com/c9c5d3http://www.colorhexa.com/cac6c7
 var xAxis = d3.svg.axis()
 		.scale(x)
 		.tickSize(-h)
-		.tickPadding(10);
+		.tickPadding(10)
+		.tickSubdivide(true);
 		      
 var xAxisContext = d3.svg.axis()
 		      .scale(xContext)
@@ -81,16 +82,17 @@ var allbg = allsvg.append("rect")
 /*	 INI filter drop shadow buat line, dan udah bisa dipake, 
  *   tinggal disetel supaya mati pas lagi digeser
  *
+ * */
 var defs = allsvg.select("defs");
-var filters= defs.append("filter").attr("id","dropshadow");
+var filters= defs.append("filter").attr("id","blurify");
 
-	filters.append("feGaussianBlur").attr("in","SourceAlpha").attr("stdDeviation",1);
-	filters.append("feOffset").attr("dx",1).attr("dy",1).attr("result","offsetblur");
-	filters.append("feBlend").attr("in","SourceGraphic").attr("mode","normal");
-*/
+	filters.append("feGaussianBlur").attr("stdDeviation",blurEffect);
+	//filters.append("feOffset").attr("dx",1).attr("dy",1).attr("result","offsetblur");
+	//filters.append("feBlend").attr("in","SourceGraphic").attr("mode","normal");
+
 var keywordground = allsvg.append("svg:g")
 	  .attr("class","theKeywordBG")
-	  .attr("width", w)
+	  .attr("width", w - m[4])
 	  .attr("height", h)
 	  .attr("transform","translate("+m[1]+",1)")
 	  .attr("fill","#fff")
@@ -238,23 +240,29 @@ function initLineChart(atom,update){
 	 //penambahan supaya line tidak menyentuh pojok atas chart
 	
 d3.csv(callCSV, function(data) {
-//console.log("data");
-//	console.log(data);
 
-  data.forEach(function(d){
+  data.forEach(function(d,i){
   	  d.tgl = d.date;
-  	  //console.log(d.tgl);
-	  d.date = atom == 'perday'? parseTanggal(d.date) : parseJam(d.date);
-	  //console.log(d.date);
+	  d.date = atom == 'perday'? parseJam(d.date+" 12") : parseJam(d.date);
 	  d.jumlah = +d.jumlah;
-	  //console.log(d.jumlah);
   });
   
   orientasi = d3.nest()
       .key(function(d) { 
 		return d.orientasi; })
       .entries(data);
-
+  
+  	orientasi.forEach(function(d){
+  		
+  		d.values.forEach(function(h,i){
+  			if(i==0&&currentAtom=='perday'){
+  				h.date.setHours(01);
+  			}else if(i==(d.values.length-1)&&currentAtom=='perday'){
+  				h.date.setHours(23);
+  			}
+  		});
+  		
+  	})
   orientasi.forEach(function(d) {
     d.maxJumlah = d3.max(d.values, function(d) { return d.jumlah; });
      //console.log(s.maxJumlah);
@@ -269,14 +277,26 @@ d3.csv(callCSV, function(data) {
 	maxnonopini = d3.max(orientasi.map(function(d){ return d.key == "nonopini"? d.maxJumlah : 0},
 					  function(d){ return d;})) + addtop;
 	
-	
-	maxdate = d3.max(orientasi, function(d) { return d.values[d.values.length - 1].date; });
-	mindate = d3.min(orientasi, function(d) { return d.values[0].date; });
+	/*
+	maxdate = d3.max(orientasi, function(d) {   console.log("maxdate "+d.values[d.values.length - 1].date);
+												return d.values[d.values.length - 1].date; });
+	mindate = d3.min(orientasi, function(d) {   console.log("mindate "+d.values[0].date);
+												return d.values[0].date; });
+												*/
+    mindate = new Date(orientasi[0].values[0].date);
+    maxdate = new Date(orientasi[0].values[orientasi[0].values.length-1].date);
+	if(currentAtom=='perday'){
+		mindate.setHours(00);
+		maxdate.setDate(maxdate.getDate()+1);
+		maxdate.setHours(00);
+	}else{
+		mindate.setHours(00);
+		maxdate.setHours(12);
+	}
 	
 	y.domain([0,maxValue]);
 	yContext.domain(y.domain());
 	maxYcurrent = maxValue;
-	//console.log("maxYcurrent :"+maxYcurrent);
 	
 	if(update){
 		changeAtom(orientasi,data);
@@ -291,11 +311,13 @@ function initDrawLine(datasetline,datasetcircle,date1,date2){
 	x.domain([ date1 , date2 ]);
 	xContext.domain(x.domain());
 	
+	
+	
 	linesvg.selectAll(".theLine")
       .data(datasetline)
     .enter().append("svg:g")
-      .attr("class", "symbol"); 
-
+      .attr("class", "symbol");
+      
   contextsvg.selectAll(".theContext")
 		.data(datasetline)
 	.enter().append("svg:g")
@@ -305,7 +327,7 @@ function initDrawLine(datasetline,datasetcircle,date1,date2){
 		.data(datasetcircle)
 	.enter().append("svg:g")
 		.attr("class","points");
-		
+			
   contextsvg.append("g")
 	      .attr("class", "x brush")
 	      .call(brush)
@@ -328,6 +350,8 @@ function changeAtom(datasetline,datasetcircle){
 	x.domain(passingDomain(passDomain,false));
 	xContext.domain(x.domain());
 	
+	
+	
 	linesvg.selectAll(".symbol").remove();
 	contextsvg.selectAll(".context").remove();
 	circsvg.selectAll(".points").remove();
@@ -347,7 +371,7 @@ function changeAtom(datasetline,datasetcircle){
 	.enter().append("svg:g")
 		.attr("class","points");
 
-  if(!isKeywordEmpty()){
+  if(rectkeyword != null){
   	resetbgkeyword();
   }
   drawLineChart();
@@ -428,6 +452,10 @@ var c = circsvg.selectAll(".points")
 	    .attr("clip-path", "url(#clip)");
   
   c.each(function(d){
+  	if(d.orientasi=='negatif' && d.date.getDate()==13){
+  	d.date.setDate(12);
+  	//console.log(d);
+  	}
     var e = d3.select(this);
     e.append("svg:circle")
     .attr("r", circlesize() )
@@ -443,8 +471,8 @@ var c = circsvg.selectAll(".points")
     .attr("cy" , function(d){ return y(d.jumlah);})
 		.style("opacity", "0")
 	    .on("mouseover.circles", function(d){
-	    	var element = this;
-			d3.select(this).attr("stroke-width","8px");		
+			var change = d3.select(this);
+			change.attr("stroke-width","8px");		
 			})
 		.on("click.circles",function(d){
 			setInfoCircle(d.date, d.jumlah, d.orientasi, currentAtom);
@@ -457,13 +485,13 @@ var c = circsvg.selectAll(".points")
 									title: keyWords,
 									delay: {show: 0,hide: 1000}
 								});
-								reqTweet = getTweetUrl +"?tg="+d.tgl+"&or="+d.orientasi+"&atom="+currentAtom+"&rc="+d.jumlah+"&kw="+keyWords+",";
+								reqTweet = getTweetUrl +"?tg="+d.tgl+"&or="+d.orientasi+"&atom="+currentAtom+"&kw="+keyWords+",";
 					
 									$(element).tooltip('show');
 									$("#fullkeyword").text(keyWords);
-									console.log("getKw: "+requestKeyWords);
-									console.log("getTw: "+reqTweet);
-									$("#tweetcontainer").html("<h1> LOADING</h1>").load(reqTweet);
+									//console.log("getKw: "+requestKeyWords);
+									//console.log("getTw: "+reqTweet);
+									$("#tweetcontainer").html("<img id='loadingtweet' src='img/black-010-loading.gif'/>").load(reqTweet);
 							});
 						}else{
 							requestKeyWords = getKeywUrl +"?tg="+(d.tgl)+"&or="+d.orientasi+"&full=n&track=no";
@@ -477,22 +505,17 @@ var c = circsvg.selectAll(".points")
 									$(element).tooltip('show');
 									$("#fullkeyword").text(keyWords);
 									//console.log("getKw: "+requestKeyWords);
-									console.log("getTw: "+reqTweet);
-									$("#tweetcontainer").html("<h1> LOADING</h1>").load(reqTweet);
+									//console.log("getTw: "+reqTweet);
+									$("#tweetcontainer").html("<img id='loadingtweet' src='img/black-010-loading.gif'/>").load(reqTweet);
 							});
 						}
-						
-					
-					
-			/*buggy
-			d3.select(this)
-				.attr("r", (circlesize()+5))
-				.transition().duration(duration[2])
-				.attr("r",circlesize());
-			*/	
+		var change = d3.select(this);
+			change.attr("stroke","#000")
+			.attr("stroke-width","1px");
 		})
 		.on("mouseout.circles", function(d){
-			d3.select(this).attr("stroke-width","0px");
+			var change = d3.select(this);
+			change.attr("stroke-width","2px");
 		});
     
   });
@@ -685,6 +708,7 @@ function selisih(dates){
 }
 
 function searchkeyword(key){	
+	$("#loading").css("display","block");
 	rectkeyword == null ? null : resetbgkeyword();
 	var request = "data/getKeyword.php?track=yes&key="+key;
 	console.log(request);
@@ -699,12 +723,14 @@ function searchkeyword(key){
 			var maxJum = d3.max(data.map(function(d){ return d.jumlah}),function(d){ return d;});
 			var lastdate = d3.max(data, function(d) { return d.tanggal; });
 			var firstdate = d3.min(data, function(d) { return d.tanggal; });
-			kwrectwidth.domain([firstdate, lastdate]);
+			
 			kwScale.domain([0, maxJum ]);
 			kwrectclor.domain(kwScale.domain());
 			datakeyword = data;
 			
 			drawbgkeyword();
+		
+	$("#loading").css("display","none");
 		}
 	});
 	
@@ -712,19 +738,28 @@ return null;
 }
 
 function drawbgkeyword(){
-	
 		
+		var rectwidth = (w-m[4])/selisih(x.domain());
 		rectkeyword = keywordground.selectAll(".keywordrect")
-				.data(datakeyword).enter().append("svg:rect")
-	    			.attr("class","onerect")
+				.data(datakeyword).enter().append("svg:g").attr("class","onerect");
+				
+	    rectkeyword.append("svg:rect")
+	    			.attr("filter","url(#blurify)")
 	    			.attr("height", h)
 	    			.on("mouseover.rect",function(d,i){
 						$("#jumkw_"+i).show();
+						$("#kw_"+i).show();
+						$("#daykw_"+i).show();
+					})
+					.on("mouseout.rect",function(d,i){
+						$("#jumkw_"+i).hide();
+						$("#kw_"+i).hide();
+						$("#daykw_"+i).hide();
 					})
 					.attr("fill",function(d){
 						return kwrectclor(d.jumlah);
 					})
-					.attr("width", (kwrectwidth.rangeBand()))
+					.attr("width",rectwidth)
 					.attr("x",function(d){
 							return x(d.tanggal);
 						});
@@ -736,25 +771,58 @@ function drawbgkeyword(){
 	    	   .text(function(d){
 	    			return d.jumlah;
 	    		})
+	      .attr("class","hide")
 	      .attr("id",function(d,i){
 	      	return "jumkw_"+i;
-	      })
+	      })	      
 	      .attr("x", function(d){
 		    	return x(d.tanggal);	
 		    	}) 
-		  .attr("y", h/2)
-		  .attr("dx", 0) 
+		  .attr("y", h/15)
+		  .attr("dx", 25) 
 		  .attr("dy", ".15em")
 		  .attr("text-anchor", "middle")
-		  .attr("fill", "#000")
-		  .style("font", "8pt Helvetica");
-		
-	
+		  .style("font-size", "20pt");
+		  
+		  
+		 rectkeyword.append("text")
+	    	   .text($("#searchkeyword").val())
+	      .attr("class","hide")
+	      .attr("id",function(d,i){
+	      	return "kw_"+i;
+	      })	      
+	      .attr("x", function(d){
+		    	return x(d.tanggal);	
+		    	}) 
+		  .attr("y", h/9)
+		  .attr("dx", 30) 
+		  .attr("dy", ".25em")
+		  .attr("text-anchor", "middle")
+		  .style("font-size","10pt");
+		  
+		  rectkeyword.append("text")
+	    	   .text(function(d){
+	    	   	return d.tanggal.getDate()+" "+nama_bulan[d.tanggal.getMonth()+1];
+	    	   	})
+	      .attr("class","hide")
+	      .attr("id",function(d,i){
+	      	return "daykw_"+i;
+	      })	      
+	      .attr("x", function(d){
+		    	return x(d.tanggal);	
+		    	}) 
+		  .attr("y", h/6)
+		  .attr("dx", 22) 
+		  .attr("dy", ".15em")
+		  .attr("text-anchor", "middle")
+
 }
 
-function resetbgkeyword(){
+function resetbgkeyword(set){
 	rectkeyword.remove();
-	console.log("rectremoved!");
+	if(set=="full"){
+		datakeyword.length = 0;
+	}
 }
 function isKeywordEmpty(){
 	if($("#searchkeyword").val()!=""){
@@ -763,3 +831,9 @@ function isKeywordEmpty(){
 		return true;
 	}
 }
+
+
+function topTweet(elmnt){
+	console.log(elmnt);
+}
+

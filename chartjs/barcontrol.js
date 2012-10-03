@@ -1,9 +1,6 @@
 
 
-var totaldates = 0;
-var nama_bulan = new Array("0","Januari", "Februari", "Maret", 
-	"April", "Mei", "Juni", "Juli", "Agustus", "September", 
-	"Oktober", "November", "Desember");
+
 
 $.getJSON("data/datelist.php", function(result) {
 		totaldates = result.length;

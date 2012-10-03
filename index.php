@@ -14,6 +14,7 @@
     <link type="text/css" href="css/barchart.css" rel="stylesheet">
     <link type="text/css" href="css/style-2.css" rel="stylesheet">
     <link type="text/css" href="css/charts.css" rel="stylesheet">
+    
     <!-- Le styles 
     <link type="text/css" href="http://localhost/vis/min/b=vis/css&f=barchart.css,style-2.css,charts.css" rel="stylesheet">
     <link type="text/css" href="http://localhost/vis/min/b=vis/css&f=jquery-ui-1.8.20.custom.css,bootstrap.css,bootstrap-responsive.css" rel="stylesheet" />
@@ -26,6 +27,7 @@
     <script type="text/javascript" src="lib/jquery/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.mouse.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.slider.js"></script>
+    <script type="text/javascript" src="chartjs/init.js"></script>
     
      <!-- Le javascripts
      	<script type="text/javascript" src="lib/jquery/jquery.ui.draggable.js"></script>
@@ -40,102 +42,11 @@
 		  ];
 		  //override array hari untuk axis x
 		  d3_time_weekdays = ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"];
+		  var totaldates = 0;
+		  var nama_bulan = new Array("0","Januari", "Februari", "Maret", 
+				"April", "Mei", "Juni", "Juli", "Agustus", "September", 
+				"Oktober", "November", "Desember");
 		  
-		  
-		  
-		  function initjs(){
-		 		 $('input.deletable').wrap('<span class="deleteicon" />').after($('<span/>').click(function() {
-		 		 	resetbgkeyword();
-                    $(this).prev('input').val('').focus();
-                }));
-	
-		  
-		  //$('#buton').popover({trigger: 'hover',
-		  //		      placement: 'bottom',
-		  //	      delay: {show: 2500, hide: 500}});
-		  $("#context").hide();
-		  $("#slider").hide();
-		  
-		  
- 		  var negopen = true,posopen = true,nonopen = true;
- 		  $("#toggleNegatif").click(function(){
- 		  	toggleLine("negatif");
- 		  	if(tog[0].view){
-	 		  	$(tog[0].eye).attr("class","icon-eye-close");
-	 		  	tog[0].view = false; 
-	 		  	}else{
-	 		  	$(tog[0].eye).attr("class","icon-eye-open");
-	 		  	tog[0].view = true;  	
- 		  	}
- 		  	isAlone();		  	
- 		  });
- 		   $("#togglePositif").click(function(){
- 		  	toggleLine("positif");
- 		  	if(tog[1].view){
-	 		  	$(tog[1].eye).attr("class","icon-eye-close");
-	 		  	tog[1].view = false; 
-	 		  	}else{
-	 		  	$(tog[1].eye).attr("class","icon-eye-open");
-	 		  	tog[1].view = true;
- 		  	}
- 		  	isAlone();  	
- 		  });
- 		   $("#toggleNonopini").click(function(){
- 		  	toggleLine("nonopini");
-	 		if(tog[2].view){
-	 		  	$(tog[2].eye).attr("class","icon-eye-close");
-	 		  	tog[2].view = false; 
-	 		  	}else{
-	 		  	$(tog[2].eye).attr("class","icon-eye-open");
-	 		  	tog[2].view = true;
-	 		  }
-	 		  isAlone();  	
- 		  });
- 		  
- 		  function isAlone(){
- 		  	var countrue=0;
- 		  	var alone=0;
- 		  	for (i=0; i < tog.length; i++){
- 		  		if(tog[i].view == true){
- 		  			countrue++;
- 		  		}
- 		  	}
- 		  	if(countrue == 1){
- 		  		for (i=0; i < tog.length; i++){
- 		  			if(tog[i].view == true){
- 		  			$(tog[i].id).attr("disabled","");
- 		  			toggleMaxY(tog[i].orn);
- 		  			}
- 		  		}
- 		  	}
- 		  	if(countrue >1){
- 		  		$("#viewcontrols button").removeAttr("disabled");
- 		  		toggleMaxY("default");
- 		  	}
- 		  }
- 		  
- 		  $("#searchkeyword").keypress(function(k){
- 		  	if(k.which == 13){
- 		  		searchkeyword($("#searchkeyword").val());
- 		  		return false;
- 		  	}
- 		  });
- 		  
-		  $("#zoombutton").click(function(){
-		  		
-		      $("#context").slideToggle(250,unzoom);
-		     });
-		     
-		  $("#ubahrentang").click(function(){
-		      $("#slider").slideToggle(250);
-		     });
-		  initbarchart();
-		  initLineChart('perday',false);
-		  //$("#controlers").draggable();
-		  }
-		
-		 
-		
 		</script>
     
 
@@ -265,7 +176,7 @@
 						    		<button class="btn btn-mini minwidth100">---</button>
 						    	</div>
 						    	<h5>
-						    		| Kata kunci terkait: <i><text id="fullkeyword"></text></i>
+						    		| Keyword: <i><text id="fullkeyword"></text></i>
 						    	</h5>
 						    	<!--
 						    	<div id="searchkeyword" class="input-append minwidth100">
@@ -277,15 +188,16 @@
 								<div id="tweetcontainer">
 								<div class="alert alert-info">
   									Klik pada lingkaran di line chart untuk menampilkan tweet disini.
+  									
 								</div>
-								
-								  
+								  <div class="loadingtweet">  </div>
 								</div>
 					</div>	 
 						</div>
 						
 					 
-	</div><!-- /container -->
+	</div>
+	
     
     <!-- modals/ -->
 						<div id="modalhelp" class="modal hide fade">
@@ -343,7 +255,9 @@ Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, ve
 						  </div>
 						</div>			
 	 <!-- /modals -->
-	 
+		</div>
+	</div><!-- /container -->
+	<button id="tampilkeyword" class="btn hide">Tampilkan tweet</button>
     <!-- Le javascript
     
     ================================================== -->
