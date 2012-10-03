@@ -27,6 +27,7 @@
     <script type="text/javascript" src="lib/jquery/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.mouse.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.slider.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.ui.datepicker.js"></script>
     <script type="text/javascript" src="chartjs/init.js"></script>
     
      <!-- Le javascripts
@@ -46,6 +47,9 @@
 		  var nama_bulan = new Array("0","Januari", "Februari", "Maret", 
 				"April", "Mei", "Juni", "Juli", "Agustus", "September", 
 				"Oktober", "November", "Desember");
+		  //var firstDate, lastDate;
+		  var defaultrentang = "#slider";
+		  var date1,date2;
 		  
 		</script>
     
@@ -108,7 +112,7 @@
 								 </div>
 								 <div class="buttons btn-group" data-toggle="buttons-radio">			
 		  						<button type="button" class="btn btn-mini topButton" onclick="initLineChart('perday',true);">Per Hari</button>
-		  						<buttontype="button" class="btn btn-mini topButton" onclick="initLineChart('perhour',true);">Per Jam</button>
+		  						<button type="button" class="btn btn-mini topButton" onclick="initLineChart('perhour',true);">Per Jam</button>
 								</div>
 								<div id="viewcontrols" class="buttons">
 										<button id="toggleNegatif" type="button" class="btn btn-mini" data-toggle="button">
@@ -120,25 +124,33 @@
 										<button id="toggleNonopini" type="button" class="btn btn-mini" data-toggle="button">
 										  <i id="noneye" class="icon-eye-open"></i> Non-Opini</button>
 	  							 </div>
-								<button id="ubahrentang" class="buttons btn btn-mini" data-toggle="button" title="klik untuk tampil atau sembunyikan slider">Ubah</button>
+	  							<div class="buttons btn-group btnrentang" >
+		  							<button id="ubahslider" class="btn btn-mini" title="klik untuk rubah rentang tanggal">Ubah rentang</button>
+									<button id="setSlider" type="button" class="btn btn-mini tampilsetting hide active" data-toggle="button">slider</button>
+									<button id="setDatepick" type="button" class="btn btn-mini tampilsetting hide" data-toggle="button">datepicker</button>
+									<button id="settingrentang" class="btn btn-mini"><i class="icon-cog"></i></button>
+								</div>
 								<h5><text id="inforentang" 
 									class="inforentang textUnselectable"></text>
 								</h5>
 								
-								
 														
 		</div>
 		<div class="widget-content">
-		
+									<div id="rentangdatepicker" class="hide">
+										<input type="text" id="calDate1" name="from" placeholder="Dari.."/>
+										<input type="text" id="calDate2" name="to" placeholder="Hingga.."/>
+										<button id="ubahcalendar" class="btn"><i class="icon-ok"></i></button>
+									</div>
 			<div id="sliderentang" >			
-				<div id="slider" class="widget-content inshadow"></div>		
+				<div id="slider" class="widget-content inshadow hide"></div>		
 			</div>
 		
 	    <div id="linechart">
 	    	
 	    	
 	    </div>
-	    <div id="context"></div>	
+	    <div id="context" class="hide"></div>	
 	   </div>
 	   
 			
@@ -258,6 +270,8 @@ Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, ve
 		</div>
 	</div><!-- /container -->
 	<button id="tampilkeyword" class="btn hide">Tampilkan tweet</button>
+	
+
     <!-- Le javascript
     
     ================================================== -->

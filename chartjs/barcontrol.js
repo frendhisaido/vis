@@ -10,7 +10,9 @@ $.getJSON("data/datelist.php", function(result) {
 		var select1 = $("#dates1");
 		var select2 = $("#dates2");
 	    setInfoRentang(result[0].date, result[totaldates-1].date);
-	    
+	    //setDatePicker(new Date(result[0].date),new Date(result[totaldates-1].date));
+	    date1 = result[0].date;
+	    date2 = result[totaldates-1].date;
 	$.each(result, function() {
 	select1.append($("<option />").val(this.date).text(Number(this.date.substr(8,2))+" "+nama_bulan[Number(this.date.substr(5,2))]));
 	select2.append($("<option />").val(this.date).text(Number(this.date.substr(8,2))+" "+nama_bulan[Number(this.date.substr(5,2))]));
@@ -104,3 +106,36 @@ function setInfoWaktuBlank(){
 	var btns = infos.selectAll("button");
 	btns.attr("class","btn btn-mini minwidth100 setopacity3").text("---");	
 }
+
+
+$("#setSlider").click(function(){
+	defaultrentang = "#slider";
+	var set = $("#setDatepick").attr("class").replace("active","");
+	$("#setDatepick").attr("class",set);
+	//$("#ubahslider").removeAttr("disabled");
+	//$(".tampilsetting").slideToggle(250);
+});
+
+$("#setDatepick").click(function(){
+	defaultrentang = "#rentangdatepicker";
+	var set = $("#setSlider").attr("class").replace("active","");
+	$("#setSlider").attr("class",set);
+	//$("#ubahslider").removeAttr("disabled");
+	//$(".tampilsetting").slideToggle(250);
+});
+
+$("#ubahcalendar").click(function(){
+	var dd1 = $("#calDate1").val()+" 00";
+	var dd2 = $("#calDate2").val()+" 23";
+	var passDomain = [dd1, dd2];
+	passingDomain(passDomain,true);
+	
+	updatebarchart(
+				   $("#calDate1").val(),
+				   $("#calDate2").val()
+				  );
+    setInfoRentang(
+    			   $("#calDate1").val(),
+				   $("#calDate2").val()
+					);
+});

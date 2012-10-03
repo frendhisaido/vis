@@ -344,9 +344,21 @@ function initDrawLine(datasetline,datasetcircle,date1,date2){
 
 function changeAtom(datasetline,datasetcircle){
 	resetViewControls();
-	var dd1 = $("#dates1 option:selected").val()+" 00";
-	var dd2 = $("#dates2 option:selected").val()+" 23";
-	var passDomain = [dd1, dd2];
+	if(defaultrentang=="#rentangdatepicker"){
+		if($("#calDate1").val()==""){
+			var dd1 = date1+" 00";
+			var dd2 = date2+" 23";
+		}else{
+			var dd1 = $("#calDate1").val()+" 00";
+			var dd2 = $("#calDate2").val()+" 23";
+		}
+		var passDomain = [dd1, dd2];
+	}else{
+		var dd1 = $("#dates1 option:selected").val()+" 00";
+		var dd2 = $("#dates2 option:selected").val()+" 23";
+		var passDomain = [dd1, dd2];
+	}
+	
 	x.domain(passingDomain(passDomain,false));
 	xContext.domain(x.domain());
 	
@@ -490,7 +502,7 @@ var c = circsvg.selectAll(".points")
 									$(element).tooltip('show');
 									$("#fullkeyword").text(keyWords);
 									//console.log("getKw: "+requestKeyWords);
-									//console.log("getTw: "+reqTweet);
+									console.log("getTw: "+reqTweet);
 									$("#tweetcontainer").html("<img id='loadingtweet' src='img/black-010-loading.gif'/>").load(reqTweet);
 							});
 						}else{
@@ -812,9 +824,10 @@ function drawbgkeyword(){
 		    	return x(d.tanggal);	
 		    	}) 
 		  .attr("y", h/6)
-		  .attr("dx", 22) 
+		  .attr("dx", 25) 
 		  .attr("dy", ".15em")
 		  .attr("text-anchor", "middle")
+		  .style("font-size","8pt");
 
 }
 

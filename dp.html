@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jQuery UI Datepicker - Restrict date range</title>
+	<link type="text/css" href="css/jquery-ui-1.8.20.custom.css" rel="stylesheet" />
+    <script type="text/javascript" src="lib/jquery/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="lib/bootstrap/bootstrap.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.ui.mouse.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.ui.datepicker.js"></script>
+	<script>
+	$(function() {
+		var min = new Date("2012-03-24");
+		var max = new Date("2012-04-12");
+		$( "#from" ).datepicker({
+			minDate: min,
+			maxDate: max,
+			changeMonth: true,
+			numberOfMonths: 2,
+			onSelect: function( selectedDate ) {
+				$( "#to" ).datepicker( "option", "minDate", selectedDate );
+			}
+		});
+		$( "#to" ).datepicker({
+			minDate: min,
+			maxDate: max,
+			changeMonth: true,
+			numberOfMonths: 2,
+			onSelect: function( selectedDate ) {
+				$( "#from" ).datepicker( "option", "maxDate", selectedDate );
+			}
+		});
+	});
+	</script>
+</head>
+<body>
+
+<div class="demo">
+
+<div class="demo">
+
+<label for="from">From</label>
+<input type="text" id="from" name="from"/>
+<label for="to">to</label>
+<input type="text" id="to" name="to"/>
+
+</div><!-- End demo -->
+
+
+
+<div class="demo-description">
+<p>Restrict the range of selectable dates with the <code>minDate</code> and <code>maxDate</code> options.  Set the beginning and end dates as actual dates (new Date(2009, 1 - 1, 26)), as a numeric offset from today (-20), or as a string of periods and units ('+1M +10D').  For the last, use 'D' for days, 'W' for weeks, 'M' for months, or 'Y' for years.</p>
+</div><!-- End demo-description -->
+
+</body>
+</html>

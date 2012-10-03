@@ -8,8 +8,7 @@ function initjs(){
 		  //$('#buton').popover({trigger: 'hover',
 		  //		      placement: 'bottom',
 		  //	      delay: {show: 2500, hide: 500}});
-		  $("#context").hide();
-		  $("#slider").hide();
+
 		  
 		  
  		  var negopen = true,posopen = true,nonopen = true;
@@ -84,14 +83,55 @@ function initjs(){
 		  	 }
 		      $("#context").slideToggle(250,unzoom);
 		     });
-		     
-		  $("#ubahrentang").click(function(){
-		      $("#slider").slideToggle(250);
+
+		  
+		  $("#settingrentang").click(function(){
+		  		$("#slider").hide();
+		  		$("#rentangdatepicker").hide();
+		  		$(".tampilsetting").slideToggle(250);
+		  		if($("#ubahslider").attr("disabled")==null){
+		  			$("#ubahslider").attr("disabled","");
+		  		}else{
+		  			$("#ubahslider").removeAttr("disabled");
+		  		}
+		  	
+		  });
+		 
+		   
+		  $("#ubahslider").click(function(){
+		  		$(defaultrentang).slideToggle(250);
 		     });
+		     
+		  $( "#calDate1" ).datepicker({
+			minDate: new Date(date1),
+			maxDate: new Date(date2),
+			dateFormat: "yy-mm-dd",
+			numberOfMonths: 2,
+			onSelect: function( selectedDate ) {
+				$( "#calDate2" ).datepicker( "option", "minDate", selectedDate );
+				}
+			});
+		$( "#calDate2" ).datepicker({
+			minDate: new Date(date1),
+			maxDate: new Date(date2),
+			dateFormat: "yy-mm-dd",
+			numberOfMonths: 2,
+			onSelect: function( selectedDate ) {
+				$( "#calDate1" ).datepicker( "option", "maxDate", selectedDate );
+				}
+			});
+		  
 		  $("#fullkeyword").click(function(){
 		  	topTweet(this);
 		  	
 		  });
+		  
+		  
+		
+		
+
+
+
 		  initbarchart();
 		  initLineChart('perday',false);
 		  //$("#controlers").draggable();

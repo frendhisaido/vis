@@ -41,7 +41,7 @@
 	#viewcontrols button{
 		width: 90px;
 	}
-	#ubahrentang {
+	.btnrentang {
 		position: relative;
 		float: left;
 		top: -10px;
@@ -63,12 +63,6 @@
 		top: -10%;
 		left: 100%;
 	}
-	
-	.blingyo{
-		text-shadow: 0 0 0.2em #87F, 0 0 0.2em #87F,
-	        0 0 0.2em #87F
-	}
-	
 	.textrentang{
 		font-weight: 600;
 	}
@@ -211,6 +205,9 @@
 		top: 5px;
 		right: 350px;
 	}
+	.tampilsetting {
+	
+	}
 	
 	.loadingtweet{
 		background-image: url("../img/black-010-loading.gif");
@@ -218,4 +215,14 @@
 		position: relative;
 		top: 80px;
 		left: 20%;
+	}
+	
+	#rentangdatepicker {
+		margin-left: 20px;
+	}
+	#rentangdatepicker input{
+		width: 80px !important; 
+	}
+	#rentangdatepicker button{
+		margin-bottom: 9px;
 	}
