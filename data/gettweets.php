@@ -15,6 +15,10 @@ $top = $_GET['top'];
 
 @mysql_select_db($dsn) or die( "Unable to select database");
 
+if (!(isset($page))) { 
+ $page = 0; 
+ } 
+
 if(!(isset($top))){
 if(!(isset($rowscount))){
 $checkcount = mysql_query("SELECT COUNT(IF
@@ -24,11 +28,8 @@ $checkcount = mysql_query("SELECT COUNT(IF
 		AND orientasi = '$orientasi'");
 $rowscount= mysql_result($checkcount, 0);
 }
-if (!(isset($page))) { 
- $page = 0; 
- } 
- 
- $limitrows = 8;
+
+$limitrows = 8;
 
 
 		?>
@@ -125,6 +126,7 @@ if (!(isset($page))) {
 		WHERE content LIKE '%$keywords%'");
 		$rowscount = mysql_result($query, 0);
 		if($rowscount>1){
+		$limitrows = 30;
 	?>
 		<table class="table">
 		<tbody >	
@@ -132,29 +134,12 @@ if (!(isset($page))) {
 		$query = mysql_query("SELECT DATE_FORMAT(datetime,'%e/%b %H:%i') 
 		as tanggal,content,orientasi FROM `dataset` 
 		WHERE content LIKE '%$keywords%' ORDER BY tanggal ASC
-		LIMIT 0,20");
+		LIMIT $page,$limitrows");
 		
 		//$numbers = $page+1;
-		while ($row = mysql_fetch_assoc($query)) {
-				/*
-			switch ($row["orientasi"]) {
-				case 'negatif':
-					$trclass = "error";
-					break;
-				case 'positif':
-					$trclass = "success";
-					break;
-				case 'nonopini':
-					$trclass = "warning";
-					break;
-				default:
-					
-					break;
-			}
-			*/
-			 
+		while ($row = mysql_fetch_assoc($query)) {		
 		 ?>
-		 <tr id="tweets">
+		 <tr id="tweets" title="<?php echo $row["orientasi"]; ?>">
 		      <td class="jamtweet"><?php echo $row["tanggal"];?></td>
 		      <td class="<?php echo $row["orientasi"]; ?>"><?php echo $row["content"];?></td>
 		 </tr>
@@ -166,11 +151,8 @@ if (!(isset($page))) {
 		</tbody>
 		</table>
 		<?php
-		/*
-		if($rowscount>6){
-			if($atom=='perhour'){
-				$tanggal = str_replace(" ", "%20", $tanggal);
-			}
+		
+		if($rowscount>$limitrows){
 			//echo "rc:".$rowscount;
 			$isover = $page + $limitrows;
 			$isless = $page - $limitrows;
@@ -179,8 +161,8 @@ if (!(isset($page))) {
 			
 				if($isover<$rowscount){
 					$nextpage = $page + $limitrows;
-					$nexturl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$nextpage&atom=$atom&kw=$keywords";
-					$nextonclick =  "\$('#tweetcontainer').html('<h1>LOADING</h1>').load('$nexturl');";
+					$nexturl = "data/gettweets.php?&top=yes&rc=$rowscount&pg=$nextpage&kw=$keywords";
+					$nextonclick =  "\$('#keywordresult').html('<h1>LOADING</h1>').load('$nexturl');";
 					$nextstyle = "";
 					$nextlabel = ">>";
 				}else{
@@ -190,8 +172,8 @@ if (!(isset($page))) {
 				}
 				if($isless>=$limitrows || $isless==0){
 					$prevpage = $page - $limitrows;
-					$prevurl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$prevpage&atom=$atom&kw=$keywords";
-					$prevonclick =  "\$('#tweetcontainer').html('<h1>LOADING</h1>').load('$prevurl');";
+					$prevurl = "data/gettweets.php?&top=yes&rc=$rowscount&pg=$prevpage&kw=$keywords";
+					$prevonclick =  "\$('#keywordresult').html('<h1>LOADING</h1>').load('$prevurl');";
 					$prevstyle = "";
 					$prevlabel = "<<";
 				}else{
@@ -200,7 +182,7 @@ if (!(isset($page))) {
 					$prevlabel = "||";
 				}
 		?>
-		<div id="pagingbutton" class="pagination pagination-centered">
+		<div class="pagination pagination-centered">
 									  <ul>
 									  	<li><a href="#" onclick="<?php echo $prevonclick;?>" style="<?php echo $prevstyle;?>">
 									  		<?php echo $prevlabel;?>
@@ -213,11 +195,15 @@ if (!(isset($page))) {
 									  </ul>
 		</div>
 	
-	<?php
+			<?php
 		 
 			}
-		 * 
-		 */
+		}else{
+			?>
+			<div class="alert">
+			  <strong>Keyword tidak ditemukan.</strong>
+			</div>
+			<?php
 		}
 	}
 ?>
