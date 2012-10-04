@@ -124,8 +124,8 @@
 	  							 </div>
 	  							<div class="buttons btn-group btnrentang" >
 		  							<button id="ubahslider" class="btn btn-mini" title="klik untuk rubah rentang tanggal">Ubah rentang</button>
-									<button id="setSlider" type="button" class="btn btn-info btn-mini tampilsetting hide active" data-toggle="button">slider</button>
-									<button id="setDatepick" type="button" class="btn btn-info btn-mini tampilsetting hide" data-toggle="button">datepicker</button>
+									<button id="setSlider" type="button" class="btn btn-info btn-mini tampilsetting hide active" >slider</button>
+									<button id="setDatepick" type="button" class="btn btn-info btn-mini tampilsetting hide" >datepicker</button>
 									<button id="settingrentang" class="btn btn-mini"><i class="icon-cog"></i></button>
 								</div>
 								<h5><text id="inforentang" 
@@ -214,7 +214,7 @@
     <div id="modaltweetkw" class="modal hide fade">
 						  	<div class="modal-header">
 						    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						    <h3 id="titlekeywordresult">Keyword : <text id="keywordtitle"></text></h3>
+						    <h3 id="titlekeywordresult">Keyword : <i><text id="keywordtitle"></text></i></h3>
 						  </div>
 						  <div class="modal-body">
 						  	<div id="keywordresult">

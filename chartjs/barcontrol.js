@@ -110,6 +110,12 @@ function setInfoWaktuBlank(){
 
 $("#setSlider").click(function(){
 	defaultrentang = "#slider";
+	var isactive = $("#setSlider").attr("class");
+	if(isactive.indexOf("active")!= -1){
+		$("#setSlider").attr("class",isactive);
+	}else{
+		$("#setSlider").attr("class",isactive+" active");
+	}
 	var set = $("#setDatepick").attr("class").replace("active","");
 	$("#setDatepick").attr("class",set);
 	//$("#ubahslider").removeAttr("disabled");
@@ -118,6 +124,12 @@ $("#setSlider").click(function(){
 
 $("#setDatepick").click(function(){
 	defaultrentang = "#rentangdatepicker";
+	var isactive = $("#setDatepick").attr("class");
+	if(isactive.indexOf("active")!= -1){
+		$("#setDatepick").attr("class",isactive);
+	}else{
+		$("#setDatepick").attr("class",isactive+" active");
+	}
 	var set = $("#setSlider").attr("class").replace("active","");
 	$("#setSlider").attr("class",set);
 	//$("#ubahslider").removeAttr("disabled");
