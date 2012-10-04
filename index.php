@@ -76,16 +76,14 @@
           <div class="nav-collapse">
             <ul class="nav">
               <li class="active"><a href="#">Dashboard</a></li>
-              <li><a href="#tweets" >Tweets Viewer</a></li>
               <li><a href="#about" onclick="$('#modalabout').modal('show');">Tentang TWISAV</a></li>
 	      	  <li><a href="#help" onclick="$('#modalhelp').modal('show');">Bantuan</a></li>
             </ul>
           </div><!--/.nav-collapse -->
-          
-	  	<form class="navbar-form pull-right">
-  		<input id="searchkeyword" type="text" class="search-query deletable" placeholder="Masukan keyword...">
-		</form>
-
+        <form class="navbar-form  pull-right">
+        	<button id="tampilkeyword" class="btn" title="pending">Tampilkan tweet</button>
+	  		<input id="searchkeyword" type="text" class="search-query deletable" placeholder="Masukan keyword...">
+		</form>  
         </div>
       </div>
     </div>
@@ -126,8 +124,8 @@
 	  							 </div>
 	  							<div class="buttons btn-group btnrentang" >
 		  							<button id="ubahslider" class="btn btn-mini" title="klik untuk rubah rentang tanggal">Ubah rentang</button>
-									<button id="setSlider" type="button" class="btn btn-mini tampilsetting hide active" data-toggle="button">slider</button>
-									<button id="setDatepick" type="button" class="btn btn-mini tampilsetting hide" data-toggle="button">datepicker</button>
+									<button id="setSlider" type="button" class="btn btn-info btn-mini tampilsetting hide active" data-toggle="button">slider</button>
+									<button id="setDatepick" type="button" class="btn btn-info btn-mini tampilsetting hide" data-toggle="button">datepicker</button>
 									<button id="settingrentang" class="btn btn-mini"><i class="icon-cog"></i></button>
 								</div>
 								<h5><text id="inforentang" 
@@ -137,7 +135,7 @@
 														
 		</div>
 		<div class="widget-content">
-									<div id="rentangdatepicker" class="hide">
+									<div id="rentangdatepicker" class="inshadow hide">
 										<input type="text" id="calDate1" name="from" placeholder="Dari.."/>
 										<input type="text" id="calDate2" name="to" placeholder="Hingga.."/>
 										<button id="ubahcalendar" class="btn"><i class="icon-ok"></i></button>
@@ -209,9 +207,22 @@
 						
 					 
 	</div>
+		</div><!-- /secondrow-->
+	</div><!-- /container -->
 	
-    
-    <!-- modals/ -->
+	    <!-- modals/ -->
+    <div id="modaltweetkw" class="modal hide fade">
+						  	<div class="modal-header">
+						    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						    <h3 id="titlekeywordresult">Keyword : <text id="keywordtitle"></text></h3>
+						  </div>
+						  <div class="modal-body">
+						  	<div id="keywordresult">
+						  		
+						  	</div>
+						 </div>
+						</div>	
+						
 						<div id="modalhelp" class="modal hide fade">
 						  	<div class="modal-header">
 						    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -267,10 +278,6 @@ Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, ve
 						  </div>
 						</div>			
 	 <!-- /modals -->
-		</div>
-	</div><!-- /container -->
-	<button id="tampilkeyword" class="btn hide">Tampilkan tweet</button>
-	
 
     <!-- Le javascript
     

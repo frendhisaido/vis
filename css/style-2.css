@@ -173,7 +173,7 @@
 	}
 	.jamtweet {
 		width: 25px;
-		background-color: #AABBCC;
+		background-color: #AABBCC !important;
 	}
 	.numbtweet {
 		width: 20px;
@@ -199,11 +199,9 @@
                 padding-right: 16px;
             }
    #tampilkeyword {
-		z-index: 2000;
-		position: fixed;
-		float: right;
-		top: 5px;
-		right: 350px;
+		position: relative;
+		top: -50px;
+		margin-bottom: 5px;
 	}
 	.tampilsetting {
 	
@@ -218,11 +216,27 @@
 	}
 	
 	#rentangdatepicker {
+		margin-top: -10px;
 		margin-left: 20px;
+		background-color: #DDD;
+		max-width: 250px;
+		max-height: 100px;
+		padding-top: 5px;
+		padding-left: 10px;
 	}
 	#rentangdatepicker input{
 		width: 80px !important; 
 	}
 	#rentangdatepicker button{
 		margin-bottom: 9px;
+	}
+	
+	.negatif {
+		background-color: #F4E3E3;
+	}
+	.positif {
+		background-color: #E4F2DD;
+	}
+	.nonopini {
+		background-color: #FDF9E6;
 	}

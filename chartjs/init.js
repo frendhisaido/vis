@@ -1,6 +1,8 @@
 function initjs(){
 	$('input.deletable').wrap('<span class="deleteicon" />').after($('<span/>').click(function() {
 		 		 	resetbgkeyword();
+		 		 	$("#tampilkeyword").animate({ top: "-50px"});
+		 		 	$("#tampilkeyword").attr("title","");
                     $(this).prev('input').val('').focus();
                 }));
 	
@@ -71,14 +73,24 @@ function initjs(){
  		  $("#searchkeyword").keypress(function(k){
  		  	if(k.which == 13){
  		  		searchkeyword($("#searchkeyword").val());
- 		  		
+ 		  		$("#tampilkeyword").animate({ top: "0px"});
+ 		  		$("#tampilkeyword").attr("title",$("#searchkeyword").val());
  		  		return false;
+ 		  	}
+ 		  });
+ 		  
+ 		  $("#tampilkeyword").click(function(){
+ 		  	var key = $(this).attr("title");
+ 		  	if(key!=""){
+ 		  		resultkeyword(key);
  		  	}
  		  });
  		  
 		  $("#zoombutton").click(function(){
 		  	if(rectkeyword!=null){
 		  	  $("#searchkeyword").val('');
+		  	  $("#tampilkeyword").animate({ top: "-50px"});
+		 	  $("#tampilkeyword").attr("title","");
 		  	  resetbgkeyword("full");
 		  	 }
 		      $("#context").slideToggle(250,unzoom);
@@ -123,9 +135,7 @@ function initjs(){
 		  
 		  $("#fullkeyword").click(function(){
 		  	topTweet(this);
-		  	
 		  });
-		  
 		  
 		
 		

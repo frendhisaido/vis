@@ -16,7 +16,7 @@ var maxdate, mindate,currentAtom,callCSV;
 var requestKeyWords, reqTweet, keyWords;
 var rectkeyword,datakeyword;
 
-var getTweetUrl = "data/gettweets.php";
+var getTweetUrl = "data/getTweets.php";
 var getKeywUrl = "data/getKeyword.php";
 
 var monthNames = [ "January", "February", "March", "April", "May", "June",
@@ -723,10 +723,11 @@ function searchkeyword(key){
 	$("#loading").css("display","block");
 	rectkeyword == null ? null : resetbgkeyword();
 	var request = "data/getKeyword.php?track=yes&key="+key;
-	console.log(request);
+	//console.log(request);
 	d3.json(request, function(data){
 		if(data[0]==null){
 			alert("Kata kunci "+key+" tidak ditemukan");
+			$("#loading").css("display","none");
 		}else{
 			data.forEach(function(d){
 				d.tanggal = parseTanggal(d.tanggal);
@@ -742,11 +743,18 @@ function searchkeyword(key){
 			
 			drawbgkeyword();
 		
-	$("#loading").css("display","none");
+			$("#loading").css("display","none");
 		}
 	});
 	
 return null;   
+}
+
+function resultkeyword(key){
+	var request = getTweetUrl+"?top=yes&kw="+key; 
+	$("#keywordresult").load(request);
+	$("#keywordtitle").text(key);
+	$('#modaltweetkw').modal('show');
 }
 
 function drawbgkeyword(){
