@@ -30,7 +30,7 @@ var x = d3.time.scale().range([0, w - m[4] ]),
     yContext = d3.scale.linear().range([h2, 0])
     kwScale = d3.scale.linear().range([0, h/4])
     kwrectwidth = d3.scale.ordinal().rangeRoundBands([0, w-m[4] ], .1)
-    kwrectclor = d3.scale.linear().interpolate(d3.interpolateRgb).range(["#ffffff", "#c4c4c4"]);
+    kwrectclor = d3.scale.linear().interpolate(d3.interpolateRgb).range(["#ffffff", "#fffac4"]);
 	//http://www.colorhexa.com/c9c5d3http://www.colorhexa.com/cac6c7
 var xAxis = d3.svg.axis()
 		.scale(x)
@@ -502,7 +502,7 @@ var c = circsvg.selectAll(".points")
 									$(element).tooltip('show');
 									$("#fullkeyword").text(keyWords);
 									//console.log("getKw: "+requestKeyWords);
-									console.log("getTw: "+reqTweet);
+									//console.log("getTw: "+reqTweet);
 									$("#tweetcontainer").html("<img id='loadingtweet' src='img/black-010-loading.gif'/>").load(reqTweet);
 							});
 						}else{
@@ -754,7 +754,6 @@ function resultkeyword(key){
 	var request = getTweetUrl+"?top=yes&kw="+key; 
 	$("#keywordresult").load(request);
 	$("#keywordtitle").text(key);
-	$('#modaltweetkw').modal('show');
 }
 
 function drawbgkeyword(){

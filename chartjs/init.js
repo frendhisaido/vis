@@ -72,18 +72,22 @@ function initjs(){
  		  
  		  $("#searchkeyword").keypress(function(k){
  		  	if(k.which == 13){
- 		  		searchkeyword($("#searchkeyword").val());
- 		  		$("#tampilkeyword").animate({ top: "0px"});
- 		  		$("#tampilkeyword").attr("title",$("#searchkeyword").val());
+ 		  		var key = $("#searchkeyword").val();
+	 		  	if(key!=""){
+	 		  		searchkeyword(key);
+	 		  		resultkeyword(key);
+	 		  		$("#tampilkeyword").animate({ top: "0px"});
+ 		  			$("#tampilkeyword").attr("title",key);
+	 		  	}
+ 		  		
  		  		return false;
  		  	}
  		  });
  		  
  		  $("#tampilkeyword").click(function(){
- 		  	var key = $(this).attr("title");
- 		  	if(key!=""){
- 		  		resultkeyword(key);
- 		  	}
+				
+				$('#modaltweetkw').modal('show');
+	 		  	
  		  });
  		  
 		  $("#zoombutton").click(function(){

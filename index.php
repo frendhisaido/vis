@@ -81,7 +81,7 @@
             </ul>
           </div><!--/.nav-collapse -->
         <form class="navbar-form  pull-right">
-        	<button id="tampilkeyword" class="btn" title="pending">Tampilkan tweet</button>
+        	<a href="#modatweetkw" id="tampilkeyword" class="btn" data-toggle="modal" title="">Tampilkan pencarian</a>
 	  		<input id="searchkeyword" type="text" class="search-query deletable" placeholder="Masukan keyword...">
 		</form>  
         </div>
@@ -126,7 +126,7 @@
 		  							<button id="ubahslider" class="btn btn-mini" title="klik untuk rubah rentang tanggal">Ubah rentang</button>
 									<button id="setSlider" type="button" class="btn btn-info btn-mini tampilsetting hide active" >slider</button>
 									<button id="setDatepick" type="button" class="btn btn-info btn-mini tampilsetting hide" >datepicker</button>
-									<button id="settingrentang" class="btn btn-mini"><i class="icon-cog"></i></button>
+									<button id="settingrentang" class="btn btn-mini" title="klik untuk atur perubah rentang"><i class="icon-cog"></i></button>
 								</div>
 								<h5><text id="inforentang" 
 									class="inforentang textUnselectable"></text>

@@ -137,11 +137,31 @@ $limitrows = 8;
 		LIMIT $page,$limitrows");
 		
 		//$numbers = $page+1;
-		while ($row = mysql_fetch_assoc($query)) {		
+		while ($row = mysql_fetch_assoc($query)) {
+			$content = array();
+			$splits = explode(' ', $row["content"],-1); 
+			$length = count($splits);
+			for ($i = 0; $i <= $length; $i++) {
+					
+				if(strpos($keywords,$checkkey)===false){
+					$content[$i] = "<strong>".$splits[$i]."</strong>";
+				}else{
+					$content[$i] = $splits[$i];
+				}
+			}
+					
 		 ?>
 		 <tr id="tweets" title="<?php echo $row["orientasi"]; ?>">
 		      <td class="jamtweet"><?php echo $row["tanggal"];?></td>
-		      <td class="<?php echo $row["orientasi"]; ?>"><?php echo $row["content"];?></td>
+		      <td class="<?php echo $row["orientasi"]; ?>">
+		      	<?php for ($i = 0; $i <= $length; $i++) {
+						if($splits[$i]==$keywords){
+							echo " <i><b>".$splits[$i]."</b></i> ";
+						}else{
+							echo " ".$splits[$i]." ";
+						}
+					};?>
+		      	</td>
 		 </tr>
 		 <?php
 		// $numbers++;
