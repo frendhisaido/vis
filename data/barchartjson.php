@@ -15,7 +15,7 @@ $query = "";
 
 if(empty($dfirst) && empty($dlast)) {
 	$query = "SELECT SQL_CACHE orientasi, COUNT(datetime) AS jumlah
-						   FROM dataset 
+						   FROM data 
 						   GROUP BY orientasi";
 }else if($dfirst==$dlast){
 	
@@ -23,7 +23,7 @@ if(empty($dfirst) && empty($dlast)) {
 	$day   = substr($dfirst, -2);
 	
 	$query = "SELECT orientasi, COUNT(datetime) AS jumlah
-						   FROM dataset 
+						   FROM data 
 						   WHERE MONTH(datetime) = '$month'
 						   AND DAY(datetime) = '$day'
 						   GROUP BY orientasi";
@@ -34,7 +34,7 @@ if(empty($dfirst) && empty($dlast)) {
 }else{
 	
 	$query = "SELECT orientasi, COUNT(datetime) AS jumlah
-						   FROM dataset 
+						   FROM data 
 						   WHERE datetime >= '$dfirst' 
 						   AND datetime <= '$dlast'
 						   GROUP BY orientasi";

@@ -23,13 +23,13 @@ if(!(isset($top))){
 if(!(isset($rowscount))){
 $checkcount = mysql_query("SELECT COUNT(IF
 		(MATCH (orientasi,content) AGAINST ('$keywords'), 1, NULL)) as count
-		FROM `dataset` 
+		FROM `data` 
 		WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d' ) =  '$tanggal'
 		AND orientasi = '$orientasi'");
 $rowscount= mysql_result($checkcount, 0);
 }
 
-$limitrows = 8;
+$limitrows = 7;
 
 
 		?>
@@ -42,7 +42,7 @@ $limitrows = 8;
 		$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam,
 				content,
 				MATCH (orientasi,content) AGAINST ('$keywords') as cocok
-				FROM `dataset` 
+				FROM `data` 
 				WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d' ) =  '$tanggal'
 				AND orientasi = '$orientasi'
 				ORDER BY cocok DESC
@@ -51,7 +51,7 @@ $limitrows = 8;
 		$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam,
 				content,
 				MATCH (orientasi,content) AGAINST ('$keywords') as cocok
-				FROM `dataset` 
+				FROM `data` 
 				WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d %H' ) =  '$tanggal'
 				AND orientasi = '$orientasi'
 				ORDER BY cocok DESC
@@ -122,17 +122,17 @@ $limitrows = 8;
 		<?php
 		}
 	}elseif((isset($top))){
-		$query= mysql_query("SELECT count(*) FROM `dataset`
+		$query= mysql_query("SELECT count(*) FROM `data`
 		WHERE content LIKE '%$keywords%'");
 		$rowscount = mysql_result($query, 0);
 		if($rowscount>1){
-		$limitrows = 30;
+		$limitrows = 6;
 	?>
 		<table class="table">
 		<tbody >	
 	<?php
 		$query = mysql_query("SELECT DATE_FORMAT(datetime,'%e/%b %H:%i') 
-		as tanggal,content,orientasi FROM `dataset` 
+		as tanggal,content,orientasi FROM `data` 
 		WHERE content LIKE '%$keywords%' ORDER BY tanggal ASC
 		LIMIT $page,$limitrows");
 		
@@ -202,7 +202,7 @@ $limitrows = 8;
 					$prevlabel = "||";
 				}
 		?>
-		<div class="pagination pagination-centered">
+		<div id="pagingbutton" class="pagination pagination-centered">
 									  <ul>
 									  	<li><a href="#" onclick="<?php echo $prevonclick;?>" style="<?php echo $prevstyle;?>">
 									  		<?php echo $prevlabel;?>

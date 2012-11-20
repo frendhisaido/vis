@@ -76,8 +76,6 @@ function initjs(){
 	 		  	if(key!=""){
 	 		  		searchkeyword(key);
 	 		  		resultkeyword(key);
-	 		  		$("#tampilkeyword").animate({ top: "0px"});
- 		  			$("#tampilkeyword").attr("title",key);
 	 		  	}
  		  		
  		  		return false;

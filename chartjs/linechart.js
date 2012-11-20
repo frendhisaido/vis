@@ -1,5 +1,5 @@
 var m = [20, 35, 40, 50, 60],
-    w = 1150 ,
+    w = 935 ,
     h = 300,
     h2 = 50 + m[0];
 
@@ -30,7 +30,7 @@ var x = d3.time.scale().range([0, w - m[4] ]),
     yContext = d3.scale.linear().range([h2, 0])
     kwScale = d3.scale.linear().range([0, h/4])
     kwrectwidth = d3.scale.ordinal().rangeRoundBands([0, w-m[4] ], .1)
-    kwrectclor = d3.scale.linear().interpolate(d3.interpolateRgb).range(["#ffffff", "#fffac4"]);
+    kwrectclor = d3.scale.linear().interpolate(d3.interpolateRgb).range(["#ffffff", "#b0c1ff"]);
 	//http://www.colorhexa.com/c9c5d3http://www.colorhexa.com/cac6c7
 var xAxis = d3.svg.axis()
 		.scale(x)
@@ -100,17 +100,17 @@ var keywordground = allsvg.append("svg:g")
 	  .attr("clip-path", "url(#clip)");
 
 var contsvg = d3.select("#context").append("svg:svg")
-	      .attr("width", w + m[1] + m[3])
+	      .attr("width", w )
 	      .attr("height", h2);
 	      
 var contbg = contsvg.append("rect")
-	  .attr("width", w - m[4])
-	  .attr("height", (h2 - m[0]))
-	  .attr("transform", "translate(" + m[1] + "," + 0 + ")")
-	  .attr("fill","#fff")
-	  .style("stroke","#000")
-	  .style("stroke-width","1px");
-	
+      .attr("class","edges")
+      .attr("width", w - m[4])
+      .attr("height", (h2 - m[0]))
+      .attr("transform", "translate(" + m[2] + "," + 0 + ")")
+      .attr("fill","#fff")
+      .style("stroke-width","1px");
+    
 		
 
 
@@ -131,31 +131,33 @@ var contbg = contsvg.append("rect")
 
 var backsvg = allsvg.append("svg:g")
 	      .attr("class","theAxis")
-	      .attr("transform", "translate(" + m[1] + "," + 0 + ")");
+	      .attr("transform", "translate(" + m[2] + "," + 0 + ")");
 
 var contextbacksvg = contsvg.append("svg:g")
 		     .attr("class","contAxis")
-		     .attr("transform","translate(" + m[1] + "," + 0 + ")");
+		     .attr("transform","translate(" + m[2] + "," + 0 + ")");
 
 var linesvg= allsvg.append("svg:g")
 	    .attr("class","theLines")
-	    .attr("transform", "translate(" + m[1] + "," + 0 + ")");
+	    .attr("transform", "translate(" + m[2] + "," + 0 + ")");
 
 var circsvg = allsvg.append("svg:g")
 	     .attr("class","theCircles")
-	     .attr("transform", "translate(" + m[1] + "," + 0 + ")");
+	     .attr("transform", "translate(" + m[2] + "," + 0 + ")");
 
 var contextsvg = contsvg.append("svg:g")
 		 .attr("class","theContexts")
-		 .attr("transform", "translate(" + m[1] + "," + 0 + ")");
+		 .attr("transform", "translate(" + m[2] + "," + 0 + ")");
 		 
 var edges = allsvg.append("rect")
+      .attr("class","edges")
 	  .attr("width", w - m[4])
 	  .attr("height", h)
-	  .attr("transform","translate("+m[1]+",1)")
+	  .attr("transform","translate("+m[2]+",1)")
 	  .attr("fill","none")
-	  .style("stroke","#000")
-	  .style("stroke-width","2px");
+	  .style("stroke-width","2.5px");
+	  
+
 	  
 
 		 
@@ -164,7 +166,7 @@ var loadbar = allsvg.append("svg:g")
 			.style("display","none");;
 			
 		loadbar.append("rect")
-		.attr("transform","translate("+m[1]+",1)")
+		.attr("transform","translate("+m[3]+",1)")
     	.attr("class","load")
     	.attr("fill","#ddd")
     	.style("opacity", "0.7")
@@ -427,8 +429,7 @@ function drawLineChart() {
 
     e.append("svg:path")
     //.attr("filter","url(#dropshadow)")
-	.attr("class", "line")
-		.attr("id", function(d){
+		.attr("class", function(d){
 		  var ids = 'line_'+d.key;
 		  return ids;
 		})
@@ -436,7 +437,8 @@ function drawLineChart() {
 			return line(d.values); })
 		.style("stroke-width", "1px")
 		.style("stroke", function(d) {
-			return clor(d.key); });
+			return clor(d.key); })
+		.style("fill","none");
   });
 
  var cx = contextsvg.selectAll(".context")
@@ -472,10 +474,13 @@ var c = circsvg.selectAll(".points")
     e.append("svg:circle")
     .attr("r", circlesize() )
     .attr("id", function(d){
-		  var ids = 'circ_'+d.orientasi;
+		  var ids = 'circ'+d.orientasi+""+d.date.getDate()+"_"+d.date.getHours(); 
 		  return ids;
 		})
-    .attr("class", "apoint bringfront")
+    .attr("class", function(d,i){
+          var ids = 'circ_'+d.orientasi+" apoint";
+          return ids;
+        })
       .style("fill", function(d){ return clor(d.orientasi);})
     .attr("stroke",function(d){ return clor(d.orientasi);})
     .attr("stroke-width", "0px")
@@ -487,7 +492,8 @@ var c = circsvg.selectAll(".points")
 			change.attr("stroke-width","8px");		
 			})
 		.on("click.circles",function(d){
-			setInfoCircle(d.date, d.jumlah, d.orientasi, currentAtom);
+		    
+			setInfoCircle(d.date, d.jumlah, d.orientasi, currentAtom, this.id);
 			var element = this;
 						if(currentAtom=='perday'){
 							requestKeyWords = getKeywUrl +"?tg="+(d.tgl+"%2000")+"&or="+d.orientasi+"&full=n&track=no";
@@ -522,7 +528,7 @@ var c = circsvg.selectAll(".points")
 							});
 						}
 		var change = d3.select(this);
-			change.attr("stroke","#000")
+			change.attr("stroke","#6283ff")
 			.attr("stroke-width","1px");
 		})
 		.on("mouseout.circles", function(d){
@@ -618,7 +624,7 @@ function unzoom(){
 
 function toggleLine(orient){
 	
-  var elementName = "#line_"+orient;
+  var elementName = ".line_"+orient;
   var isBlock ="";
   getDisplay = $(elementName).css("display");
   if (getDisplay == "block" || getDisplay == "inline"){
@@ -649,8 +655,8 @@ function toggleMaxY(ornt){
 }
 
 function hideline(ornt) {
-	var selectedline = '#line_'+ornt;
-	var selectedcirc = '#circ_'+ornt;
+	var selectedline = '.line_'+ornt;
+	var selectedcirc = '.circ_'+ornt;
 	
 	var reline = linesvg.select(selectedline);
 	var recirc = circsvg.selectAll(selectedcirc);
@@ -664,8 +670,8 @@ function hideline(ornt) {
 }
 
 function showline(ornt) {
-	var selectedline = '#line_'+ornt;
-	var selectedcirc = '#circ_'+ornt;
+	var selectedline = '.line_'+ornt;
+	var selectedcirc = '.circ_'+ornt;
 	
 	var reline = linesvg.select(selectedline);
 	var recirc = circsvg.selectAll(selectedcirc);
@@ -752,7 +758,10 @@ return null;
 
 function resultkeyword(key){
 	var request = getTweetUrl+"?top=yes&kw="+key; 
-	$("#keywordresult").load(request);
+	$("#keywordresult").load(request, function(){
+	    $("#tampilkeyword").toggle();
+        $("#tampilkeyword").attr("title",key);
+	});
 	$("#keywordtitle").text(key);
 }
 

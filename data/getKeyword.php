@@ -25,7 +25,7 @@ if($req=='bhs'){
 }
 */
 if($track=='no'){
-$query = "SELECT keywords FROM datakeyword WHERE tanggal='$tanggal' AND orientasi='$orientasi'";
+$query = "SELECT keywords FROM setofkeywords WHERE tanggal='$tanggal' AND orientasi='$orientasi'";
 
 $result = mysql_query($query);
 while($r = mysql_fetch_array($result)){
@@ -67,7 +67,7 @@ if($keywords=='empty:'){
 	mysql_close();
 	print_gzipped_page();
 }else if($track=='yes'){
-	$query = "SELECT DATE_FORMAT(datetime,'%Y-%m-%d') as tanggal,count(DATE_FORMAT(datetime,'%Y-%m-%d')) as jumlah FROM `dataset`
+	$query = "SELECT DATE_FORMAT(datetime,'%Y-%m-%d') as tanggal,count(DATE_FORMAT(datetime,'%Y-%m-%d')) as jumlah FROM `data`
 			 WHERE content LIKE '%$key%' GROUP BY tanggal ORDER BY tanggal ASC";
 	$result = mysql_query($query);
 	$rows = array();

@@ -72,7 +72,7 @@ function setInfoRentang(date1,date2){
 	}
 }
 
-function setInfoCircle(tanggal, jumlah, orientasi, per){
+function setInfoCircle(tanggal, jumlah, orientasi, per, circleid){
 	var infos = d3.select("#infoCircle");
 	infos.selectAll("button").remove();
 	var infwkt = infos.append("button").attr("class","btn btn-mini");
@@ -98,7 +98,15 @@ function setInfoCircle(tanggal, jumlah, orientasi, per){
 		}
 	});
 	infjml.append("text").text(jumlah + " tweet "+orientasi+" ");
-	
+	infjml.append("text").text(circleid).attr("class","hidden").attr("id","getcircleid");
+	infjml.on("click.infjml", function(d){
+	    var circid = "#"+$("#getcircleid").text();
+	    d3.select(circid)
+	       .transition().duration(200)
+	           .style("opacity",1)
+	       .transition().delay(2000).duration(15000)
+	           .style("opacity",0);
+	})
 }
 
 function setInfoWaktuBlank(){

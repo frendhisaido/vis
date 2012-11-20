@@ -12,13 +12,65 @@
 .barchartbgbar {
 	fill: #E6E6E6;
 }
+#bar {
+	float: bottom;
+	position: absolute;
+	margin-top: 220px;
+	overflow: hidden;
+}
+
+.edges{
+	stroke: #c4c4c4;
+}
+
+#miscinfo{
+	float: bottom;
+	position: absolute;
+	margin-top: 5px;
+	overflow: hidden;
+	width: 198px;
+	height: 220px;
+	
+}
+
+.infolabel{
+	width: 100px;
+	background-color: #eaeaea;
+}
+	.negatif:hover {
+		background-color: #F4E3E3 !important;
+		color: #000;
+	}
+	.positif:hover {
+		background-color: #E4F2DD !important;
+		color: #000;
+	}
+	.nonopini:hover {
+		background-color: #FDF9E6 !important;
+		color: #000;
+	}
+	
+	.negatif {
+		background-color: #FF0000 !important;
+		color: #fff;
+	}
+	.positif {
+		background-color: #009900 !important;
+		color: #fff;
+	}
+	.nonopini {
+		background-color: #FAA732 !important;
+		color: #fff;
+	}
+	
 #linechart {
 	margin-top: 5px;
 	margin-bottom: -25px;
+	float: right;
 }
 #context{
-	margin-top: -40px;
-	width: 100%;
+	margin-top: -5px;
+	float: right;
 }
 .xAxis {
   fill: none;

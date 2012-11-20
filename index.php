@@ -80,10 +80,7 @@
 	      	  <li><a href="#help" onclick="$('#modalhelp').modal('show');">Bantuan</a></li>
             </ul>
           </div><!--/.nav-collapse -->
-        <form class="navbar-form  pull-right">
-        	<a href="#modatweetkw" id="tampilkeyword" class="btn" data-toggle="modal" title="">Tampilkan pencarian</a>
-	  		<input id="searchkeyword" type="text" class="search-query deletable" placeholder="Masukan keyword...">
-		</form>  
+         
         </div>
       </div>
     </div>
@@ -143,11 +140,49 @@
 			<div id="sliderentang" >			
 				<div id="slider" class="widget-content inshadow hide"></div>		
 			</div>
-		
+		      
+        <div id="miscinfo">
+        <table class="table table-hover table-bordered">
+        <tbody>
+        
+         <tr>
+              <td class="infolabel">Brand</td>
+              <td>Indosat</td>
+         </tr>
+         <tr>
+              <td id="infonegatif" class="negatif">Negatif</td>
+              <td> 288262 </td>
+         </tr>
+          <tr>
+              <td id="infopositif" class="positif">Positif</td>
+              <td> 288262 </td>
+         </tr>
+          <tr>
+              <td id="infonon" class="nonopini">Non-Opini</td>
+              <td> 288262 </td>
+         </tr>
+          <tr>
+              <td class="infolabel">Keyword tertinggi</td>
+              <td> pending </td>
+         </tr>
+          <tr>
+              <td class="infolabel">Jam tersibuk</td>
+              <td> 13:78 </td>
+         </tr>
+          <tr>
+              <td class="infolabel">Hari tersibuk</td>
+              <td> 28-08-02 </td>
+         </tr>
+    
+                </tbody>
+        </table>
+        </div>
+        <div id="bar"></div>
 	    <div id="linechart">
 	    	
 	    	
 	    </div>
+	    
 	    <div id="context" class="hide"></div>	
 	   </div>
 	   
@@ -159,23 +194,31 @@
     	<div class="row-fluid">
     		
 					
-					<div id="barcontainer" class="span4">
+					<div id="barcontainer" class="span5">
 					<div class="widget-box box-shadow">
 							<div class="widget-title">
 								<span class="icon">
-									<i class="icon-tasks"></i>
+									<i class="icon-search"></i>
 									
 								</span>
-								<h5><text id="inforentang"></text> ( <text id="totaltweet"></text> tweet )</h5>
-								
+								<h5>Telusuri </h5>            
+
+								 <form id="search" class="navbar-form  pull-right">
+                                    <input id="searchkeyword" type="text" class="search-query deletable" placeholder="Masukan keyword...">
+                                 </form>
 							</div>
 							<div class="widget-content nopadding">
-								<div id="bar"></div>			
+									<div id="keywordresult">
+                                        <div class="alert alert-info">
+                                            Masukan keyword untuk menampilkan tweet disini.
+                                    
+                                        </div>
+                                    </div>		
 							</div>
 						</div>
 						</div>
 						
-						<div class="span8">
+						<div class="span7">
 						<div class="widget-box box-shadow">
 							<div class="widget-title">
 								<span class="icon">
@@ -217,13 +260,11 @@
 						    <h3 id="titlekeywordresult">Keyword : <i><text id="keywordtitle"></text></i></h3>
 						  </div>
 						  <div class="modal-body">
-						  	<div id="keywordresult">
-						  		
-						  	</div>
+						  	
 						 </div>
-						</div>	
+	</div>	
 						
-						<div id="modalhelp" class="modal hide fade">
+	<div id="modalhelp" class="modal hide fade">
 						  	<div class="modal-header">
 						    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						    <h3>Dashboard help</h3>

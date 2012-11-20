@@ -47,8 +47,9 @@
 		top: -10px;
 	}
 	#sliderentang {
-		margin-left: 42px;
-		max-width: 1074px;
+		margin-left: 10px;
+		max-width: 1100px;
+		margin-bottom: 10px;
 	}
 	
 	.inforentang{
@@ -73,7 +74,7 @@
 	    margin-top: 5px;
 		margin-bottom: 5px;
 	    position: relative;
-	    min-height: 300px;
+	    
 	    padding-top: 0px;
 	}
 	.widget-title span.icon {
@@ -90,14 +91,14 @@
 	    background-image: -o-linear-gradient(top, #ffffff 0%, #F3F3F3 100%);
 	    background-image: -linear-gradient(top, #ffffff 0%, #F3F3F3 100%);
 	    border-bottom: 1px solid #CDCDCD;
-	    height: 25px;
+	    height: 30px;
 	}
 	.widget-title h5 {
 	    color: #666666;
 		text-shadow: 0 1px 0 #ffffff;
 	    font-size: 12px;
 	    font-weight: bold;
-	    padding: 0px 10px 2px;
+	    padding: 0px 0px 0px;
 	}
 	.widget-title .buttons {
 	float: right;
@@ -154,12 +155,18 @@
 		padding-top: 11px;
 	}
 	
+	/* 
 	#linecontainer {
 		min-width: 1170px;
 	}
+	*/
 	
 	#barcontainer{
 		min-width: 370px;
+	}
+	
+	table{
+		background-color: #FFFFFF;
 	}
 	
 	#pagingbutton{
@@ -200,7 +207,7 @@
             }
    #tampilkeyword {
 		position: relative;
-		top: -50px;
+		top: 0px;
 		margin-bottom: 5px;
 	}
 	.tampilsetting {
@@ -231,12 +238,11 @@
 		margin-bottom: 9px;
 	}
 	
-	.negatif {
-		background-color: #F4E3E3;
+	
+	#search {
+		position: relative;
+		float:right;
+		margin-top: -40px;
+		margin-right: 140px;
 	}
-	.positif {
-		background-color: #E4F2DD;
-	}
-	.nonopini {
-		background-color: #FDF9E6;
-	}
+	
