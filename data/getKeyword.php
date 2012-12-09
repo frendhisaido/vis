@@ -24,7 +24,22 @@ if($req=='bhs'){
 	
 }
 */
-if($track=='no'){
+
+if($track=='count'){
+
+    $query = "SELECT  'n' AS xx, COALESCE(COUNT(content),0) as jum FROM data WHERE content LIKE '%$key%' AND orientasi='negatif'
+                UNION
+                SELECT 'p' AS xx, COALESCE(COUNT(content),0) as jum FROM data WHERE content LIKE '%$key%' AND orientasi='positif'
+                UNION
+                SELECT 'o' AS xx, COALESCE(COUNT(content),0) as jum FROM data WHERE content LIKE '%$key%' AND orientasi='nonopini'";
+   $result = mysql_query($query);
+   $rows = array();
+    while($r = mysql_fetch_array($result)){
+       $rows[] = $r['jum']+0;
+    }
+    echo json_encode($rows);
+    
+} else if($track=='no'){
 $query = "SELECT keywords FROM setofkeywords WHERE tanggal='$tanggal' AND orientasi='$orientasi'";
 
 $result = mysql_query($query);
@@ -76,7 +91,9 @@ if($keywords=='empty:'){
 	}
 	
 	echo json_encode($rows);
-	mysql_close();
-	print_gzipped_page();
+	
 }
+
+mysql_close();
+print_gzipped_page();
 ?>

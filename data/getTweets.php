@@ -8,7 +8,8 @@ $orientasi = $_GET['or'];
 $tanggal = $_GET['tg'];
 $full = $_GET['full'];
 $atom = $_GET['atom'];
-$keywords = $_GET['kw'];
+$keywords = $_GET['kw']; 
+
 $rowscount = $_GET['rc'];
 $page = $_GET['pg'];
 $top = $_GET['top'];
@@ -29,7 +30,7 @@ $checkcount = mysql_query("SELECT COUNT(IF
 $rowscount= mysql_result($checkcount, 0);
 }
 
-$limitrows = 7;
+$limitrows = 20;
 
 
 		?>
@@ -82,10 +83,10 @@ $limitrows = 7;
 			$isless = $page - $limitrows;
 			//echo " isov:".$isover;
 			//echo " isls:".$isless;
-			
+			$passkw = str_replace(' ', '%20', $keywords);
 				if($isover<$rowscount){
 					$nextpage = $page + $limitrows;
-					$nexturl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$nextpage&atom=$atom&kw=$keywords";
+					$nexturl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$nextpage&atom=$atom&kw=$passkw";
 					$nextonclick =  "\$('#tweetcontainer').html('<h1>LOADING</h1>').load('$nexturl');";
 					$nextstyle = "";
 					$nextlabel = ">>";
@@ -96,7 +97,7 @@ $limitrows = 7;
 				}
 				if($isless>=$limitrows || $isless==0){
 					$prevpage = $page - $limitrows;
-					$prevurl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$prevpage&atom=$atom&kw=$keywords";
+					$prevurl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$prevpage&atom=$atom&kw=$passkw";
 					$prevonclick =  "\$('#tweetcontainer').html('<h1>LOADING</h1>').load('$prevurl');";
 					$prevstyle = "";
 					$prevlabel = "<<";
@@ -126,7 +127,7 @@ $limitrows = 7;
 		WHERE content LIKE '%$keywords%'");
 		$rowscount = mysql_result($query, 0);
 		if($rowscount>1){
-		$limitrows = 6;
+		$limitrows = 20;
 	?>
 		<table class="table">
 		<tbody >	
@@ -178,10 +179,10 @@ $limitrows = 7;
 			$isless = $page - $limitrows;
 			//echo " isov:".$isover;
 			//echo " isls:".$isless;
-			
+			$passkw = str_replace(' ', '%20', $keywords);
 				if($isover<$rowscount){
 					$nextpage = $page + $limitrows;
-					$nexturl = "data/gettweets.php?&top=yes&rc=$rowscount&pg=$nextpage&kw=$keywords";
+					$nexturl = "data/gettweets.php?&top=yes&rc=$rowscount&pg=$nextpage&kw=$passkw";
 					$nextonclick =  "\$('#keywordresult').html('<h1>LOADING</h1>').load('$nexturl');";
 					$nextstyle = "";
 					$nextlabel = ">>";
@@ -192,7 +193,7 @@ $limitrows = 7;
 				}
 				if($isless>=$limitrows || $isless==0){
 					$prevpage = $page - $limitrows;
-					$prevurl = "data/gettweets.php?&top=yes&rc=$rowscount&pg=$prevpage&kw=$keywords";
+					$prevurl = "data/gettweets.php?&top=yes&rc=$rowscount&pg=$prevpage&kw=$passkws";
 					$prevonclick =  "\$('#keywordresult').html('<h1>LOADING</h1>').load('$prevurl');";
 					$prevstyle = "";
 					$prevlabel = "<<";

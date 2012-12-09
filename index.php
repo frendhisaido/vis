@@ -64,26 +64,7 @@
 
   <body onload="initjs();">
 
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="#">TWISAV</a>
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li class="active"><a href="#">Dashboard</a></li>
-              <li><a href="#about" onclick="$('#modalabout').modal('show');">Tentang TWISAV</a></li>
-	      	  <li><a href="#help" onclick="$('#modalhelp').modal('show');">Bantuan</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
-         
-        </div>
-      </div>
-    </div>
+ 
 
     <div class="container">				
 							 	<select id="dates1" class="hide" disabled>
@@ -201,18 +182,19 @@
 									<i class="icon-search"></i>
 									
 								</span>
-								<h5>Telusuri </h5>            
+								<h5>: </h5>            
 
 								 <form id="search" class="navbar-form  pull-right">
                                     <input id="searchkeyword" type="text" class="search-query deletable" placeholder="Masukan keyword...">
                                  </form>
 							</div>
 							<div class="widget-content nopadding">
-									<div id="keywordresult">
-                                        <div class="alert alert-info">
-                                            Masukan keyword untuk menampilkan tweet disini.
-                                    
-                                        </div>
+							    <div class="infoTweetViewer">
+                                           <small> Ditemukan <strong><text id="totalFound">______</text></strong> tweet yang mengandung keyword <strong><text id="keywordtitle">______</text></strong>.</small>
+							                   <div id="pie" class="inshadow"></div>
+							    </div>
+									<div id="keywordresult" class="tweetviewer">
+                                        
                                     </div>		
 							</div>
 						</div>
@@ -238,7 +220,11 @@
 								-->
 							</div>
 							<div class="widget-content  nopadding">
-								<div id="tweetcontainer">
+							     <div  class="infoTweetViewer">
+                                           <small> Hasil pencarian: pending. Ditemukan 2873 tweet.</small>
+                                     
+                                </div>
+								<div id="tweetcontainer" class="tweetviewer">
 								<div class="alert alert-info">
   									Klik pada lingkaran di line chart untuk menampilkan tweet disini.
   									
@@ -326,6 +312,7 @@ Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, ve
     <!-- Placed at the end of the document so the pages load faster -->
 	
 	<script src="chartjs/linechart.js"></script>
+	<script src="chartjs/misc.js"></script>
 	<script src="chartjs/barchart.js"></script>
 	<script src="chartjs/barcontrol.js"></script>
 	<!--
