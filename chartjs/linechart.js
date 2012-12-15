@@ -1,5 +1,13 @@
+
+var stillpositif, stillnegatif, stillnonop, stillhover;
+var maxValue, maxpositif, maxnegatif, maxnonopini, maxYcurrent, maxgrouped;
+var maxdate, mindate, currentAtom, callCSV;
+var requestKeyWords, reqTweet, keyWords;
+var rectkeyword, datakeyword;
+
+
 var m = [20, 35, 40, 50, 60],
-    w = 935 ,
+    w = $("#linecontainer").width() - ($("#miscinfo").width()+30),
     h = 300,
     h2 = 50 + m[0];
 
@@ -9,12 +17,6 @@ var blurEffect = 15;
 
 var duration = [100, 200, 500, 1000, 1500],
     delay = [500, 1000];
-
-var stillpositif, stillnegatif, stillnonop, stillhover;
-var maxValue, maxpositif, maxnegatif, maxnonopini, maxYcurrent, maxgrouped;
-var maxdate, mindate, currentAtom, callCSV;
-var requestKeyWords, reqTweet, keyWords;
-var rectkeyword, datakeyword;
 
 var getTweetUrl = 'data/getTweets.php';
 var getKeywUrl = 'data/getKeyword.php';
@@ -94,7 +96,7 @@ var keywordground = allsvg.append('svg:g')
 	  .attr('class', 'theKeywordBG')
 	  .attr('width', w - m[4])
 	  .attr('height', h)
-	  .attr('transform', 'translate('+ m[1] + ',1)')
+	  .attr('transform', 'translate('+ m[2] + ',1)')
 	  .attr('fill', '#fff')
 	  .style('stroke', 'none')
 	  .attr('clip-path', 'url(#clip)');
@@ -110,24 +112,6 @@ var contbg = contsvg.append('rect')
       .attr('transform', 'translate(' + m[2] + ',' + 0 + ')')
       .attr('fill', '#fff')
       .style('stroke-width', '1px');
-
-
-
-
-
-/*
- *
-<filter id="drop-shadow">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/>
-                <feOffset dx="1" dy="1" result="offsetblur"/>
-                <feMerge>
-                    <feMergeNode/>
-                    <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-</filter>
- *
- */
-
 
 var backsvg = allsvg.append('svg:g')
 	      .attr('class', 'theAxis')
@@ -166,7 +150,7 @@ var loadbar = allsvg.append('svg:g')
 			.style('display', 'none');
 
 		loadbar.append('rect')
-		.attr('transform', 'translate('+ m[3] + ',1)')
+		.attr('transform', 'translate('+ m[2] + ',1)')
     	.attr('class', 'load')
     	.attr('fill', '#ddd')
     	.style('opacity', '0.7')
@@ -235,7 +219,7 @@ function saddtop(maxY) {
 
 function initLineChart(atom,update) {
 	$('#loading').css('display', 'block');
-
+    $("#infoSatuanWaktu").text(atom == 'perday' ? 'Hari' : 'Jam');
 	currentAtom = atom;
 	callCSV = 'data/linecsv.php?atom='+ atom;
 	var addtop = atom == 'perday' ? 100 : 10;
@@ -253,7 +237,7 @@ d3.csv(callCSV, function(data) {
       .key(function(d) {
 		return d.orientasi; })
       .entries(data);
-
+    /*
   	orientasi.forEach(function(d) {
 
   		d.values.forEach(function(h,i) {
@@ -265,6 +249,7 @@ d3.csv(callCSV, function(data) {
   		});
 
   	});
+  	*/
   orientasi.forEach(function(d) {
     d.maxJumlah = d3.max(d.values, function(d) { return d.jumlah; });
      //console.log(s.maxJumlah);
@@ -293,7 +278,7 @@ d3.csv(callCSV, function(data) {
 		maxdate.setHours(00);
 	}else {
 		mindate.setHours(00);
-		maxdate.setHours(12);
+		maxdate.setHours(24);
 	}
 
 	y.domain([0, maxValue]);
@@ -700,6 +685,7 @@ function circopacity(opacity) {
 function passingDomain(passDomain, fromSlider) {
 	var dd1 = parseJam(passDomain[0]);
 	var dd2 = parseJam(passDomain[1]);
+	
 	if (dd1.getDate() == mindate.getDate()) {
 		dd1 = mindate;
 	}

@@ -66,7 +66,7 @@
 
  
 
-    <div class="container">				
+    <div class="container" >				
 							 	<select id="dates1" class="hide" disabled>
 								</select>
 								<select id="dates2" class="hide" disabled>
@@ -82,13 +82,21 @@
 								<div class="buttons btn-group">
 								<button type="button" id="zoombutton" class="btn btn-mini btn-info topButton"
 									data-toggle="button"
-									data-title="Fitur zoom"
+									data-title="Fitur context viewer"
 									data-content="Fokus pada grafik dengan rentang tanggal tertentu.">
-								Zoom</button>
+								Context</button>
 								 </div>
-								 <div class="buttons btn-group" data-toggle="buttons-radio">			
-		  						<button type="button" class="btn btn-mini topButton" onclick="initLineChart('perday',true);">Per Hari</button>
+								 <div class="buttons btn-group" >			
+		  						<!--<button type="button" class="btn btn-mini topButton" onclick="initLineChart('perday',true);">Per Hari</button>
 		  						<button type="button" class="btn btn-mini topButton" onclick="initLineChart('perhour',true);">Per Jam</button>
+		  						-->
+		  						<a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+		  						    <text id="infoSatuanWaktu">Hari</text>
+		  						    <span class="caret"></span>
+		  						</a>
+		  						<ul class="dropdown-menu">
+		  						    <li><a href="#" onclick="initLineChart('perhour',true);" >Per Jam</a></li>
+		  						</ul>
 								</div>
 								<div id="viewcontrols" class="buttons">
 										<button id="toggleNegatif" type="button" class="btn btn-mini" data-toggle="button">
@@ -113,14 +121,16 @@
 														
 		</div>
 		<div class="widget-content">
+		    
 									<div id="rentangdatepicker" class="inshadow hide">
 										<input type="text" id="calDate1" name="from" placeholder="Dari.."/>
 										<input type="text" id="calDate2" name="to" placeholder="Hingga.."/>
-										<button id="ubahcalendar" class="btn"><i class="icon-ok"></i></button>
+										<button id="ubahcalendar" class="btn">Ubah</button>
 									</div>
 			<div id="sliderentang" >			
 				<div id="slider" class="widget-content inshadow hide"></div>		
 			</div>
+			
 		      
         <div id="miscinfo">
         <table class="table table-hover table-bordered">
@@ -158,13 +168,14 @@
                 </tbody>
         </table>
         </div>
+        
         <div id="bar"></div>
 	    <div id="linechart">
 	    	
 	    	
 	    </div>
-	    
-	    <div id="context" class="hide"></div>	
+	    <div id="context" class="hide"></div>
+	    	
 	   </div>
 	   
 			

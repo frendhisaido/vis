@@ -148,6 +148,7 @@ $('#ubahcalendar').click(function() {
 	var dd1 = $('#calDate1').val() + ' 00';
 	var dd2 = $('#calDate2').val() + ' 23';
 	var passDomain = [dd1, dd2];
+	
 	passingDomain(passDomain, true);
 
 	updatebarchart(

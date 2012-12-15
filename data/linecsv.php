@@ -22,7 +22,7 @@ $result = mysql_query("SELECT SQL_CACHE orientasi,DATE_FORMAT(datetime,'$formatd
 UNION
 SELECT SQL_CACHE orientasi,DATE_FORMAT(datetime,'$formatdate') as date,count(DATE_FORMAT(datetime,'$formatdate')) as jumlah FROM data WHERE orientasi='positif' group by DATE_FORMAT(datetime,'$formatdate')
 UNION
-SELECT SQL_CACHE orientasi,DATE_FORMAT(datetime,'$formatdate') as date,count(DATE_FORMAT(datetime,'$formatdate')) as jumlah FROM data WHERE orientasi='nonopini' group by DATE_FORMAT(datetime,'$formatdate')");
+SELECT SQL_CACHE orientasi,DATE_FORMAT(datetime ,'$formatdate') as date,count(DATE_FORMAT(datetime,'$formatdate')) as jumlah FROM data WHERE orientasi='nonopini' group by DATE_FORMAT(datetime,'$formatdate')");
 header( 'Content-Type: text/csv' );
 header( 'Content-Disposition: attachment;filename=line.csv' );
   //
