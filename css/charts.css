@@ -8,6 +8,7 @@
 }
 .barchartxaxis text {
 	font-family: "Arial Narrow";
+	font-size: 8pt;
 }
 .barchartbgbar {
 	fill: #E6E6E6;
@@ -67,10 +68,12 @@
 	margin-top: 5px;
 	margin-bottom: -25px;
 	float: right;
+	margin-right: -10px;
 }
 #context{
 	margin-top: -5px;
 	float: right;
+	margin-right: -10px;
 }
 .xAxis {
   fill: none;

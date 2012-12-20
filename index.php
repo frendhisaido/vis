@@ -28,6 +28,7 @@
     <script type="text/javascript" src="lib/jquery/jquery.ui.mouse.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.slider.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.datepicker.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.ui.draggable.js"></script>
     <script type="text/javascript" src="chartjs/init.js"></script>
     
      <!-- Le javascripts
@@ -36,21 +37,11 @@
     
     -->
 	<script type="text/javascript">
-		  var tog = [
-		  	{ orn: "negatif",eye: "#negeye", id: "#toggleNegatif", view : true},
-		  	{ orn: "positif",eye: "#poseye", id: "#togglePositif", view : true},
-		  	{ orn: "nonopini",eye: "#noneye", id: "#toggleNonopini", view : true}
-		  ];
-		  //override array hari untuk axis x
-		  d3_time_weekdays = ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"];
-		  var totaldates = 0;
-		  var nama_bulan = new Array("0","Januari", "Februari", "Maret", 
-				"April", "Mei", "Juni", "Juli", "Agustus", "September", 
-				"Oktober", "November", "Desember");
-		  //var firstDate, lastDate;
-		  var defaultrentang = "#slider";
-		  var date1,date2;
-		  
+		  $(function() {
+               // $("#bar").draggable({ 
+               //                         opacity: 0.35,
+               //                         zIndex: 9000 });
+            });
 		</script>
     
 
@@ -109,10 +100,10 @@
 										  <i id="noneye" class="icon-eye-open"></i> Non-Opini</button>
 	  							 </div>
 	  							<div class="buttons btn-group btnrentang" >
-		  							<button id="ubahslider" class="btn btn-mini" title="klik untuk rubah rentang tanggal">Ubah rentang</button>
-									<button id="setSlider" type="button" class="btn btn-info btn-mini tampilsetting hide active" >slider</button>
-									<button id="setDatepick" type="button" class="btn btn-info btn-mini tampilsetting hide" >datepicker</button>
-									<button id="settingrentang" class="btn btn-mini" title="klik untuk atur perubah rentang"><i class="icon-cog"></i></button>
+		  							<button id="ubahRentang" class="btn btn-mini" title="klik untuk sembunyikan pengubah rentang"><i id="rentangeye" class="icon-eye-open"></i> Rentang</button>
+									<button id="setSlider" type="button" class="btn btn-info btn-mini tampilsetting hide" >slider</button>
+									<button id="setDatepick" type="button" class="btn btn-info btn-mini tampilsetting hide active" >date picker</button>
+									<button id="settingRentang" class="btn btn-mini" title="klik untuk atur perubah rentang"><i class="icon-cog"></i></button>
 								</div>
 								<h5><text id="inforentang" 
 									class="inforentang textUnselectable"></text>
@@ -122,14 +113,16 @@
 		</div>
 		<div class="widget-content">
 		    
-									<div id="rentangdatepicker" class="inshadow hide">
+									<div id="rentang" class="inshadow">
+									    <div id="datepick">
 										<input type="text" id="calDate1" name="from" placeholder="Dari.."/>
 										<input type="text" id="calDate2" name="to" placeholder="Hingga.."/>
 										<button id="ubahcalendar" class="btn">Ubah</button>
+										</div>
+										<div id="slidepick" class="hide">
+										<div id="slider" class="widget-content inshadow"></div>
+										</div>       
 									</div>
-			<div id="sliderentang" >			
-				<div id="slider" class="widget-content inshadow hide"></div>		
-			</div>
 			
 		      
         <div id="miscinfo">
@@ -169,10 +162,10 @@
         </table>
         </div>
         
-        <div id="bar"></div>
+        
 	    <div id="linechart">
 	    	
-	    	
+	    	<div id="bar"></div>
 	    </div>
 	    <div id="context" class="hide"></div>
 	    	

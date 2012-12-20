@@ -7,7 +7,6 @@ ob_start();
 ob_implicit_flush(0);
 
 header( 'Content-Type: application/json' );
-header( 'Content-Disposition: attachment;filename=barchartjson.json' );
 $dfirst = $_GET['df'];
 $dlast = $_GET['dl'];
 

@@ -46,9 +46,10 @@
 		float: left;
 		top: -10px;
 	}
-	#sliderentang {
+	#slidepick {
 		margin-left: 10px;
 		max-width: 1100px;
+		max-height: 50px;
 		margin-bottom: 10px;
 	}
 	
@@ -113,8 +114,11 @@
 		padding: 0 !important;
 	}
 	
-	.ui-slider .ui-slider-handle {
-			height: 2.5em;
+	.ui-slider-horizontal {
+		height: .2em !important;
+	}
+	.ui-slider-handle {
+			height: 1.8em !important;
 	}
 	
 	/* Corner radius */
@@ -222,20 +226,21 @@
 		left: 20%;
 	}
 	
-	#rentangdatepicker {
+	#rentang {
 		margin-top: -10px;
 		background-color: #DDD;
-		max-width: 200px;
+		max-width: 100%;
 		max-height: 100px;
 		padding-top: 2px;
 		padding-left: 10px;
+		margin-left: -5px;
 	}
-	#rentangdatepicker input{
-		width: 80px !important; 
+	#datepick {
+		margin-left: 25%;
 	}
-	#rentangdatepicker button{
+	#datepick button{
 		margin-bottom: 9px;
-		min-width: 190px;
+		min-width: 90px;
 	}
 	
 	

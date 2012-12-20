@@ -6,11 +6,11 @@ ob_start();
 ob_implicit_flush(0);
 
 
-$atom = $_GET['atom'];
+$unit = $_GET['unit'];
 $formatdate;
-if($atom=='perday'){
+if($unit=='perday'){
 	$formatdate='%Y-%m-%d';
-}else if($atom=='perhour'){
+}else if($unit=='perhour'){
 	$formatdate='%Y-%m-%d %H';
 }
 

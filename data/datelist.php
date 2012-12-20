@@ -5,7 +5,6 @@ include 'makegzip.php';
 ob_start();
 ob_implicit_flush(0);
 header( 'Content-Type: application/json' );
-header( 'Content-Disposition: attachment;filename=datelistjson.json' );
 
 
 // connect to the database
