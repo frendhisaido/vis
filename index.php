@@ -31,7 +31,6 @@
     <script type="text/javascript" src="lib/jquery/jquery.ui.draggable.js"></script>
     <script type="text/javascript" src="lib/opentip/opentip.js"></script>
     <script type="text/javascript" src="lib/opentip/adapter.jquery.js"></script>
-    <script type="text/javascript" src="chartjs/init.js"></script>
     
      <!-- Le javascripts
      	<script type="text/javascript" src="lib/jquery/jquery.ui.draggable.js"></script>
