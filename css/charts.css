@@ -1,3 +1,7 @@
+.barchartxaxis text {
+	font-family: "Arial Narrow";
+	font-size: 8pt;
+}
 .barchartxaxis path {
 	display: none;
 }
@@ -8,73 +12,18 @@
 }
 .barchartxaxis text {
 	font-family: "Arial Narrow";
-	font-size: 8pt;
 }
 .barchartbgbar {
 	fill: #E6E6E6;
 }
 #bar {
-	float: bottom;
-	position: absolute;
-	margin-top: 220px;
-	overflow: hidden;
+	position: fixed;
 }
 
 .edges{
 	stroke: #c4c4c4;
 }
 
-#miscinfo{
-	float: bottom;
-	position: absolute;
-	margin-top: 5px;
-	overflow: hidden;
-	width: 198px;
-	height: 220px;
-	
-}
-
-.infolabel{
-	width: 100px;
-	background-color: #eaeaea;
-}
-	.negatif:hover {
-		background-color: #F4E3E3 !important;
-		color: #000;
-	}
-	.positif:hover {
-		background-color: #E4F2DD !important;
-		color: #000;
-	}
-	.nonopini:hover {
-		background-color: #FDF9E6 !important;
-		color: #000;
-	}
-	
-	.negatif {
-		background-color: #FF0000 !important;
-		color: #fff;
-	}
-	.positif {
-		background-color: #009900 !important;
-		color: #fff;
-	}
-	.nonopini {
-		background-color: #FAA732 !important;
-		color: #fff;
-	}
-	
-#linechart {
-	margin-top: 5px;
-	margin-bottom: -25px;
-	float: right;
-	margin-right: -10px;
-}
-#context{
-	margin-top: -5px;
-	float: right;
-	margin-right: -10px;
-}
 .xAxis {
   fill: none;
   stroke: #ddd;
@@ -99,11 +48,38 @@ user-select: none;
   stroke: #ddd;
 }
 
+.kw {
+	background-color: #fff;
+}
+.kw:hover {
+	background-color: #ddd;
+}
 
+.xAxisKDC line {
+	display: none;
+}
+.xAxisKDC path {
+	display: none;
+}
+.xAxisKDC text {
+	font-family: "Arial Narrow";
+	font-size: 9pt;
+	stroke-width: 0px;
+	fill: #000;
+}
+	.resetline {
+		display: block;
+	}
+	.resetline:hover {
+		fill: #2f96b4;
+	}
+	.resetoff {
+		display: none;
+	}
 
 .xContextAxis text {
 	font-family: "Arial Narrow";
-	font-size: 9pt;
+	font-size: 8pt;
 	stroke-width: 0px;
 	fill: #000;
 }
@@ -119,7 +95,7 @@ user-select: none;
 }
 
 path {
-  -webkit-transition: fill-opacity 250ms linear;
+  -webkit-transition: fill-opacity 550ms linear;
 }
 
 .selecting circle {

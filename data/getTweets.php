@@ -40,20 +40,20 @@ $limitrows = 20;
 		<?php
 		
 		if($atom == 'perday'){
-		$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam,
+		$query = "SELECT DATE_FORMAT( datetime,  '%H:%i' ) AS jam,
 				content,
 				MATCH (orientasi,content) AGAINST ('$keywords') as cocok
 				FROM `data` 
-				WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d' ) =  '$tanggal'
+				WHERE DATE_FORMAT( datetime,  '%Y-%m-%d' ) =  '$tanggal'
 				AND orientasi = '$orientasi'
 				ORDER BY cocok DESC
 				LIMIT $page,$limitrows"; 
 		}else{
-		$query = "SELECT DATE_FORMAT( DATETIME,  '%H:%i' ) AS jam,
+		$query = "SELECT DATE_FORMAT( datetime,  '%H:%i' ) AS jam,
 				content,
 				MATCH (orientasi,content) AGAINST ('$keywords') as cocok
 				FROM `data` 
-				WHERE DATE_FORMAT( DATETIME,  '%Y-%m-%d %H' ) =  '$tanggal'
+				WHERE DATE_FORMAT( datetime,  '%Y-%m-%d %H' ) =  '$tanggal'
 				AND orientasi = '$orientasi'
 				ORDER BY cocok DESC
 				LIMIT $page,$limitrows";	
@@ -87,7 +87,7 @@ $limitrows = 20;
 				if($isover<$rowscount){
 					$nextpage = $page + $limitrows;
 					$nexturl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$nextpage&atom=$atom&kw=$passkw";
-					$nextonclick =  "\$('#tweetcontainer').html('<h1>LOADING</h1>').load('$nexturl');";
+					$nextonclick =  "\$('#tweetcontainer').html('<img src=\'img/black-020-loading.gif\'/>').load('$nexturl');";
 					$nextstyle = "";
 					$nextlabel = ">>";
 				}else{
@@ -98,7 +98,7 @@ $limitrows = 20;
 				if($isless>=$limitrows || $isless==0){
 					$prevpage = $page - $limitrows;
 					$prevurl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$prevpage&atom=$atom&kw=$passkw";
-					$prevonclick =  "\$('#tweetcontainer').html('<h1>LOADING</h1>').load('$prevurl');";
+					$prevonclick =  "\$('#tweetcontainer').html('<img src=\'img/black-020-loading.gif\'/>').load('$prevurl');";
 					$prevstyle = "";
 					$prevlabel = "<<";
 				}else{
@@ -124,7 +124,7 @@ $limitrows = 20;
 		}
 	}elseif((isset($top))){
 		$query= mysql_query("SELECT count(*) FROM `data`
-		WHERE content LIKE '%$keywords%'");
+		WHERE INSTR(content, '$keywords') > 0");
 		$rowscount = mysql_result($query, 0);
 		if($rowscount>1){
 		$limitrows = 20;
@@ -134,7 +134,7 @@ $limitrows = 20;
 	<?php
 		$query = mysql_query("SELECT DATE_FORMAT(datetime,'%e/%b %H:%i') 
 		as tanggal,content,orientasi FROM `data` 
-		WHERE content LIKE '%$keywords%' ORDER BY tanggal ASC
+		WHERE INSTR(content, '$keywords') > 0 ORDER BY tanggal ASC
 		LIMIT $page,$limitrows");
 		
 		//$numbers = $page+1;
@@ -183,7 +183,7 @@ $limitrows = 20;
 				if($isover<$rowscount){
 					$nextpage = $page + $limitrows;
 					$nexturl = "data/gettweets.php?&top=yes&rc=$rowscount&pg=$nextpage&kw=$passkw";
-					$nextonclick =  "\$('#keywordresult').html('<h1>LOADING</h1>').load('$nexturl');";
+					$nextonclick =  "\$('#keywordresult').html('<img src=\'img/black-020-loading.gif\'/>').load('$nexturl');";
 					$nextstyle = "";
 					$nextlabel = ">>";
 				}else{
@@ -194,7 +194,7 @@ $limitrows = 20;
 				if($isless>=$limitrows || $isless==0){
 					$prevpage = $page - $limitrows;
 					$prevurl = "data/gettweets.php?&top=yes&rc=$rowscount&pg=$prevpage&kw=$passkws";
-					$prevonclick =  "\$('#keywordresult').html('<h1>LOADING</h1>').load('$prevurl');";
+					$prevonclick =  "\$('#keywordresult').html('<img src=\'img/black-020-loading.gif\'/>').load('$prevurl');";
 					$prevstyle = "";
 					$prevlabel = "<<";
 				}else{

@@ -48,7 +48,7 @@ if(empty($dfirst) && empty($dlast)) {
 $result = mysql_query($query);
 $rows = array();
 while($r = mysql_fetch_assoc($result)) {
-     $rows[] = $r;
+    $rows[] = $r;
 }
 
 echo json_encode($rows);

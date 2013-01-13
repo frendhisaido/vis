@@ -40,50 +40,56 @@ if($track=='count'){
     echo json_encode($rows);
     
 } else if($track=='no'){
-$query = "SELECT keywords FROM setofkeywords WHERE tanggal='$tanggal' AND orientasi='$orientasi'";
-
-$result = mysql_query($query);
-while($r = mysql_fetch_array($result)){
-	$keywords = $r["keywords"];
-}
-
-if($keywords=='empty:'){
-	echo 'kosong';
-}else{
-		if($full=='y'){
-			$cari = array('&lt;','&gt;',':');
-			$ganti = array('&#40;','&#41;','&#44;&nbsp;');
-			$tampil = str_replace($cari,$ganti,$keywords);
-			
-			echo substr($tampil, 0, (strlen($tampil)-1));
-		}else if($full=='n'){
-			
-			$splits = explode(':', $keywords,-1);
-			$length = count($splits);
-			if($length>1){
-				for ($i = 0; $i <= 3; $i++) {
-		    	echo $splits[$i];
-				if($i<3){
-					echo ",";
-					}
-				}	
-			}else{
-				for ($i = 0; $i <= $length; $i++) {
-		    	echo $splits[$i];
-				if($i<$length){
-					echo ",";
-					}
-				}	
-			}
-			
-		}
-	}
-	
+    $query = "SELECT keywords FROM setofkeywords WHERE tanggal='$tanggal' AND orientasi='$orientasi'";
+    
+    $result = mysql_query($query);
+    while($r = mysql_fetch_array($result)){
+    	$keywords = $r["keywords"];
+    }
+    
+    if($keywords=='empty:'){
+    	echo 'kosong';
+    }else{
+        echo $keywords;
+    }
 	mysql_close();
 	print_gzipped_page();
+}else if ($track=='big') {
+    $query = "SELECT keywords FROM setofkeywords WHERE orientasi='$orientasi'";
+    
+    $result = mysql_query($query);
+    while($r = mysql_fetch_array($result)){
+    	$keywords = $r["keywords"];
+    }
+    
+    if($keywords=='empty:'){
+    	echo 'kosong';
+    }else{
+        $rows = array();
+        $tempjson = array();
+        $json = array();
+        $rows = explode(' ', $keywords);
+        foreach($rows as $r) {
+            $tempar = explode(':', $r);
+            $tempjson['key'] = $tempar[0];
+            $tempjson['val'] = $tempar[1];
+            $json[] = $tempjson;
+        }
+        unset($r);
+        //var_dump($json);
+        echo json_encode($json);
+    }
+	mysql_close();
+	print_gzipped_page();
+
 }else if($track=='yes'){
-	$query = "SELECT DATE_FORMAT(datetime,'%Y-%m-%d') as tanggal,count(DATE_FORMAT(datetime,'%Y-%m-%d')) as jumlah FROM `data`
-			 WHERE content LIKE '%$key%' GROUP BY tanggal ORDER BY tanggal ASC";
+    if(isset($orientasi)){
+        $query = "SELECT DATE_FORMAT(datetime,'%Y-%m-%d') as tanggal,count(DATE_FORMAT(datetime,'%Y-%m-%d')) as jumlah FROM `data`
+                 WHERE content LIKE '%$key%' AND orientasi='$orientasi' GROUP BY tanggal ORDER BY tanggal ASC";    
+    }else{
+	   $query = "SELECT DATE_FORMAT(datetime,'%Y-%m-%d') as tanggal,count(DATE_FORMAT(datetime,'%Y-%m-%d')) as jumlah FROM `data`
+			     WHERE content LIKE '%$key%' GROUP BY tanggal ORDER BY tanggal ASC";
+    }         
 	$result = mysql_query($query);
 	$rows = array();
 	while($r = mysql_fetch_assoc($result)) {

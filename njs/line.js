@@ -1,7 +1,7 @@
 var linechart = new vizconfig();
     linechart.margin = [20, 35, 40, 50, 60];
     linechart.circlesize = [3,4,5,6];
-    linechart.width = $("#linecontainer").width() - ($("#miscinfo").width()+30);
+    linechart.width = $("#linecontainer").width();
     linechart.height = 300;
     linechart.xScale = d3.time.scale().range([0, linechart.width - linechart.margin[4]]);
     linechart.yScale = d3.scale.linear().range([linechart.height, 0]);
