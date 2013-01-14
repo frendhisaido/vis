@@ -36,7 +36,7 @@
             getPieData: 'data/getKeyword.php?track=count',
             getLineUrl: 'data/linecsv.php',
             format: d3.format(',.0f'),
-            blurEffect: 15,
+            blurEffect: 5,
             translate: function(horizontal, vertical){
                 return 'translate('+horizontal+','+vertical+')';
                 },
@@ -150,12 +150,12 @@ $(function() {
        extends: 'glass',
        ajax: false,
        showOn: null,
-       delay: 0.5,
+       delay: 0,
        tipJoint: 'bottom left',
        target: true,
        fixed: true,
        borderWidth: 1.5,
-       hideDelay: gc.circleTipHideDelay,
+       hideOn: null,
        group: 'circles'
    } 
 });
@@ -457,7 +457,8 @@ function initjs() {
 
 var linechart = new vizconfig();
     linechart.margin = [20, 35, 40, 50, 60];
-    linechart.circlesize = [3,4,5,6];
+    linechart.circlesize = [2,3,4,5];
+    linechart.strokesize = ['1.5px','2px','2.5px','3px'];
     linechart.width = $("#linegraph").width();
     linechart.height = $("#linegraph").height() - linechart.margin[1];
     linechart.xScale = d3.time.scale().range([0, linechart.width - linechart.margin[4]]);
@@ -469,16 +470,35 @@ var linechart = new vizconfig();
                                 $('#loading').css('display', 'none');
                             }
                          };
+              
+    var customTimeFormat = timeFormat([
+          [d3.time.format("%Y"), function() { return true; }],
+          [d3.time.format("%B"), function(d) { return d.getMonth(); }],
+          [d3.time.format("%b %d"), function(d) { return d.getDate() != 1; }],
+          [d3.time.format("%a %d"), function(d) { return d.getDay() && d.getDate() != 1; }],
+          [d3.time.format("%I %p"), function(d) { return d.getHours(); }],
+          [d3.time.format("%I:%M"), function(d) { return d.getMinutes(); }],
+          [d3.time.format(":%S"), function(d) { return d.getSeconds(); }],
+          [d3.time.format(".%L"), function(d) { return d.getMilliseconds(); }]
+        ]);         
+         function timeFormat(formats) {
+      return function(date) {
+        var i = formats.length - 1, f = formats[i];
+        while (!f[1](date)) f = formats[--i];
+        return f[0](date);
+        };
+    }                          
     linechart.xAxis = d3.svg.axis()
                         .scale(linechart.xScale)
                         .tickSize(-linechart.height)
+                        .tickFormat(customTimeFormat)
                         .tickPadding(10)
                         .tickSubdivide(true);
 
     linechart.yAxis = d3.svg.axis()
                         .scale(linechart.yScale)
                         .tickSize(-linechart.width + linechart.margin[4])
-                        .ticks(5);
+                        .ticks(3);
     
 var contextchart = new vizconfig();
     contextchart.width = linechart.width;
@@ -599,7 +619,7 @@ linechart.resetButton = allsvg.append("text")
           .attr('fill', '#000')
           .style('font', '10pt Arial')
           .style('text-shadow', '1px 1px 2px rgba(0,0,0,.3)')
-          .text('RESET');
+          .text('-');
 
 
 var line = d3.svg.line()
@@ -626,7 +646,7 @@ function resetViewControls() {
      		  		gc.tog[i].view = true;
      		  		$(gc.tog[i].eye).attr('class', 'icon-eye-open');
  		  	    }
- 		  		$('#viewcontrols button').attr('class', 'btn');
+ 		  		$('#viewcontrols button').attr('class', 'btn btn-mini btn-width');
  		  		$('#viewcontrols button').removeAttr('disabled');
 }
  		  
@@ -733,6 +753,8 @@ function initDrawLine(datasetline,datasetcircle,date1,date2) {
 
   base();
   drawLineChart();
+  
+  
   //circles();
 }
 
@@ -762,6 +784,7 @@ function changeAtom(datasetline,datasetcircle) {
 	contextsvg.selectAll('.context').remove();
 	circsvg.selectAll('.points').remove();
     
+   
     //Updating data-join to elements
 	linesvg.selectAll('.theLine')
       .data(datasetline)
@@ -779,7 +802,8 @@ function changeAtom(datasetline,datasetcircle) {
 		.attr('class', 'points');
 		
     drawLineChart();
-
+    
+    
 }
 
 function drawLineChart() {
@@ -798,7 +822,7 @@ function drawLineChart() {
 		})
 		.attr('d', function(d) {
 			return line(d.values); })
-		.style('stroke-width', '1px')
+		.style('stroke-width', linechart.strokesize[0])
 		.style('stroke', function(d) {
 			return gc.colorOrientasi(d.key); })
 		.style('fill', 'none');
@@ -952,7 +976,7 @@ function redraw(chartsize) {
   backsvg.select('.yAxis').call(linechart.yAxis);
   
   if (!isKeywordEmpty()) {
-  	resetbgkeyword();
+  	resetbgkeyword(true);
   	drawkeywordchart();
   }
   if(currentDomain[0].toString() != gc.firstDate.toString() ||currentDomain[1].toString() != gc.lastDate.toString() ){
@@ -982,13 +1006,13 @@ function circlesize(chartsize) {
 
 function linewidth(chartsize) {
     if (chartsize >= 11 && chartsize <= 15) {
-      return '2px';
+      return linechart.strokesize[1];
     }else if (chartsize >= 5 && chartsize <= 10) {
-      return '2.5px';
+      return linechart.strokesize[2];
     }else if (chartsize >= 0 && chartsize <= 4) {
-      return '3px';
+      return linechart.strokesize[3];
     }else {
-      return 1;
+      return linechart.strokesize[0]; //default line stroke
     }
 }
 
@@ -1064,8 +1088,7 @@ function circopacity(opacity) {
 	return function(d) {
 
 	var recirc = circsvg.selectAll('.apoint');
-	recirc
-			.transition().duration(gc.duration[3])
+	recirc.transition().duration(gc.duration[0])
 			.style('opacity', opacity);
 	}
 
@@ -1267,6 +1290,7 @@ var keywordchart = new vizconfig();
                             .range([0, linechart.height / 4]);
     keywordchart.colorScale = d3.scale.linear()
                                 .interpolate(d3.interpolateRgb).range(['#ffffff', '#b0c1ff']);
+    keywordchart.rects ;
     
     keywordground.attr('width', keywordchart.width - linechart.margin[4])
       .attr('height', keywordchart.height)
@@ -1313,18 +1337,19 @@ function resultkeyword(key) {
     key= key.replace(' ','%20');
     var request = gc.getTweetUrl + '?top=yes&kw='+ key;
     $('#keywordresult').html(gc.loadingGIF).load(request);
-    $('#keywordtitle').text(key);
+    //$('#keywordtitle').text(key);
 }
 
 
 function drawkeywordchart() {
         linechart.loading(true);
         keywordchart.rects == null ? null : resetbgkeyword();
-        $("#totalJum").text(keywordchart.totalJum);
+        $("#totalJum").text(keywordchart.totalJum+' tweet.');
         
         keywordchart.colorScale.domain([0, keywordchart.maxJum]);
         
         var rectwidth = (keywordchart.width - linechart.margin[4]) / selisih(linechart.xScale.domain());
+        
         
         keywordchart.rects = keywordground.selectAll('.keywordrect')
                             .data(keywordchart.datas).enter().append('svg:g').attr('class', 'onerect');
@@ -1365,10 +1390,10 @@ function drawkeywordchart() {
                     return linechart.xScale(d.tanggal);
                     })
               .attr('y', linechart.height / 15)
-              .attr('dx', 25)
+              .attr('dx', 20)
               .attr('dy', '.15em')
               .attr('text-anchor', 'middle')
-              .style('font-size', '20pt');
+              .style('font-size', '15pt');
 
 
          keywordchart.rects.append('text')
@@ -1381,10 +1406,10 @@ function drawkeywordchart() {
                     return linechart.xScale(d.tanggal);
                     })
               .attr('y', linechart.height / 9)
-              .attr('dx', 30)
+              .attr('dx', 20)
               .attr('dy', '.25em')
               .attr('text-anchor', 'middle')
-              .style('font-size', '10pt');
+              .style('font-size', '9pt');
 
           keywordchart.rects.append('text')
               .text(function(d) {
@@ -1671,12 +1696,12 @@ function setInfoRentang(date1, date2) {
 	date1 = Number(date1.substr(8, 2)) + ' ' + gc.nama_bulan[Number(date1.substr(5, 2))];
 	date2 =	Number(date2.substr(8, 2)) + ' ' + gc.nama_bulan[Number(date2.substr(5, 2))];
 	if (date1 !== date2) {
-        infos.append('text').text('Sejak ');
+        //infos.append('text').text('Sejak ');
         infos.append('text').attr('class', 'textrentang').text(date1);
-        infos.append('text').text(' hingga ');
+        infos.append('text').text(' - ');
         infos.append('text').attr('class', 'textrentang').text(date2);
 	} else {
-	 infos.append('text').text('Pada ');
+	 //infos.append('text').text('Pada ');
 	 infos.append('text').attr('class', 'textrentang').text(date1);
 	}
 }
@@ -1749,31 +1774,30 @@ $.getJSON(gc.getDateListUrl, function (dl){
 
 function setInfoCircle(tanggal, jumlah, orientasi, per, circleid) {
 	var infos = d3.select('#infoCircle');
-	infos.selectAll('button').remove();
-	var infwkt = infos.append('button').attr('class', 'btn btn-mini');
+	infos.selectAll('p').remove();
+	var infwkt = infos.append('p').attr('class', 'lefting');
 	if (per == 'perday') {
 		infwkt.append('text').text(' '+ tanggal.getDate() + ' '
 									+ gc.nama_bulan[(tanggal.getMonth() + 1)]);
 	}else {
 		infwkt.append('text').text(' '+ tanggal.getDate() + ' '
-									+ gc.nama_bulan[(tanggal.getMonth() + 1)] + ' Jam '
+									+ gc.nama_bulan[(tanggal.getMonth() + 1)] + ' '
 									+ (tanggal.getHours() < 10 ? ('0' + (tanggal.getHours())) : tanggal.getHours()) + ':'
-									+ (tanggal.getMinutes() < 10 ? ('0' + (tanggal.getMinutes())) : tanggal.getMinutes())
+									+ (tanggal.getMinutes() < 10 ? ('0' + (tanggal.getMinutes())) : tanggal.getMinutes()) + ' WIB'
 									);
 	}
-	var infjml = infos.append('button')
-	.attr('class', function() {
-		switch (orientasi) {
-		case 'negatif':
-			return 'btn btn-danger btn-mini ';
-		case 'positif':
-			return 'btn btn-success btn-mini';
-		case 'nonopini':
-			return 'btn btn-warning btn-mini';
-		}
-	});
-	infjml.append('text').text(jumlah + ' tweet '+ orientasi + ' ');
-	infjml.append('text').text(circleid).attr('class', 'hidden').attr('id', 'getcircleid');
+	var infjml = infos.append('p');
+	infjml.append('a').attr('class', function() {
+        switch (orientasi) {
+        case 'negatif':
+            return 'lefting negatiftweet ';
+        case 'positif':
+            return 'lefting positiftweet ';
+        case 'nonopini':
+            return 'lefting nonopinitweet ';
+        }
+    }).append('text').text(jumlah + ' tweet '+ orientasi + ' ');
+    infjml.append('text').text(circleid).attr('class', 'hide').attr('id', 'getcircleid');
 	infjml.on('click.infjml', function(d) {
 	    var circid = '#'+ $('#getcircleid').text();
 	    d3.select(circid)

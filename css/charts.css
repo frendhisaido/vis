@@ -32,7 +32,8 @@
 	font-family: "Arial Narrow";
 	font-size: 9pt;
 	stroke-width: 0px;
-	fill: #000;
+	fill: rgb(180, 180, 180);
+	font-weight: 100;
 }
 
 .textUnselectable{
@@ -81,7 +82,7 @@ user-select: none;
 	font-family: "Arial Narrow";
 	font-size: 8pt;
 	stroke-width: 0px;
-	fill: #000;
+	fill: rgb(180, 180, 180);
 }
 
 .yAxis {
@@ -89,9 +90,11 @@ user-select: none;
   stroke: #ddd;
 }
 .yAxis text {
+	font-family: "Arial Narrow";
 	font-size: 9pt;
 	stroke-width: 0px;
-	fill: #000;
+	fill: rgb(180, 180, 180);
+	font-weight: 100;
 }
 
 path {

@@ -54,54 +54,53 @@
 
 
 <div id="dashboard">
-    <div id="linebox" class="">
+    <div id="top"></div>
+    <div id="linebox" class="lefting">
         <div class="infobox">
-            <div id="bar"></div>
-             <text id="inforentang" class="inforentang textUnselectable"></text>
-             <div id="slidepick" class="hide">
+            
+             <text id="inforentang" class="lefting"></text>
+             <div id="rentang" class="lefting">
+                           <div id="datepick">
+                                            <input type="text" id="calDate1" name="from" placeholder="Dari.."/>
+                                            <input type="text" id="calDate2" name="to" placeholder="Hingga.."/>
+                                            <button id="ubahcalendar" class="btn btn-small">Ubah</button>
+                          </div>
+                              <div id="slidepick" class="hide">
                                <div id="slider" class="widget-content inshadow"></div>
                           </div> 
+                </div>
+         
             
         </div>
           
         <div id="linegraph"></div>
         
         
-        <div id="linecontext" class="hide"></div>
+        <div id="linecontext"></div>
         
            <div id="linecontrol" class="">
-                
-                 <div id="rentang" class="lefting">
-                           <div id="datepick">
-                                            <input type="text" id="calDate1" name="from" placeholder="Dari.."/>
-                                            <input type="text" id="calDate2" name="to" placeholder="Hingga.."/>
-                                            <button id="ubahcalendar" class="btn">Ubah</button>
-                          </div>
-                </div>
-                 <div id="contexttoggle" class="lefting">
-                    <button type="button" id="zoombutton" class="btn btn-info" data-toggle="button"> Context</button>
-                </div>   
-                <div id="viewcontrols" class="lefting">
-                                            <button id="toggleNegatif" type="button" class="btn" data-toggle="button">
+                 
+                <div id="viewcontrols" class="lefting buttonlayout">
+                                            <button id="toggleNegatif" type="button" class="btn btn-mini btn-width" data-toggle="button">
                                                <i id="negeye" class="icon-eye-open"></i> Negatif</button>
                                             
-                                            <button id="togglePositif" type="button" class="btn " data-toggle="button">
+                                            <button id="togglePositif" type="button" class="btn btn-mini btn-width" data-toggle="button">
                                               <i id="poseye" class="icon-eye-open"></i> Positif</button> 
                                             
-                                            <button id="toggleNonopini" type="button" class="btn" data-toggle="button">
+                                            <button id="toggleNonopini" type="button" class="btn btn-mini btn-width" data-toggle="button">
                                               <i id="noneye" class="icon-eye-open"></i> Non-Opini</button>
                 </div>
                 
                           
                  
-                 <div id="rentangsetting" class="btn-group lefting" >
-                                        <button id="ubahRentang" class="btn" title="klik untuk sembunyikan pengubah rentang"><i id="rentangeye" class="icon-eye-open"></i> Rentang</button>
-                                        <button id="setSlider" type="button" class="btn btn-info  tampilsetting hide" >slider</button>
-                                        <button id="setDatepick" type="button" class="btn btn-info  tampilsetting hide active" >date picker</button>
-                                        <button id="settingRentang" class="btn" title="klik untuk atur perubah rentang"><i class="icon-cog"></i></button>
+                 <div id="rentangsetting" class="btn-group lefting buttonlayout hide" >
+                                        <button id="ubahRentang" class="btn btn-mini btn-width" title="klik untuk sembunyikan pengubah rentang"><i id="rentangeye" class="icon-eye-open"></i> Rentang</button>
+                                        <button id="setSlider" type="button" class="btn btn-mini btn-info  tampilsetting hide" >slider</button>
+                                        <button id="setDatepick" type="button" class="btn btn-mini btn-info  tampilsetting hide active" >date picker</button>
+                                        <button id="settingRentang" class="btn btn-mini" title="klik untuk atur perubah rentang"><i class="icon-cog"></i></button>
                  </div>                          
-                     <div id="timetoggles" class="btn-group lefting" >  
-                                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                 <div id="timetoggles" class="btn-group lefting buttonlayout" >  
+                                    <a class="btn btn-mini btn-width dropdown-toggle" data-toggle="dropdown" href="#">
                                         <text id="infoSatuanWaktu">Hari</text>
                                         <span class="caret"></span>
                                     </a>
@@ -109,9 +108,51 @@
                                         <li><a href="#" onclick="initLineChart('perhour',true);" >Per Jam</a></li>
                                         <li><a href="#" onclick="initLineChart('perday',true);" >Per Hari</a></li>
                                     </ul>
-                        </div> 
+                  </div> 
+                  
+                   <div id="contexttoggle" class="lefting buttonlayout">
+                    <button type="button" id="zoombutton" class="btn btn-mini" data-toggle="button"> Context</button>
+                   </div>  
            </div>
       
+      </div> <!-- END LINEBOX -->
+      
+      <div id="tweetbox" class="lefting">
+         <div class="tabbable"> <!-- Only required for left/right tabs -->
+              <ul class="nav nav-tabs infobox">
+                <li class="active"><a href="#tweet" data-toggle="tab">Tweet</a></li>
+                <li><a href="#tab2" data-toggle="tab">Telusur</a></li>
+              </ul>
+              <div class="tab-content">
+                  
+                <div class="tab-pane active" id="tweet">
+                       <div id="infoCircle" class="infotweet"></div>
+                       <div id="tweetcontainer" class="tweetviewer lefting">
+                           <table class="table table-hover">
+                                <tbody>
+                                    <tr id="tweets">
+                                      <td> Klik lingkaran di grafik tren untuk menampilkan tweet disini</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                       </div>       
+                </div>
+                <div class="tab-pane" id="tab2">
+                    <div class="infotweet lefting">
+                         <form id="search" class="lefting">
+                                    <input id="searchkeyword" type="text" class="search-query deletable" placeholder="Masukan keyword">
+                         </form>  
+                                 <div class="infoTweetViewer lefting">
+                                           <strong><text id="totalJum"></text></strong>
+                                               <div id="pie"></div>
+                                </div>
+                    </div>
+                    <div id="keywordresult" class="tweetviewer lefting">
+                                        
+                                    </div>  
+                </div>
+              </div>
+        </div>
       </div>
     
     
@@ -129,32 +170,14 @@
         
      
 			
-	  
+	  <div id="bar"></div>
       
 
     
 				
-								 <form id="search" class="navbar-form  pull-right">
-                                    <input id="searchkeyword" type="text" class="search-query deletable" placeholder="Masukan keyword...">
-                                 </form>
+								
 				
-							    <div class="infoTweetViewer">
-                                           <small> Ditemukan <strong><text id="totalJum">______</text></strong> tweet yang mengandung keyword <strong><text id="keywordtitle">______</text></strong>.</small>
-							                   <div id="pie" class="inshadow"></div>
-							    </div>
-									<div id="keywordresult" class="tweetviewer">
-                                        
-                                    </div>	
-						
-		
-								<div id="infoCircle" class="btn-group buttons">
-						    		<button class="btn btn-mini minwidth100">---</button>
-						    		<button class="btn btn-mini minwidth100">---</button>
-						    	</div>
-						    		| Keyword:<text id="fullkeyword"></text>
-								<div id="tweetcontainer" class="tweetviewer">
-								  <div class="loadingtweet">  </div>
-								</div> 
+							    
 						
 						
 					 
