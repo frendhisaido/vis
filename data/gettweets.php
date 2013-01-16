@@ -34,6 +34,8 @@ $limitrows = 20;
 
 
 		?>
+		<div id='datatable'>
+		<div id="tweettable">
 		<table class="table table-hover">
 		<tbody >
 		
@@ -73,6 +75,7 @@ $limitrows = 20;
 		?>
 		</tbody>
 		</table>
+		</div>
 		<?php
 		if($rowscount>6){
 			if($atom=='perhour'){
@@ -87,28 +90,28 @@ $limitrows = 20;
 				if($isover<$rowscount){
 					$nextpage = $page + $limitrows;
 					$nexturl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$nextpage&atom=$atom&kw=$passkw";
-					$nextonclick =  "\$('#tweetcontainer').html('<img src=\'img/black-020-loading.gif\'/>').load('$nexturl');";
+					$nextonclick =  "paginate('$nexturl','#paginationtweet', '#tweetcontainer');";
 					$nextstyle = "";
-					$nextlabel = ">>";
+					$nextlabel = "<i class='icon-chevron-right'></i>";
 				}else{
 					$nextstyle = "background-color: #ddd";
 					$nextonclick = "";
-					$nextlabel = "||";
+					$nextlabel = "<i class='icon-pause'></i>";
 				}
 				if($isless>=$limitrows || $isless==0){
 					$prevpage = $page - $limitrows;
 					$prevurl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$prevpage&atom=$atom&kw=$passkw";
-					$prevonclick =  "\$('#tweetcontainer').html('<img src=\'img/black-020-loading.gif\'/>').load('$prevurl');";
+					$prevonclick =  "paginate('$prevurl','#paginationtweet', '#tweetcontainer');";
 					$prevstyle = "";
-					$prevlabel = "<<";
+					$prevlabel = "<i class='icon-chevron-left'></i>";
 				}else{
 					$prevstyle = "background-color: #ddd";
 					$prevonclick = "";
-					$prevlabel = "||";
+					$prevlabel = "<i class='icon-pause'></i>";
 				}
 		?>
-		<div id="pagingbutton" class="pagination pagination-centered">
-									  <ul>
+		<div id="pagingbutton">
+									  <ul class="pagination pagination-centered">
 									  	<li><a href="#" onclick="<?php echo $prevonclick;?>" style="<?php echo $prevstyle;?>">
 									  		<?php echo $prevlabel;?>
 									  		</a>
@@ -119,7 +122,7 @@ $limitrows = 20;
 									    </li>
 									  </ul>
 		</div>
-			
+		</div>	
 		<?php
 		}
 	}elseif((isset($top))){
@@ -129,7 +132,9 @@ $limitrows = 20;
 		if($rowscount>1){
 		$limitrows = 20;
 	?>
-		<table class="table">
+	   <div id="datatable">
+	    <div id="tweettable">
+		<table id="searchresult" class="table">
 		<tbody >	
 	<?php
 		$query = mysql_query("SELECT DATE_FORMAT(datetime,'%e/%b %H:%i') 
@@ -171,6 +176,7 @@ $limitrows = 20;
 		?>
 		</tbody>
 		</table>
+		</div>
 		<?php
 		
 		if($rowscount>$limitrows){
@@ -183,28 +189,28 @@ $limitrows = 20;
 				if($isover<$rowscount){
 					$nextpage = $page + $limitrows;
 					$nexturl = "data/gettweets.php?&top=yes&rc=$rowscount&pg=$nextpage&kw=$passkw";
-					$nextonclick =  "\$('#keywordresult').html('<img src=\'img/black-020-loading.gif\'/>').load('$nexturl');";
+					$nextonclick =  "paginate('$nexturl','#paginationsearch','#keywordresult');";
 					$nextstyle = "";
-					$nextlabel = ">>";
+					$nextlabel = "<i class='icon-chevron-right'></i>";
 				}else{
 					$nextstyle = "background-color: #ddd";
 					$nextonclick = "";
-					$nextlabel = "||";
+					$nextlabel = "<i class='icon-pause'></i>";
 				}
 				if($isless>=$limitrows || $isless==0){
 					$prevpage = $page - $limitrows;
 					$prevurl = "data/gettweets.php?&top=yes&rc=$rowscount&pg=$prevpage&kw=$passkws";
-					$prevonclick =  "\$('#keywordresult').html('<img src=\'img/black-020-loading.gif\'/>').load('$prevurl');";
+					$prevonclick =  "paginate('$prevurl','#paginationsearch','#keywordresult');";
 					$prevstyle = "";
-					$prevlabel = "<<";
+					$prevlabel = "<i class='icon-chevron-left'></i>";
 				}else{
 					$prevstyle = "background-color: #ddd";
 					$prevonclick = "";
-					$prevlabel = "||";
+					$prevlabel = "<i class='icon-pause'></i>";
 				}
 		?>
-		<div id="pagingbutton" class="pagination pagination-centered">
-									  <ul>
+		<div id="pagingbutton">
+									  <ul class="pagination pagination-centered">
 									  	<li><a href="#" onclick="<?php echo $prevonclick;?>" style="<?php echo $prevstyle;?>">
 									  		<?php echo $prevlabel;?>
 									  		</a>
@@ -214,8 +220,8 @@ $limitrows = 20;
 									    	</a>
 									    </li>
 									  </ul>
-		</div>
-	
+	    </div>
+	    </div>
 			<?php
 		 
 			}

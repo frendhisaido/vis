@@ -256,6 +256,12 @@ function initjs() {
     $('input.deletable').wrap('<span class="deleteicon" />').after($('<span/>').click(function() {
         resetbgkeyword();
         $(this).prev('input').val('').focus();
+        $('#jumlahtweetfound').text('');
+        if($('#searchresult').is(':visible')){
+             $('#searchresult').remove();
+             $('#paginationsearch ul').remove();
+             $('#searchguide').show();  
+        }     
     }));
     
     /*
@@ -900,7 +906,16 @@ function initAllOpentips() {
                           });
                   });   
 }
-
+function paginate(requesturl, pagination, container){
+        $.ajax({
+             url: requesturl,
+             dataType: 'html',
+         }).done(function(data){
+           jq = $(data);
+           $(pagination).html(jq.find('#pagingbutton').html());
+           $(container).html(jq.find('#tweettable').html());
+         });
+}
 function clickCircle(d, element){
     var requestKeyWords, reqTweet, keyWords, setKeywords;
             setInfoCircle(d.date, d.jumlah, d.orientasi, gc.timeUnit, element.id);
@@ -911,12 +926,11 @@ function clickCircle(d, element){
                                 d3.text(requestKeyWords, function(keys) {   
                                     keyWords = keys.trim(keys.lastIndexOf(' ')-1).split(' ').join(',');
                                     setKeywords = keys.trim(keys.lastIndexOf(' ')-1).split(' ').join(', ');
-                                    reqTweet = gc.getTweetUrl + '?tg='+ d.tgl + '&or='+ d.orientasi + '&atom='+ gc.timeUnit + '&kw='+ keyWords + ',';  
+                                    reqTweet = gc.getTweetUrl + '?tg='+ d.tgl + '&or='+ d.orientasi + '&atom='+ gc.timeUnit + '&kw='+ keyWords + ','; 
                                     optp.setContent(setKeywords);
-                                $('#fullkeyword').text(setKeywords);
-                                $('#tweetcontainer').html(gc.loadingGIF).load(reqTweet);
-                                d3.select(element).attr('stroke', '#6283ff')
-                                                    .attr('stroke-width', '1px');
+                                    $('#fullkeyword').text(setKeywords);
+                                    paginate(reqTweet, '#paginationtweet', '#tweetcontainer');
+                                d3.select(element).attr('stroke', '#6283ff').attr('stroke-width', '1px');
                                 optp.show();   
                                 });
                         }else {
@@ -927,7 +941,7 @@ function clickCircle(d, element){
                                     reqTweet = gc.getTweetUrl + '?tg='+ (d.tgl.replace(' ', '%20')) + '&or='+ d.orientasi + '&atom='+ gc.timeUnit + '&rc='+ d.jumlah + '&kw='+ keyWords + ',';         
                                     optp.setContent(setKeywords);
                                     $('#fullkeyword').text(setKeywords);
-                                    $('#tweetcontainer').html(gc.loadingGIF).load(reqTweet);
+                                    paginate(reqTweet, '#paginationtweet', '#tweetcontainer');
                                     d3.select(element).attr('stroke', '#6283ff')
                                                         .attr('stroke-width', '1px');
                                     optp.show();
@@ -1233,21 +1247,12 @@ function makePie(key) {
                         .enter().append("svg:g")
                         .attr("transform", gc.translate(5,5))
                         .attr("class",function(d){
-                            $("#pie").popover('destroy');
                             var infoPie = "<strong> \""+key+"\"</strong> ditemukan di :</br>"+
                                         "- <strong>"+d[0]+ "</strong> tweet negatif</br>"+
                                         "- <strong>"+d[1]+"</strong> tweet positif </br>"+
                                         "- <strong>"+d[2]+"</strong> tweet non-opini";                                     
                             gc.pieTip.setContent(infoPie);                                        
-                            /*
-                            $("#pie").popover({
-                                            html: true,
-                                            title: infoPieTitle,
-                                            content: infoPie,                                          
-                                            placement: "top",
-                                            trigger: "hover",
-                                            });
-                            */
+                            
                             return "aPie";        
                             });
             
@@ -1303,7 +1308,7 @@ function searchkeyword(key, isOverview, orient) {
             //var msg = 'Kata kunci '+ key + ' tidak ditemukan';
             makePie(false);
             linechart.loading(false);
-            $("#totalJum").text("0");
+            $("#jumlahtweetfound").text("0");
             //gc.infoError(msg,true);
             return null;
         }else {
@@ -1335,16 +1340,16 @@ function searchkeyword(key, isOverview, orient) {
 
 function resultkeyword(key) {
     key= key.replace(' ','%20');
-    var request = gc.getTweetUrl + '?top=yes&kw='+ key;
-    $('#keywordresult').html(gc.loadingGIF).load(request);
-    //$('#keywordtitle').text(key);
+    var request = gc.getTweetUrl + '?top=yes&kw='+ key ;
+    $('#searchguide').hide();
+    paginate(request, '#paginationsearch','#keywordresult');
 }
 
 
 function drawkeywordchart() {
         linechart.loading(true);
         keywordchart.rects == null ? null : resetbgkeyword();
-        $("#totalJum").text(keywordchart.totalJum+' tweet.');
+        $("#jumlahtweetfound").text(keywordchart.totalJum+' tweet.');
         
         keywordchart.colorScale.domain([0, keywordchart.maxJum]);
         
@@ -1432,11 +1437,13 @@ function drawkeywordchart() {
 }
 
 function resetbgkeyword(set) {
-    keywordchart.rects.remove();
-    keywordchart.rects = null;
-    if (set == 'full') {
-        keywordchart.datas.length = 0;
+    if(keywordchart.rects !== undefined) {
+        keywordchart.rects.remove();
         keywordchart.rects = null;
+        if (set == 'full') {
+            keywordchart.datas.length = 0;
+            keywordchart.rects = null;
+        }
     }
 }
 function isKeywordEmpty() {

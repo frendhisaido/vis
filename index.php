@@ -118,15 +118,15 @@
       </div> <!-- END LINEBOX -->
       
       <div id="tweetbox" class="lefting">
-         <div class="tabbable"> <!-- Only required for left/right tabs -->
               <ul class="nav nav-tabs infobox">
                 <li class="active"><a href="#tweet" data-toggle="tab">Tweet</a></li>
-                <li><a href="#tab2" data-toggle="tab">Telusur</a></li>
+                <li><a href="#telusur" data-toggle="tab">Telusur</a></li>
               </ul>
               <div class="tab-content">
                   
                 <div class="tab-pane active" id="tweet">
-                       <div id="infoCircle" class="infotweet"></div>
+                       <div id="infoCircle" class="infotweet fullwidth lefting"></div>
+                       <div id="paginationtweet" class="fullwidth lefting"></div>
                        <div id="tweetcontainer" class="tweetviewer lefting">
                            <table class="table table-hover">
                                 <tbody>
@@ -137,26 +137,41 @@
                             </table>
                        </div>       
                 </div>
-                <div class="tab-pane" id="tab2">
+                <div class="tab-pane" id="telusur">
                     <div class="infotweet lefting">
                          <form id="search" class="lefting">
                                     <input id="searchkeyword" type="text" class="search-query deletable" placeholder="Masukan keyword">
                          </form>  
                                  <div class="infoTweetViewer lefting">
-                                           <strong><text id="totalJum"></text></strong>
-                                               <div id="pie"></div>
+                                           <strong><text id="jumlahtweetfound"></text></strong>
+                                               <div id="pie" class="hide"></div>
                                 </div>
                     </div>
-                    <div id="keywordresult" class="tweetviewer lefting">
-                                        
-                                    </div>  
+                    <div id="paginationsearch" class="fullwidth lefting"></div>
+                    <div class="tweetviewer lefting">
+                           <table id="searchguide" class="table table-hover">
+                                <tbody>
+                                    <tr id="tweets">
+                                      <td> Tekan "Enter" untuk memasukan penelusuran keyword</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div id="keywordresult">
+                                
+                            </div>
+                        </div>  
                 </div>
               </div>
-        </div>
+      </div> <!-- END TWEETBOX -->
+      
+      <div id="overview" class="lefting">
+          
       </div>
     
     
-</div>	  
+    
+    
+</div> <!-- END DASHBOARD -->  
 
 			
 		      
