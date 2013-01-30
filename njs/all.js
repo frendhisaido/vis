@@ -80,32 +80,86 @@
             jsonbigneg: 0,
             jsonbigpos: 0,
             jsonbignon: 0,
-            loadingGIF: '<img src=\'img/black-020-loading.gif\'/>'
+            loadingGIF: '<img src=\'img/black-020-loading.gif\'/>',
+            show: function(obj){
+                console.log(obj);
+                return false;},
+            zCode: {"zmentionz": "<i>@username</i>",
+                      "zmakianz": "(makian)",
+                      "rt": "RT",
+                      "indosat": "INDOSAT"
+                      },
+            getZCode: function(str) {
+                        return gc.zCode[ str ] ? gc.zCode[ str ] : str; 
+                       },
+            swapZCode: function(target) {
+                        $(target).replaceText(/\b(\S+?)\b/g, gc.getZCode); 
+                       },
+            emphasize: function(str) {
+                        return '<span class="emphasize">'+gc.getZCode(str)+'</span>'; 
+                       },
+            setKeywordEmphasize: function(cacheID,target) {
+                    var keywords = $(cacheID).text();
+                        if(keywords !== 'kosong'){
+                            var listKeywords = keywords.replace(/, /g,'|'),
+                                rgx = new RegExp(listKeywords,'gi');        
+                                $(target).replaceText(rgx, gc.emphasize);
+                        }
+                    gc.swapZCode(target);
+                    return null;                
+                },
+             bigramEmphasize: function(str){
+                  str = str.split(' ').map(gc.getZCode).join(' ');
+                  return '<span class="bigram"> '+str+' </span>';
+             },   
+             bigramRgx: function(key,str) {
+                    var arr = str.split(' '),
+                        key = key.replace(' ',''),
+                        indexKey = jQuery.inArray(key, arr),
+                        bef = (indexKey-1) > -1 ? arr[(indexKey - 1)] : '',
+                        af = (indexKey + 1) < arr.length ? arr[(indexKey + 1)] : '',
+                        bgrm = bef +' '+ key +' '+ af,
+                        rgx = new RegExp(bgrm, 'gi');                 
+                    return rgx;
+             },
+             setBigramEmphasize: function(cacheID,target){
+                    var keyword = $(cacheID).text().replace(' :',''),
+                        regex,str; 
+                    $(target).each(function(i){
+                        str = $(this).text();
+                        regex = gc.bigramRgx(keyword,str);
+                        $(this).replaceText(regex, gc.bigramEmphasize);
+                    });
+                    gc.swapZCode(target);
+                    return null;
+             }         
         };
-        
-        
-        //load json peringkat keyword
-        queue().defer(d3.json, 'http://localhost/vis/data/getKeyword.php?track=big&or=dataset')
-                .defer(d3.json, 'http://localhost/vis/data/getKeyword.php?track=big&or=negatifbig')
-                .defer(d3.json, 'http://localhost/vis/data/getKeyword.php?track=big&or=positifbig')
-                .defer(d3.json, 'http://localhost/vis/data/getKeyword.php?track=big&or=nonopinibig')
-                .await(collect);
-                
-       function collect(error, jsons) {
-                function sortdesc(ar) {
+    
+         function sortdesc(ar) {
                     return ar.sort(function(a,b) {
                             return b.val - a.val;
                         });
                 }
+        //load jsons
+        queue().defer(d3.json, 'http://localhost/vis/data/getKeyword.php?track=big&or=dataset')
+                .defer(d3.json, 'http://localhost/vis/data/getKeyword.php?track=big&or=negatifbig')
+                .defer(d3.json, 'http://localhost/vis/data/getKeyword.php?track=big&or=positifbig')
+                .defer(d3.json, 'http://localhost/vis/data/getKeyword.php?track=big&or=nonopinibig')
+                .defer(d3.json, 'http://localhost/vis/data/barchartjson.php?barhours=yes')
+                .await(collect);
+                
+       function collect(error, jsons) {
            if(error) return gc.infoError('failed getting json files', true);
            gc.jsondataset = sortdesc(jsons[0]);
            gc.jsonbigneg = sortdesc(jsons[1]);
            gc.jsonbigpos = sortdesc(jsons[2]);
            gc.jsonbignon = sortdesc(jsons[3]);
-           
+           gc.jsonbarhour = jsons[4];
+           initBarHourChart();           
+           initKeywordRanks(); 
        } 
             
-        // DatePicker range Date
+        // init DatePicker range Date
         function initDatePicker(){
              $("#calDate1").datepicker("option", "minDate", gc.firstDate);
              $("#calDate1").datepicker("option", "maxDate", gc.lastDate);
@@ -133,18 +187,7 @@
 })();
 
 $(function() {
-   var myPie = $("#pie");
-   var pieOpentip = new Opentip(myPie, {showOn: "mouseover",
-                                        showEffect: "fade",
-                                        tipJoint: "bottom left",
-                                        style: "glass",
-                                        borderRadius: 1,
-                                        escapeContent: false,
-                                        borderWidth: 3,
-                                        borderColor: "#317cc5",
-                                        fixed: false});
    
-   gc.pieTip = pieOpentip; 
    
    Opentip.styles.circ = {
        extends: 'glass',
@@ -154,7 +197,9 @@ $(function() {
        tipJoint: 'bottom left',
        target: true,
        fixed: true,
+       hideDelay: 0.5,
        borderWidth: 1.5,
+       borderRadius: 5,
        hideOn: null,
        group: 'circles'
    } 
@@ -229,241 +274,10 @@ $(function() {
 
 
 
-function initjs() {
-    
-    
-    // TODO: Kumpulin semua click listener dari jquery
-    
-    // List of Listeners
-
-   /*
-   * Input form search keyword
-   * Listen enter keys
-   */
-   $('#searchkeyword').keypress(function(k) {
-        if (k.which == 13) {
-            var key = $('#searchkeyword').val();
-            if (key != '') {
-                searchkeyword(key, false);
-                resultkeyword(key);
-            }
-        return false;
-        }
-    });
-    /*
-     * Listener for X icon in search keyword form
-     */
-    $('input.deletable').wrap('<span class="deleteicon" />').after($('<span/>').click(function() {
-        resetbgkeyword();
-        $(this).prev('input').val('').focus();
-        $('#jumlahtweetfound').text('');
-        if($('#searchresult').is(':visible')){
-             $('#searchresult').remove();
-             $('#paginationsearch ul').remove();
-             $('#searchguide').show();  
-        }     
-    }));
-    
-    /*
-     * Listener for lines visibility toggles
-     * Only allow two button to be disabled
-     */
-    $('#toggleNegatif').click(function() {
-        toggleLine('negatif');
-            if (gc.tog[0].view) {
-                $(gc.tog[0].eye).attr('class', 'icon-eye-close');
-                gc.tog[0].view = false;
-            }else {
-                $(gc.tog[0].eye).attr('class', 'icon-eye-open');
-                gc.tog[0].view = true;
-            }
-        isAlone();
-    });
-    $('#togglePositif').click(function() {
-        toggleLine('positif');
-            if (gc.tog[1].view) {
-                $(gc.tog[1].eye).attr('class', 'icon-eye-close');
-                gc.tog[1].view = false;
-            }else {
-                $(gc.tog[1].eye).attr('class', 'icon-eye-open');
-                gc.tog[1].view = true;
-            }
-        isAlone();
-    });
-    $('#toggleNonopini').click(function() {
-        toggleLine('nonopini');
-            if (gc.tog[2].view) {
-                $(gc.tog[2].eye).attr('class', 'icon-eye-close');
-                gc.tog[2].view = false;
-            }else {
-                $(gc.tog[2].eye).attr('class', 'icon-eye-open');
-                gc.tog[2].view = true;
-            }
-        isAlone();
-    });
-    /*
-     * Function for checking wether two button has been disabled 
-     */
-    function isAlone() {
-        var countrue = 0;
-        var alone = 0;
-        for (i = 0; i < gc.tog.length; i++) {
-            if (gc.tog[i].view == true) {
-                countrue++;
-            }
-        }
-        if (countrue == 1) {
-            for (i = 0; i < gc.tog.length; i++) {
-                if (gc.tog[i].view == true) {
-                    $(gc.tog[i].id).attr('disabled', '');
-                    toggleMaxY(gc.tog[i].orn);
-                }
-            }
-        }
-        if (countrue > 1) {
-            $('#viewcontrols button').removeAttr('disabled');
-            toggleMaxY('default');
-        }
-    };
-
-    /*
-     * Listener for toggling line context visibility
-     */
-    $('#zoombutton').click(function() {
-        var msg = "Menggunakan context saat visualisasi jumlah keyword berjalan dapat melambatkan respon line chart. Lanjutkan?";    
-        if (!$("#linecontext").is(":visible") && keywordchart.rects != null) {
-            if(confirm(msg)){
-                $('#linecontext').slideToggle(250, unzoom);
-            } else {
-                $("#zoombutton").removeClass("active");
-                return null;
-            }
-        } else {
-            $('#linecontext').slideToggle(250, unzoom);
-        }      
-    });
-    
-    /*
-     * Listener for toggle switching sliding interface
-     */
-    $('#settingRentang').click(function() {
-        $('.tampilsetting').slideToggle(250);
-        if ($('#ubahRentang').attr('disabled') == null) {
-            $('#ubahRentang').attr('disabled', '');
-        }else {
-            $('#ubahRentang').removeAttr('disabled');
-        }
-    });
-
-    /*
-     * Listeners for setting default slider interface
-     * default slider interface = gc.defaulUbahRentang
-     */
-    $('#setSlider').click(function() {
-        gc.defaultUbahRentang = '#slidepick';
-        var isactive = $('#setSlider').attr('class');
-            if (isactive.indexOf('active') != -1) {
-                $('#setSlider').attr('class', isactive);
-            }else {
-                $('#setSlider').attr('class', isactive + ' active');
-            }
-        var set = $('#setDatepick').attr('class').replace('active', '');
-        $('#setDatepick').attr('class', set);
-        $('#datepick').hide('slow');
-        $('#slidepick').show('slow');
-    });
-    $('#setDatepick').click(function() {
-     gc.defaultUbahRentang = '#datepick';
-        var isactive = $('#setDatepick').attr('class');
-            if (isactive.indexOf('active') != -1) {
-            $('#setDatepick').attr('class', isactive);
-            }else {
-            $('#setDatepick').attr('class', isactive + ' active');
-            }
-        var set = $('#setSlider').attr('class').replace('active', '');
-        $('#setSlider').attr('class', set);
-        $('#slidepick').hide('slow');
-        $('#datepick').show('slow');
-    });
-
-    /*
-     * Listener for toggling slider visibility
-     */
-    $('#ubahRentang').click(function() {
-        rentangEye();    
-        $(gc.defaultUbahRentang).slideToggle(250);  
-    });
-    
-    /*
-     * Listener for shutting eye icons on toggle line visibility buttons :)
-     */
-    function rentangEye(){
-        if ($("#datepick").is(":visible") || $("#slidepick").is(":visible") ) {
-            $("#rentangeye").attr('class', 'icon-eye-close');
-            if ($('#settingRentang').attr('disabled') == null) {
-                $('#settingRentang').attr('disabled', '');
-            }else {
-                $('#settingRentang').removeAttr('disabled');
-            }
-            return null;
-        }else {
-            $("#rentangeye").attr('class', 'icon-eye-close');
-            if ($('#settingRentang').attr('disabled') == null) {
-                $('#settingRentang').attr('disabled', '');
-            }else {
-                $('#settingRentang').removeAttr('disabled');
-            }
-            $("#rentangeye").attr('class', 'icon-eye-open');
-            return null;
-        }
-    };
-    
-    
-    /*
-     * View Modal listeners
-     */
-    $("#overviewinfo").click(function() {
-        $("#modaloverview").modal('show');
-    });
-    
-    //TODO: WHAT IS THIS FOR??
-    $('#fullkeyword').click(function() {
-        topTweet(this);
-    });
-
-    /*
-     * 
-     */
-    $('#calDate1').datepicker({
-        dateFormat: 'yy-mm-dd',
-        numberOfMonths: 2,
-        onSelect: function(selectedDate ) {
-            $('#calDate2').datepicker('option', 'minDate', selectedDate);
-        }
-    });
-    
-    $('#calDate2').datepicker({
-        dateFormat: 'yy-mm-dd',
-        numberOfMonths: 2,
-        onSelect: function(selectedDate ) {
-            $('#calDate1').datepicker('option', 'maxDate', selectedDate);
-        }
-    });
-
-
-    initbarchart();
-    initLineChart('perday', false);
-    //initSlider();
-    setTimeout('initDatePicker()',3000);
-    //$("#modaloverview").modal('show');
-    //searchkeyword('pakai',true);
-              
-}
-
 
 var linechart = new vizconfig();
     linechart.margin = [20, 35, 40, 50, 60];
-    linechart.circlesize = [2,3,4,5];
+    linechart.circlesize = [2,2.5,3,3.5];
     linechart.strokesize = ['1.5px','2px','2.5px','3px'];
     linechart.width = $("#linegraph").width();
     linechart.height = $("#linegraph").height() - linechart.margin[1];
@@ -527,7 +341,7 @@ var contextchart = new vizconfig();
 var allsvg = d3.select('#linegraph').append('svg:svg')
 		.attr('class', 'view')
 	    .attr('width', linechart.width)
-	    .attr('height', linechart.height + linechart.margin[0] + linechart.margin[2])
+	    .attr('height', linechart.height + linechart.margin[1] + linechart.margin[2])
 	    .on('mouseover.chart', circopacity(1))
 	    .on('mouseout.chart', circopacity(0));
 
@@ -567,7 +381,7 @@ var contbg = contsvg.append('rect')
 
 var backsvg = allsvg.append('svg:g')
 	      .attr('class', 'theAxis')
-	      .attr('transform', gc.translate(linechart.margin[2],0));
+	      .attr('transform', gc.translate(linechart.margin[2],10));
 
 var contextbacksvg = contsvg.append('svg:g')
 		     .attr('class', 'contAxis')
@@ -575,11 +389,11 @@ var contextbacksvg = contsvg.append('svg:g')
 
 var linesvg = allsvg.append('svg:g')
 	    .attr('class', 'theLines')
-	    .attr('transform', gc.translate(linechart.margin[2],0));
+	    .attr('transform', gc.translate(linechart.margin[2],10));
 
 var circsvg = allsvg.append('svg:g')
 	     .attr('class', 'theCircles')
-	     .attr('transform', gc.translate(linechart.margin[2],0));
+	     .attr('transform', gc.translate(linechart.margin[2],10));
 
 var contextsvg = contsvg.append('svg:g')
 		 .attr('class', 'theContexts')
@@ -595,7 +409,7 @@ var loadingbar = allsvg.append('svg:g')
 			.style('display', 'none');
 
     loadingbar.append('rect')
-		.attr('transform', gc.translate(linechart.margin[2],1))
+		.attr('transform', gc.translate(linechart.margin[2],10))
     	.attr('class', 'load')
     	.attr('fill', '#ddd')
     	.style('opacity', '0.7')
@@ -715,14 +529,10 @@ function initLineChart(unit,update) {
     	}else {
     		initDrawLine(orientasi, data, gc.firstDate, gc.lastDate);
     	}
-    }).on("progress", function() {
-    //console.log("progress..", d3.event.loaded);
     });
-
 }
 
 function initDrawLine(datasetline,datasetcircle,date1,date2) {
-    initKeywordRanks();
     
     gc.totalNegatif = datasetline[0].sumJumlah;
     gc.totalPositif = datasetline[1].sumJumlah;
@@ -868,9 +678,9 @@ var c = circsvg.selectAll('.points')
           var ids = 'circ_' + d.orientasi + ' apoint';
           return ids;
         })
-    .style('fill', function(d) { return gc.colorOrientasi(d.orientasi);})
+    .style('fill','#fff')   
     .attr('stroke', function(d) { return gc.colorOrientasi(d.orientasi);})
-    .attr('stroke-width', '0px')
+    .attr('stroke-width', '1px')
     .attr('cx' , function(d) { return linechart.xScale(d.date);})
     .attr('cy' , function(d) { 
         return linechart.yScale(d.jumlah);
@@ -906,47 +716,59 @@ function initAllOpentips() {
                           });
                   });   
 }
-function paginate(requesturl, pagination, container){
+function loadTweetResult(requesturl, pagination, container, target , keywordsCacheID){
+        //Pakai jQuery ajax supaya bisa filter elemen ( .find() ) html dari response
         $.ajax({
              url: requesturl,
              dataType: 'html',
          }).done(function(data){
            jq = $(data);
-           $(pagination).html(jq.find('#pagingbutton').html());
-           $(container).html(jq.find('#tweettable').html());
+            //Filter Response, parent untuk button: #pagingbutton, parent untuk tweet result: #tweettable
+            $(pagination).html(jq.find('#pagingbutton').html());
+            $(container).html(jq.find('#tweettable').html());
+            //Replacing specific texts
+           
+            if(target.indexOf('#telusur') == 0 ){
+              gc.setBigramEmphasize(keywordsCacheID,target);
+            }else{
+              gc.setKeywordEmphasize(keywordsCacheID,target);  
+            }                  
          });
 }
+
 function clickCircle(d, element){
     var requestKeyWords, reqTweet, keyWords, setKeywords;
             setInfoCircle(d.date, d.jumlah, d.orientasi, gc.timeUnit, element.id);
             var optp = $('#'+element.id).data('opentips')[0];
-                        //Get & Set Tooltip buat info keyword
+                        //Set dan tampilkan tooltip dan tampilkan tweet
                         if (gc.timeUnit == 'perday') {
                             requestKeyWords = gc.getKeywUrl + '?tg='+ (d.tgl) + '&or='+ d.orientasi + '&track=no';
-                                d3.text(requestKeyWords, function(keys) {   
+                                d3.text(requestKeyWords).get(function(error, keys){
                                     keyWords = keys.trim(keys.lastIndexOf(' ')-1).split(' ').join(',');
                                     setKeywords = keys.trim(keys.lastIndexOf(' ')-1).split(' ').join(', ');
                                     reqTweet = gc.getTweetUrl + '?tg='+ d.tgl + '&or='+ d.orientasi + '&atom='+ gc.timeUnit + '&kw='+ keyWords + ','; 
-                                    optp.setContent(setKeywords);
-                                    $('#fullkeyword').text(setKeywords);
-                                    paginate(reqTweet, '#paginationtweet', '#tweetcontainer');
-                                d3.select(element).attr('stroke', '#6283ff').attr('stroke-width', '1px');
-                                optp.show();   
+                                    optp.setContent('<strong>Keywords</strong>: '+setKeywords);
+                                    $('#keywordsCache').text(setKeywords); //simpan keywords di DOM                                    
+                                    loadTweetResult(reqTweet, '#paginationtweet', '#tweetcontainer','#tweet .tweetcontent','#keywordsCache'); //Load hasil search
+                                    d3.select(element).style('fill', gc.colorOrientasi(d.orientasi)).attr('stroke-width', '1px');
+                                    optp.show();   
                                 });
                         }else {
                             requestKeyWords = gc.getKeywUrl + '?tg='+ (d.tgl) + '&or='+ d.orientasi + '&track=no';
-                                d3.text(requestKeyWords, function(keys) {
+                                d3.text(requestKeyWords).get(function(error, keys){
                                     keyWords = keys.trim(keys.lastIndexOf(' ')-1).split(' ').join(',');
                                     setKeywords = keys.trim(keys.lastIndexOf(' ')-1).split(' ').join(', ');
                                     reqTweet = gc.getTweetUrl + '?tg='+ (d.tgl.replace(' ', '%20')) + '&or='+ d.orientasi + '&atom='+ gc.timeUnit + '&rc='+ d.jumlah + '&kw='+ keyWords + ',';         
-                                    optp.setContent(setKeywords);
-                                    $('#fullkeyword').text(setKeywords);
-                                    paginate(reqTweet, '#paginationtweet', '#tweetcontainer');
-                                    d3.select(element).attr('stroke', '#6283ff')
-                                                        .attr('stroke-width', '1px');
+                                    optp.setContent('<strong>Keywords</strong>: '+setKeywords);
+                                    $('#keywordsCache').text(setKeywords);
+                                    loadTweetResult(reqTweet, '#paginationtweet', '#tweetcontainer', '#tweet .tweetcontent','#keywordsCache');
+                                    d3.select(element).style('fill', gc.colorOrientasi(d.orientasi)).attr('stroke-width', '1px');
                                     optp.show();
                                 });
                         }
+        //switching tab to tweetviewer                        
+        $("#click_tabtweet").click();
+                               
         return true;
 }
 
@@ -1141,64 +963,127 @@ function selisih(dates) {
 
 /* START MISC JS */
 
-var assa;
 
 // KEYWORD RANKS
+// TODO: Bisa di loop supaya code nya lebih pendek
 function initKeywordRanks(){
-var kwdataset = d3.select('#kwlistdataset').append('ul').attr('class','ulkw');
-var kwbigneg = d3.select('#kwlistnegatif').append('ul').attr('class','ulkw');
-var kwbigpos = d3.select('#kwlistpositif').append('ul').attr('class','ulkw');
-var kwbignon = d3.select('#kwlistnonopini').append('ul').attr('class','ulkw');
-    
-kwdataset.selectAll('.kw').data(gc.jsondataset)
-                        .enter().append('li').attr('class','kw').attr('data-orient','dataset')
-                        .append('strong')
-                        .text(function(d,i){
-                            i++;
-                            return i+'. "'+d.key.concat()+'"';
-                        }).append('text').attr('class', 'numkwrank')
-                        .text(function(d){
-                            return ' ( '+d.val+' tweet )  ';
-                        });
-                        
-kwbigneg.selectAll('.kw').data(gc.jsonbigneg)
-                        .enter().append('li').attr('class','kw').attr('data-orient','negatif')
-                        .append('strong')
-                        .text(function(d,i){
-                            i++;
-                            return i+'. "'+d.key.concat()+'"';
-                        }).append('text').attr('class', 'numkwrank')
-                        .text(function(d){
-                            return ' ( '+d.val+' tweet )';
-                        });
-                        
-kwbigpos.selectAll('.kw').data(gc.jsonbigpos)
-                        .enter().append('li').attr('class','kw').attr('data-orient','positif')
-                        .append('strong')
-                        .text(function(d,i){
-                            i++;
-                            return i+'. "'+d.key.concat()+'"';
-                        }).append('text').attr('class', 'numkwrank')
-                        .text(function(d){
-                            return ' ( '+d.val+' tweet )';
-                        });
-                        
-kwbignon.selectAll('.kw').data(gc.jsonbignon)
-                        .enter().append('li').attr('class','kw').attr('data-orient','nonopini')
-                        .append('strong')
-                        .text(function(d,i){
-                            i++;
-                            return i+'. "'+d.key.concat()+'"';
-                        }).append('text').attr('class', 'numkwrank')
-                        .text(function(d){
-                            return ' ( '+d.val+' tweet )';
-                        });
+       
+/* set up list */
+var datasetGround = d3.select('#kwlistdataset').append('ul').attr('class','ulkw');
+var bignegGround = d3.select('#kwlistnegatif').append('ul').attr('class','ulkw');
+var bigposGround = d3.select('#kwlistpositif').append('ul').attr('class','ulkw');
+var bignonGround = d3.select('#kwlistnonopini').append('ul').attr('class','ulkw');
 
+/* fill in keywords */                     
+var kwdataset = datasetGround.selectAll('.kw').data(gc.jsondataset)
+                        .enter().append('li').attr('class','kw').attr('data-orient','dataset');
+                        
+               kwdataset.append('div').attr('class','inkw kwtext lefting')
+                        .text(function(d){
+                            return ''+d.key.concat()+'';
+                        });
+var kwchartds = kwdataset.append('div').attr('class','inkw lefting');                  
+                        
+var kwbigneg = bignegGround.selectAll('.kw').data(gc.jsonbigneg)
+                        .enter().append('li').attr('class','kw').attr('data-orient','negatif');
+                        
+               kwbigneg.append('div').attr('class','inkw kwtext lefting')
+                        .text(function(d){
+                            return ''+d.key.concat()+'';
+                        });
+var kwchartbn = kwbigneg.append('div').attr('class','inkw lefting');
+                        
+var kwbigpos = bigposGround.selectAll('.kw').data(gc.jsonbigpos)
+                        .enter().append('li').attr('class','kw').attr('data-orient','positif');
+                        
+               kwbigpos.append('div').attr('class','inkw kwtext lefting')
+                        .text(function(d){
+                            return ''+d.key.concat()+'';
+                        });
+var kwchartbp = kwbigpos.append('div').attr('class','inkw lefting');
+                        
+var kwbignon = bignonGround.selectAll('.kw').data(gc.jsonbignon)
+                        .enter().append('li').attr('class','kw').attr('data-orient','nonopini');
+                        
+               kwbignon.append('div').attr('class','inkw kwtext lefting')
+                        .text(function(d){
+                            return ''+d.key.concat()+'';
+                        });
+var kwchartbnon = kwbignon.append('div').attr('class','inkw lefting');
+
+/* barcharts for keywords ranks */
+var kwwidth = $(".inkw").width() - 10;
+var kwheight = $(".inkw").height() - 2;
+var kwScale = d3.scale.linear().range( [5, kwwidth]);
+var  kwcolorScale = d3.scale.linear().interpolate(d3.interpolateRgb);
+                                
+var datasetScale = kwScale.domain([ d3.min( gc.jsondataset, function(d){ return +d.val;}),
+                     d3.max( gc.jsondataset, function(d){ return +d.val;}) ]);  
+var datasetColor = kwcolorScale.range(['#eaeaea', '#b0c1ff']).domain([d3.min( gc.jsondataset, function(d){ return +d.val;}),
+                     d3.max( gc.jsondataset, function(d){ return +d.val;})]);
+                     
+kwchartds.append('div').attr('class', 'numkwrank').style('width' ,function(d){                        
+                        return datasetScale(+d.val)+'px';
+                    })
+                    .style('background-color', function(d){
+                        return datasetColor(+d.val);
+                    })
+                    .text(function(d){
+                        return d.val;
+                    });
+
+var bignegScale = kwScale.domain([ d3.min( gc.jsonbigneg, function(d){ return +d.val;}),
+                     d3.max( gc.jsonbigneg, function(d){ return +d.val;}) ]);  
+var bignegColor = kwcolorScale.range(['#eaeaea', '#FF0000']).domain([d3.min( gc.jsonbigneg, function(d){ return +d.val;}),
+                     d3.max( gc.jsonbigneg, function(d){ return +d.val;})]);
+                     
+kwchartbn.append('div').attr('class', 'numkwrank').style('width' ,function(d){                        
+                        return bignegScale(+d.val)+'px';
+                    })
+                    .style('background-color', function(d){
+                        return bignegColor(+d.val);
+                    })
+                    .text(function(d){
+                        return d.val;
+                    });
+                    
+var bigposScale = kwScale.domain([ d3.min( gc.jsonbigpos, function(d){ return +d.val;}),
+                     d3.max( gc.jsonbigpos, function(d){ return +d.val;}) ]);  
+var bigposColor = kwcolorScale.range(['#eaeaea', '#009900']).domain([d3.min( gc.jsonbigpos, function(d){ return +d.val;}),
+                     d3.max( gc.jsonbigpos, function(d){ return +d.val;})]);
+                     
+kwchartbp.append('div').attr('class', 'numkwrank').style('width' ,function(d){                        
+                        return bigposScale(+d.val)+'px';
+                    })
+                    .style('background-color', function(d){
+                        return bigposColor(+d.val);
+                    })
+                    .text(function(d){
+                        return d.val;
+                    });
+                    
+var bignonScale = kwScale.domain([ d3.min( gc.jsonbignon, function(d){ return +d.val;}),
+                     d3.max( gc.jsonbignon, function(d){ return +d.val;}) ]);  
+var bignonColor = kwcolorScale.range(['#eaeaea', '#FAA732']).domain([d3.min( gc.jsonbignon, function(d){ return +d.val;}),
+                     d3.max( gc.jsonbignon, function(d){ return +d.val;})]);
+                     
+kwchartbnon.append('div').attr('class', 'numkwrank').style('width' ,function(d){                        
+                        return bignonScale(+d.val)+'px';
+                    })
+                    .style('background-color', function(d){
+                        return bignonColor(+d.val);
+                    })
+                    .text(function(d){
+                        return d.val;
+                    });
+
+        // Set event listeners            
         d3.selectAll('.kw').on('click.kwviz', function(d) {
+           /*
             $("#overviewtext").text('Jumlah kemunculan tweet yang menyebut kata "'+ d.key +'" di kategori '+ this.getAttribute('data-orient') );
-            var orient = this.getAttribute('data-orient') == 'dataset'? null : this.getAttribute('data-orient');
-            searchkeyword(d.key, true, orient);
-            
+                       var orient = this.getAttribute('data-orient') == 'dataset'? null : this.getAttribute('data-orient');
+                       searchkeyword(d.key, true, orient);*/
+        
             return null;
         });
         
@@ -1206,17 +1091,156 @@ kwbignon.selectAll('.kw').data(gc.jsonbignon)
            $(".ulkw li").removeAttr('style'); 
            d3.select(this).style('background-color','#ddd'); 
         });
+        
+        // Replace zCode : zmakianz 
+        gc.swapZCode(".kwtext");
+        
 }
 
 
 // END -- KEYWORD RANKS
 
+// Heat Map buat jam tersibuk
+
+function initBarHourChart() {
+    
+    
+                     
+    function getJumlah(dataArray, indexJam) {
+        var jumlah = 0;
+        for(var j=0; j<dataArray.length; j++) {
+            if(dataArray[j].jam == indexJam) jumlah = dataArray[j].jumlah ;
+        }        
+        return jumlah;
+    }
+    
+    var dataDataset = gc.jsonbarhour.filter(function(d){
+                                                d.jam = +d.jam;
+                                                d.jumlah = +d.jumlah;
+                                                return d.dataset == 'dataset';
+                                                }),
+        dataNegatif = gc.jsonbarhour.filter(function(d){
+                                                d.jam = +d.jam;
+                                                d.jumlah = +d.jumlah;
+                                                return d.dataset == 'negatif';
+                                                }),
+        dataPositif = gc.jsonbarhour.filter(function(d){
+                                                d.jam = +d.jam;
+                                                d.jumlah = +d.jumlah;
+                                                return d.dataset == 'positif';
+                                                }),
+        dataNonopini = gc.jsonbarhour.filter(function(d){
+                                                d.jam = +d.jam;
+                                                d.jumlah = +d.jumlah;
+                                                return d.dataset == 'nonopini';
+                                                });                                                                                                              
+    var eachViz = [];
+    eachViz.push( {
+        data: dataDataset,
+        colorMax: '#b0c1ff',
+        elmn: '#barhourDataset',
+        classTag: 'rectDat'
+    });
+    eachViz.push( {
+        data: dataNegatif,
+        colorMax: '#FF0000',
+        elmn: '#barhourNegatif',
+        classTag: 'rectNeg'
+    })
+    eachViz.push( {
+        data: dataPositif,
+        colorMax: '#009900',
+        elmn: '#barhourPositif',
+        classTag: 'rectPos'
+    })
+    eachViz.push( {
+        data: dataPositif,
+        colorMax: '#FAA732',
+        elmn: '#barhourNonopini',
+        classTag: 'rectNon'
+    })
+                                          
+   ev = eachViz; 
+    
+    var groundHeight = $('.toptenhour').height(),
+        groundWidth = +($('.toptenhour').width()) - 1,
+        columns = 6,
+        rows = 4,
+        h = (groundHeight/rows),
+        w = (groundWidth/columns),
+        rectPadding = 60,      
+        data = [];
+    var margin = {top: 20, right: 80, bottom: 30, left: 50},
+        width = 173 - margin.left - margin.right,
+        height = 130 - margin.top - margin.bottom;    
+        
+    var colorScale = d3.scale.linear().interpolate(d3.interpolateRgb);
+    var heightScale = d3.scale.linear().range([0,h]);          
+    for (var i = 0; i < 4; i++) {
+        for(var j = 0; j < 6; j++){
+        data.push( { col: i, row: j});
+        }
+    } 
+    //height of each row in the heatmap
+    //width of each column in the heatmap
+    var tempData, tempColor, tempElmn, tempTag;
+    for(var i=0; i< eachViz.length;i++) {
+        tempData = eachViz[i].data;
+        tempColor = eachViz[i].colorMax;
+        tempElmn = eachViz[i].elmn;
+        tempTag = eachViz[i].classTag;
+        
+        var color = colorScale.range(['#ffffff', tempColor ])
+                    .domain([ 0 ,d3.max( tempData , function(d){ return d.jumlah;})]);
+            //hScale = heightScale.domain([0,d3.max( tempData , function(d){ return d.jumlah;}) ]);                   
+        
+        var svg = d3.select(tempElmn).append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom);
+        
+        var heatMap = svg.selectAll(".heatmap")
+            .data(data, function(d) { return d.col + ':' + d.row; })
+          .enter().append("svg:g");
+          
+        heatMap.append('svg:rect')
+            .attr('id', function(d,i){
+                return 'rectHour'+'_'+i;
+            })
+            .attr('class', function(d){
+                return tempTag;
+            })
+            .attr("x", function(d) { return d.row * w; })
+            .attr("y", function(d) { return d.col * h; })
+            .attr("width", function(d) { return w; })
+            .attr("height", function(d) { return h; })
+            .style('stroke-width', '2px')
+            .style('stroke', '#fff')
+            .style("fill",'#fff')
+            .transition().duration(2000)
+            .style('stroke', function(d,i) {                 
+                return color(getJumlah(tempData,i)); ;
+             })
+            .style("fill", function(d,i) { 
+                return color(getJumlah(tempData,i)); 
+             });
+                        
+        heatMap.append('text')
+            .attr("x", function(d) { return d.row * w + 2; })
+            .attr("y", function(d) { return d.col * h + 20; })
+            .attr("font-size", '10')
+            .attr("font-family", 'Arial Narrow')
+            .text(function(d,i){
+                return i+':00';
+            });
+     }                          
+}
+// END -- HEAT MAP
 
 // PIE VISUALIZATION
 var piechart = new vizconfig();
-    piechart.width = 30;
-    piechart.height = 30;
-    piechart.r = Math.min(piechart.width, piechart.height) / 2;
+    piechart.width = 130;
+    piechart.height = 60;
+    piechart.r = Math.min(piechart.width, piechart.height) / 3;
     piechart.colorScale = d3.scale.ordinal().domain([0,1,2]).range(['#FF0000', '#009900', '#FAA732']);
     piechart.arc = d3.svg.arc().outerRadius(piechart.r);
     piechart.donut = d3.layout.pie();
@@ -1224,14 +1248,14 @@ var piechart = new vizconfig();
     piechart.vis;
 
 var pieGround = d3.select("#pie").append("svg")
-    .attr("width", piechart.width + 20)
-    .attr("height", piechart.height + 20);
+    .attr("width", piechart.width )
+    .attr("height", piechart.height);
     
 function makePie(key) {
     if(!key){
         if(piechart.vis!=null){
             piechart.paths.attr("fill","#ddd");
-            $("#pie").popover("destroy");
+          
             return false;
         }else{
             return null;
@@ -1239,20 +1263,36 @@ function makePie(key) {
     }
     
     var getPieData = gc.getPieData+'&key='+key;
+    
+    function setPieTip(d, elm){
+        var myPie = $(elm);
+        var pieOpentip = new Opentip(myPie, {showOn: "mouseover",
+                                        showEffect: "fade",
+                                        tipJoint: "bottom left",
+                                        style: "glass",
+                                        borderRadius: 1,
+                                        escapeContent: false,
+                                        borderWidth: 3,
+                                        borderColor: "#317cc5",
+                                        fixed: false});
+                                        
+                            var infoPie = "<strong> \""+key+"\"</strong> disebutkan di :</br>"+
+                                        "- <strong>"+d[0]+ "</strong> tweet negatif</br>"+
+                                        "- <strong>"+d[1]+"</strong> tweet positif </br>"+
+                                        "- <strong>"+d[2]+"</strong> tweet non-opini";                                     
+                       pieOpentip.setContent(infoPie);                                        
+                            
+    }
+    
     if(piechart.vis!=null) {piechart.vis.remove();};
         d3.json( getPieData, function(PieData) {
         
             piechart.vis = pieGround.selectAll(".onePie")
                         .data([PieData])
                         .enter().append("svg:g")
-                        .attr("transform", gc.translate(5,5))
-                        .attr("class",function(d){
-                            var infoPie = "<strong> \""+key+"\"</strong> ditemukan di :</br>"+
-                                        "- <strong>"+d[0]+ "</strong> tweet negatif</br>"+
-                                        "- <strong>"+d[1]+"</strong> tweet positif </br>"+
-                                        "- <strong>"+d[2]+"</strong> tweet non-opini";                                     
-                            gc.pieTip.setContent(infoPie);                                        
-                            
+                        .attr("transform", gc.translate(70,5))
+                        .attr("class",function(d){ 
+                            setPieTip(d,this);
                             return "aPie";        
                             });
             
@@ -1299,16 +1339,17 @@ var keywordchart = new vizconfig();
     
     keywordground.attr('width', keywordchart.width - linechart.margin[4])
       .attr('height', keywordchart.height)
-      .attr('transform', gc.translate(linechart.margin[2],1))
+      .attr('transform', gc.translate(linechart.margin[2],11))
     
 function searchkeyword(key, isOverview, orient) {
     var request = orient == null ? gc.getKeywUrl+'?track=yes&key='+ key : gc.getKeywUrl+'?track=yes&key='+ key +'&or='+orient;
+    $("#displaySearchKeyword").text(key +' : ');
     d3.json(request, function(data) {
         if (data[0] == null) {
             //var msg = 'Kata kunci '+ key + ' tidak ditemukan';
             makePie(false);
             linechart.loading(false);
-            $("#jumlahtweetfound").text("0");
+            $("#jumlahtweetfound").text("0 tweet.");
             //gc.infoError(msg,true);
             return null;
         }else {
@@ -1342,7 +1383,7 @@ function resultkeyword(key) {
     key= key.replace(' ','%20');
     var request = gc.getTweetUrl + '?top=yes&kw='+ key ;
     $('#searchguide').hide();
-    paginate(request, '#paginationsearch','#keywordresult');
+    loadTweetResult(request, '#paginationsearch','#keywordresult', '#telusur .tweetcontent',"#displaySearchKeyword");
 }
 
 
@@ -1782,7 +1823,8 @@ $.getJSON(gc.getDateListUrl, function (dl){
 function setInfoCircle(tanggal, jumlah, orientasi, per, circleid) {
 	var infos = d3.select('#infoCircle');
 	infos.selectAll('p').remove();
-	var infwkt = infos.append('p').attr('class', 'lefting');
+    infos.selectAll('svg').remove();
+	var infwkt = infos.append('p');
 	if (per == 'perday') {
 		infwkt.append('text').text(' '+ tanggal.getDate() + ' '
 									+ gc.nama_bulan[(tanggal.getMonth() + 1)]);
@@ -1794,27 +1836,38 @@ function setInfoCircle(tanggal, jumlah, orientasi, per, circleid) {
 									);
 	}
 	var infjml = infos.append('p');
-	infjml.append('a').attr('class', function() {
+	infjml.append('text').attr('class', function() {
         switch (orientasi) {
         case 'negatif':
-            return 'lefting negatiftweet ';
+            return 'negatiftweet ';
         case 'positif':
-            return 'lefting positiftweet ';
+            return 'positiftweet ';
         case 'nonopini':
-            return 'lefting nonopinitweet ';
+            return 'nonopinitweet ';
         }
-    }).append('text').text(jumlah + ' tweet '+ orientasi + ' ');
-    infjml.append('text').text(circleid).attr('class', 'hide').attr('id', 'getcircleid');
-	infjml.on('click.infjml', function(d) {
-	    var circid = '#'+ $('#getcircleid').text();
-	    d3.select(circid)
-	       .transition().duration(200)
-	           .style('opacity', 1)
-	       .transition().delay(2000).duration(15000)
-	           .style('opacity', 0);
+    }).text(jumlah + ' tweet '+ orientasi + ' ');
+    var infcrcl = infos.append('svg').attr('width',20).attr('height',20).append('svg:circle')
+                                    .attr('r', 10)
+                                    .attr('cx',10)
+                                    .attr('cy',10)
+                                    .attr('fill', gc.colorOrientasi(orientasi) )
+                                    .attr('value',circleid).attr('class', '').attr('id', 'getcircleid');
+	infcrcl.on('mouseover.infjml', function(d) {
+	    var circid = '#'+ $('#getcircleid').attr('value');
+	    
+	    d3.select(circid).transition().duration(200)
+	           .style('opacity', 1);
+	           
 	   $(circid).data('opentips')[0].show();
-	   $(circid).data('opentips')[0].prepareToHide();
+	}).on('mouseout.infjml', function(d){
+	   var circid = '#'+ $('#getcircleid').attr('value');
+	   
+	   d3.select(circid).transition().duration(500)
+               .style('opacity', 0);
+               
+       $(circid).data('opentips')[0].prepareToHide(); 
 	});
+	
 }
 
 function setInfoWaktuBlank() {
@@ -1825,19 +1878,275 @@ function setInfoWaktuBlank() {
 
 
 
-$('#ubahcalendar').click(function() {
-	var dd1 = $('#calDate1').val() + ' 00';
-	var dd2 = $('#calDate2').val() + ' 23';
-	var passDomain = [dd1, dd2];
-	
-	setDomain(passDomain, true);
 
-	updatebarchart(
-				   $('#calDate1').val(),
-				   $('#calDate2').val()
-				  );
-    setInfoRentang(
-    			   $('#calDate1').val(),
-				   $('#calDate2').val()
-					);
-});
+function initjs() {
+    
+    
+    // TODO: Kumpulin semua click listener dari jquery
+    
+    // List of Listeners
+
+   /*
+   * Input form search keyword
+   * Listen enter keys
+   */
+   $('#searchkeyword').keypress(function(k) {
+        if (k.which == 13) {
+            var key = $('#searchkeyword').val(); //Ambil input search 
+            if (key != '') {
+                searchkeyword(key, false);
+                resultkeyword(key);
+                $('#pie').show();
+            }
+        return false;
+        }
+    });
+    /*
+     * Listener for X icon in search keyword form
+     */
+    $('input.deletable').wrap('<span class="deleteicon" />').after($('<span/>').click(function() {
+        resetbgkeyword();
+        $(this).prev('input').val('').focus();
+        $('#jumlahtweetfound').text('');
+        $('#displaySearchKeyword').text('');
+        if($('#searchresult').is(':visible')){
+             $('#searchresult').remove();
+             $('#paginationsearch ul').remove();
+             makePie(false);
+             $('#searchguide').show();  
+        }     
+    }));
+    
+    /*
+     * Listener for lines visibility toggles
+     * Only allow two button to be disabled
+     */
+    $('#toggleNegatif').click(function() {
+        toggleLine('negatif');
+            if (gc.tog[0].view) {
+                $(gc.tog[0].eye).attr('class', 'icon-eye-close');
+                gc.tog[0].view = false;
+            }else {
+                $(gc.tog[0].eye).attr('class', 'icon-eye-open');
+                gc.tog[0].view = true;
+            }
+        isAlone();
+    });
+    $('#togglePositif').click(function() {
+        toggleLine('positif');
+            if (gc.tog[1].view) {
+                $(gc.tog[1].eye).attr('class', 'icon-eye-close');
+                gc.tog[1].view = false;
+            }else {
+                $(gc.tog[1].eye).attr('class', 'icon-eye-open');
+                gc.tog[1].view = true;
+            }
+        isAlone();
+    });
+    $('#toggleNonopini').click(function() {
+        toggleLine('nonopini');
+            if (gc.tog[2].view) {
+                $(gc.tog[2].eye).attr('class', 'icon-eye-close');
+                gc.tog[2].view = false;
+            }else {
+                $(gc.tog[2].eye).attr('class', 'icon-eye-open');
+                gc.tog[2].view = true;
+            }
+        isAlone();
+    });
+    /*
+     * Function for checking wether two button has been disabled 
+     */
+    function isAlone() {
+        var countrue = 0;
+        var alone = 0;
+        for (i = 0; i < gc.tog.length; i++) {
+            if (gc.tog[i].view == true) {
+                countrue++;
+            }
+        }
+        if (countrue == 1) {
+            for (i = 0; i < gc.tog.length; i++) {
+                if (gc.tog[i].view == true) {
+                    $(gc.tog[i].id).attr('disabled', '');
+                    toggleMaxY(gc.tog[i].orn);
+                }
+            }
+        }
+        if (countrue > 1) {
+            $('#viewcontrols button').removeAttr('disabled');
+            toggleMaxY('default');
+        }
+    };
+
+    /*
+     * Listener for toggling line context visibility
+     */
+    $('#zoombutton').click(function() {
+        var msg = "Menggunakan context saat visualisasi jumlah keyword berjalan dapat melambatkan respon line chart. Lanjutkan?";    
+        if (!$("#linecontext").is(":visible") && keywordchart.rects != null) {
+            if(confirm(msg)){
+                $('#linecontext').slideToggle(250, unzoom);
+            } else {
+                $("#zoombutton").removeClass("active");
+                return null;
+            }
+        } else {
+            $('#linecontext').slideToggle(250, unzoom);
+        }      
+    });
+    
+    /*
+     * Listener for toggle switching sliding interface
+     */
+    $('#settingRentang').click(function() {
+        $('.tampilsetting').slideToggle(250);
+        if ($('#ubahRentang').attr('disabled') == null) {
+            $('#ubahRentang').attr('disabled', '');
+        }else {
+            $('#ubahRentang').removeAttr('disabled');
+        }
+    });
+
+    /*
+     * Listeners for setting default slider interface
+     * default slider interface = gc.defaulUbahRentang
+     */
+    $('#setSlider').click(function() {
+        gc.defaultUbahRentang = '#slidepick';
+        var isactive = $('#setSlider').attr('class');
+            if (isactive.indexOf('active') != -1) {
+                $('#setSlider').attr('class', isactive);
+            }else {
+                $('#setSlider').attr('class', isactive + ' active');
+            }
+        var set = $('#setDatepick').attr('class').replace('active', '');
+        $('#setDatepick').attr('class', set);
+        $('#datepick').hide('slow');
+        $('#slidepick').show('slow');
+    });
+    $('#setDatepick').click(function() {
+     gc.defaultUbahRentang = '#datepick';
+        var isactive = $('#setDatepick').attr('class');
+            if (isactive.indexOf('active') != -1) {
+            $('#setDatepick').attr('class', isactive);
+            }else {
+            $('#setDatepick').attr('class', isactive + ' active');
+            }
+        var set = $('#setSlider').attr('class').replace('active', '');
+        $('#setSlider').attr('class', set);
+        $('#slidepick').hide('slow');
+        $('#datepick').show('slow');
+    });
+
+    /*
+     * Listener for toggling slider visibility
+     */
+    $('#ubahRentang').click(function() {
+        rentangEye();    
+        $(gc.defaultUbahRentang).slideToggle(250);  
+    });
+    
+    /*
+     * Listener for shutting eye icons on toggle line visibility buttons :)
+     */
+    function rentangEye(){
+        if ($("#datepick").is(":visible") || $("#slidepick").is(":visible") ) {
+            $("#rentangeye").attr('class', 'icon-eye-close');
+            if ($('#settingRentang').attr('disabled') == null) {
+                $('#settingRentang').attr('disabled', '');
+            }else {
+                $('#settingRentang').removeAttr('disabled');
+            }
+            return null;
+        }else {
+            $("#rentangeye").attr('class', 'icon-eye-close');
+            if ($('#settingRentang').attr('disabled') == null) {
+                $('#settingRentang').attr('disabled', '');
+            }else {
+                $('#settingRentang').removeAttr('disabled');
+            }
+            $("#rentangeye").attr('class', 'icon-eye-open');
+            return null;
+        }
+    };
+    
+    
+    /*
+     * View Modal listeners
+     */
+    $("#overviewinfo").click(function() {
+        $("#modaloverview").modal('show');
+    });
+    
+    //TODO: WHAT IS THIS FOR??
+    $('#fullkeyword').click(function() {
+        topTweet(this);
+    });
+    
+    $('#setDateRentang').click(function() {
+        var dd1 = $('#calDate1').val() + ' 00';
+        var dd2 = $('#calDate2').val() + ' 23';
+        var passDomain = [dd1, dd2];
+        
+        setDomain(passDomain, true);
+    
+        updatebarchart(
+                       $('#calDate1').val(),
+                       $('#calDate2').val()
+                      );
+        setInfoRentang(
+                       $('#calDate1').val(),
+                       $('#calDate2').val()
+                        );
+    });
+    
+    $('#resetDateRentang').click(function(){
+        $('#calDate1').val(gc.strFirstDate);
+        $('#calDate2').val(gc.strLastDate);
+        var dd1 = gc.strFirstDate + ' 00';
+        var dd2 = gc.strLastDate + ' 23';
+        var passDomain = [dd1, dd2];
+        
+        setDomain(passDomain, true);
+    
+        updatebarchart(
+                       $('#calDate1').val(),
+                       $('#calDate2').val()
+                      );
+        setInfoRentang(
+                       $('#calDate1').val(),
+                       $('#calDate2').val()
+                        );
+    });
+    
+    /*
+     * 
+     */
+    $('#calDate1').datepicker({
+        dateFormat: 'yy-mm-dd',
+        numberOfMonths: 2,
+        onSelect: function(selectedDate ) {
+            $('#calDate2').datepicker('option', 'minDate', selectedDate);
+        }
+    });
+    
+    $('#calDate2').datepicker({
+        dateFormat: 'yy-mm-dd',
+        numberOfMonths: 2,
+        onSelect: function(selectedDate ) {
+            $('#calDate1').datepicker('option', 'maxDate', selectedDate);
+        }
+    });
+
+
+    initbarchart();
+    initLineChart('perday', false);    
+    initDatePicker();
+    //initKeywordRanks();
+    //setTimeout('initKeywordRanks()', 3000);
+    //setTimeout('initDatePicker()',3000);
+    //$("#modaloverview").modal('show');
+    //searchkeyword('pakai',true);
+              
+}

@@ -29,6 +29,7 @@
     <script type="text/javascript" src="lib/jquery/jquery.ui.slider.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.datepicker.js"></script>
     <script type="text/javascript" src="lib/jquery/jquery.ui.draggable.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.ba-replacetext.min.js"></script>
     <script type="text/javascript" src="lib/opentip/opentip.js"></script>
     <script type="text/javascript" src="lib/opentip/adapter.jquery.js"></script>
     
@@ -53,9 +54,11 @@
  
 
 
+    <div id="top" class="hide"></div>
 <div id="dashboard">
-    <div id="top"></div>
-    <div id="linebox" class="lefting">
+    
+  <div id="leftbox" class="lefting">
+    <div id="linebox" class="lefting whiteBG borderBox">
         <div class="infobox">
             
              <text id="inforentang" class="lefting"></text>
@@ -63,7 +66,8 @@
                            <div id="datepick">
                                             <input type="text" id="calDate1" name="from" placeholder="Dari.."/>
                                             <input type="text" id="calDate2" name="to" placeholder="Hingga.."/>
-                                            <button id="ubahcalendar" class="btn btn-small">Ubah</button>
+                                            <button id="setDateRentang" class="btn btn-small">Ubah</button>
+                                            <button id="resetDateRentang" class="btn btn-small">Reset</button>
                           </div>
                               <div id="slidepick" class="hide">
                                <div id="slider" class="widget-content inshadow"></div>
@@ -72,11 +76,11 @@
          
             
         </div>
-          
+        <div id="linecontext"></div>  
         <div id="linegraph"></div>
         
         
-        <div id="linecontext"></div>
+        
         
            <div id="linecontrol" class="">
                  
@@ -115,18 +119,80 @@
                    </div>  
            </div>
       
-      </div> <!-- END LINEBOX -->
+      </div> <!-- END LINEBOX -->     
       
-      <div id="tweetbox" class="lefting">
+      <div id="overview" class="lefting whiteBG borderBox">
+          <div class="infobox">
+          </div>
+                <div id="overviewcontent">
+                                    <div class="overviewtab">
+                                        <div class="overviewtitle">
+                                            Data set
+                                        </div>
+                                        <div id="barhourDataset" class="toptenhour">
+                                           
+                                        </div>
+                                        <div id="kwlistdataset">
+                                        
+                                        </div>
+                                    </div>
+                                    <div class="overviewtab">
+                                        <div class="overviewtitle">
+                                            Negatif
+                                        </div>
+                                        <div id="barhourNegatif" class="toptenhour">
+                                            
+                                        </div>
+                                        <div id="kwlistnegatif">
+                                      
+                                        </div>
+                                    </div>
+                                    <div class="overviewtab">
+                                        <div class="overviewtitle">
+                                            Positif
+                                        </div>
+                                        <div id="barhourPositif" class="toptenhour">
+                                            
+                                        </div>
+                                        <div id="kwlistpositif">
+                                        
+                                        </div>
+                                    </div>
+                                    <div class="overviewtab">
+                                        <div class="overviewtitle">
+                                            Non-Opini
+                                        </div>
+                                        <div id="barhourNonopini" class="toptenhour">
+                                            
+                                        </div>
+                                        <div id="kwlistnonopini">
+                                        
+                                        </div>
+                                    </div>
+                </div>                                    
+      </div>   <!-- END OVERVIEW BOX --> 
+  </div> <!-- END LEFTBOX --> 
+  
+  <div id="rightbox" class="lefting">
+      <div id="infobox" class="lefting whiteBG borderBox">
+          <div id="bar"></div>
+          
+      </div><!-- END INFOBOX -->
+      
+      <div id="tweetbox" class="lefting whiteBG borderBox">
+         
               <ul class="nav nav-tabs infobox">
-                <li class="active"><a href="#tweet" data-toggle="tab">Tweet</a></li>
-                <li><a href="#telusur" data-toggle="tab">Telusur</a></li>
+                <li class="active"><a id="click_tabtweet" href="#tweet" data-toggle="tab">Tweet</a></li>
+                <li> <a id='switchTabTelusur' href="#telusur" class="hide" data-toggle="tab">Telusur</a></li>
               </ul>
               <div class="tab-content">
                   
                 <div class="tab-pane active" id="tweet">
-                       <div id="infoCircle" class="infotweet fullwidth lefting"></div>
-                       <div id="paginationtweet" class="fullwidth lefting"></div>
+                       <div class="infotweet lefting">
+                            <div id="infoCircle" ></div> 
+                            <div id="keywordsCache" class="hide"></div>
+                        </div>
+                       <div id="paginationtweet" class="fullwidth"></div>
                        <div id="tweetcontainer" class="tweetviewer lefting">
                            <table class="table table-hover">
                                 <tbody>
@@ -139,15 +205,22 @@
                 </div>
                 <div class="tab-pane" id="telusur">
                     <div class="infotweet lefting">
-                         <form id="search" class="lefting">
-                                    <input id="searchkeyword" type="text" class="search-query deletable" placeholder="Masukan keyword">
-                         </form>  
-                                 <div class="infoTweetViewer lefting">
-                                           <strong><text id="jumlahtweetfound"></text></strong>
-                                               <div id="pie" class="hide"></div>
-                                </div>
+                        <div class="lefting fullwidth">
+                             <form id="search" class="lefting">
+                                        <input id="searchkeyword" type="text" class="search-query deletable" placeholder="Masukan keyword">
+                             </form> 
+                           <div id="pie" class="lefting"></div>
+                        </div>
+                        <div class="lefting fullwidth">
+                              <div class="infoTweetViewer">
+                             <p>
+                                 <text id="displaySearchKeyword"></text><text id="jumlahtweetfound"></text>
+                             </p>
+                             </div>
+                            
+                        </div>                                
                     </div>
-                    <div id="paginationsearch" class="fullwidth lefting"></div>
+                    <div id="paginationsearch" class="fullwidth"></div>
                     <div class="tweetviewer lefting">
                            <table id="searchguide" class="table table-hover">
                                 <tbody>
@@ -163,14 +236,7 @@
                 </div>
               </div>
       </div> <!-- END TWEETBOX -->
-      
-      <div id="overview" class="lefting">
-          
-      </div>
-    
-    
-    
-    
+  </div>  <!-- END RIGHTBOX --
 </div> <!-- END DASHBOARD -->  
 
 			
@@ -185,7 +251,7 @@
         
      
 			
-	  <div id="bar"></div>
+	  
       
 
     
@@ -206,37 +272,7 @@
                                 <h3> Peringkat keyword </h3>
                             </div>
          <div class="modal-body">
-                                <div id="keywordoverview">
-                                    <div id="kwdistribution" class="overviewinside">
-                                        <p id="overviewtext"> 
-                                        </p>
-                                    </div>
-                                    <div class="insideone modalul">
-                                    <h3>Data Set</h3>
-                                        <div id="kwlistdataset">
-                                        
-                                        </div>
-                                    </div>
-                                    <div class="insidetwo modalul">
-                                    <h3>Negatif</h3>
-                                        <div id="kwlistnegatif">
-                                      
-                                        </div>
-                                    </div>
-                                    <div class="insidethree modalul">
-                                        <h3>Positif</h3>
-                                        <div id="kwlistpositif">
-                                        
-                                        </div>
-                                    </div>
-                                    <div class="insidefour modalul">
-                                        <h3>Non-Opini</h3>
-                                        <div id="kwlistnonopini">
-                                        
-                                        </div>
-                                    </div>
-                                    
-                                </div>
+                                
                                 <p id="infokeywordoverview">
                                         Di atas adalah informasi peringkat keyword berdasarkan kepopulerannya.
                                         Kepopuleran keyword dihitung berdasarkan jumlah tweet yang menyebut keyword tersebut.

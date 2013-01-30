@@ -17,7 +17,6 @@
 	fill: #E6E6E6;
 }
 #bar {
-	position: fixed;
 }
 
 .edges{
@@ -49,12 +48,6 @@ user-select: none;
   stroke: #ddd;
 }
 
-.kw {
-	background-color: #fff;
-}
-.kw:hover {
-	background-color: #ddd;
-}
 
 .xAxisKDC line {
 	display: none;
@@ -101,15 +94,6 @@ path {
   -webkit-transition: fill-opacity 550ms linear;
 }
 
-.selecting circle {
-  fill-opacity: .2;
-}
-
-.selecting circle.selected {
-  fill: #000;
-  stroke: #f00;
-  stroke-width: 2px;
-}
 
 .axis path, .axis line {
   fill: none;
@@ -149,7 +133,8 @@ path {
 
 .resize rect{
   fill: #ddd;
-  stroke: #ddd;
+  stroke: #000;
+  visibility: visible !important;
   stroke-width: 1px;
 }
 
@@ -172,11 +157,5 @@ path {
 }
 
 #pie{
-	float: right;
-	margin: 0 0 0 0;
-	position: absolute;
-	top: 0px;
-	left: 40px;
-	width: 40px;
-	height: 40px;
+	margin-left: 2em;
 }

@@ -4,6 +4,7 @@
 }
 body {
 	font: 13px Helvetica, arial, freesans, clean, sans-serif;
+	background-color: #FAFAFA;
 }
 
 
@@ -14,6 +15,7 @@ body {
  * 800px
 */
    #dashboard {
+   		margin-top: 1em;
         margin-left: auto;
         margin-right: auto;
     }
@@ -21,22 +23,35 @@ body {
     #top {
     	margin: 0 0 1em 0em;
     	background-color: #EAEAEA;
+    	position: fixed;
+    }
+    
+    #leftbox {
+    	width: 70%;
+    }
+    #rightbox {
+    	width: 30%;
     }
     
     #linebox {
-        margin: 0.1em 1em 0em 1em;
-        border: 1px solid #ddd;       
+    	width: 100%;
+        margin: 0.1em 1em 0em 0em;   
+    }
+    
+    #infobox {
+    	width: 100%;
+    	margin: 0em 1em 0em 1em;
     }
     
     #tweetbox {
-        margin: 0em 1em 0em 1em;
-        border: 1px solid #ddd;
-        
+    	width: 100%;
+        margin: 0.5em 1em 0em 1em;   
     }
     
     #overview {
-        margin: 0.5em 1em 0em 1em;
-        border: 1px solid #ddd;
+    	position: relative;
+        margin: 0.5em 1em 0em 0em;
+        font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
     }
     
 
@@ -52,19 +67,21 @@ body {
     }
     
     #linebox {
-        width: 70%;
         min-height: 400px;
     }
     
+    #infobox {
+    	min-height: 150px;
+        max-height: 150px;
+    }
     #tweetbox {
-        width: 25%;
-        min-height: 417px;
-        max-height: 417px;
+        min-height: 623px;
+        max-height: 623px;
     }
     
     #overview {
-        width: 70%;
-        min-height: 315px;
+        width: 100%;
+        min-height: 365px;
     }
 
 }
@@ -129,17 +146,22 @@ body {
 		font-size: 1.5em;
 		margin-left: 1em;
 		top: -10px;
+		border: 1px solid #DDD;
+    }
+    #infoCircle {
+        margin: auto;
     }
     #rentang {
 		min-width: 28em;
 		margin: 0.5em 1em 0.5em 1em; 
 	}
     #linegraph {
-        height: 21em;
+        height: 20em;
     }
     
     #linecontext {
-    	margin-top: 0.2em;
+    	margin-top: 0.5em;
+    	margin-bottom: 0em;
         height: 5em;
     }
 
@@ -150,6 +172,74 @@ body {
         padding-left: 9em;
     }
 	
+	#overview .infobox {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 1.4em;
+		width: 100%;
+		background-color: #EAEAEA;
+	}
+	
+    .overviewtitle {
+		text-align: center;
+    }
+    #overviewcontent {
+    	padding-left: 1.2em;
+    }
+    	
+	.overviewtab {
+		position: relative;
+		float: left;
+		width: 22%;
+		margin-right: 0.5em;
+		border-right: 1px solid #fff;
+		border-left: 1px solid #fff;
+		padding-right: 0.5em;
+		padding-left: 0.5em;
+		background: rgba(0, 0, 0, 0);
+	}
+	.overviewtab li {
+		list-style: none;
+	}
+	
+	.toptenhour {
+		border: 1px solid #ddd;
+		width: 100%;
+		height: 10em;
+		margin-bottom: 0.5em;
+	}
+	
+	.numkwrank {
+		margin-bottom: 2px;
+		color: #ebebeb;
+	}
+	.numkwrank:hover {
+		color: #4e4e4e;
+	}
+	.ulkw {
+		margin-top: 0.2em;
+		padding-top: 0.4em;
+		border-top: 1px solid #ddd;
+	}
+	
+	.inkw {
+		width: 50%;
+	}
+	.kwtext {
+		color: #000000;
+		background-color: #fff;
+	}
+	.kwtext:hover {
+		color: #FFFFFF;
+		background-color: #3b3b3b;
+	}
+	.kw:hover {
+		background-color: #ddd;
+	}
+	.hoursRect:hover {
+		stroke: #000;
+	}
 	.buttonlayout {
 		padding: 0.5em 1em 0.5em 1em;
 		margin: 0em 1em 0em 1em;
@@ -157,13 +247,14 @@ body {
 		border-right: 1px solid #fff;
 	}
    	
-    
+   	.infotweet form {
+   		margin-left: 2.5em;
+   	}
+    .infoTweetViewer {
+    	padding-left: 1em;
+    }
     #textinfosearch {
         width: 60%;
-        height: 100%;
-    }
-    #pie {
-        width: 40%;
         height: 100%;
     }
 
@@ -179,7 +270,21 @@ body {
     
 
 
-/* Common Styling */    
+/* Common Styling */
+.emphasize {
+	text-decoration: underline;
+}
+.bigram {
+	background-color: #ddd;
+} 
+.borderBox {
+	border: 1px solid rgb(160, 160, 160);
+}
+   
+.whiteBG {
+	background-color: #fff; 
+}
+
 .infobox {
     height: 2.7em;
     text-align: center;
@@ -188,44 +293,56 @@ body {
     height: 4.5em;
 }
 .infotweet {
-	max-height: 3em;
-	margin-top: 1em;
+    width: 100%;
+    position: relative;
+	min-height: 7.5em;
+	max-height: 7.5em;
+    text-align:center;
+    margin-top: 1em;
 }
-
+.paginationbox {
+    height: 3em;
+}
 .infotweet text {
-	font-size: 1.3em;
+    margin: 0px auto;
+	font-size: 2em;
 	font-weight: 100;
 }
-.infotweet p {
-	margin-left: 0.5em;
-	margin-right: 0.5em;
-	min-width: 3em;
+
+.left_tab {
+	color: #fff;
+	padding: 8px 5px 0px 2px !important;
 }
-.negatiftweet text {
-	color: #FF0000;
+.numtab {
+	min-width: 1em;
 }
-.positiftweet text {
-	color: #009900;
+
+.tab_negatif {
+	background-color: #FF0000 !important;
 }
-.nonopinitweet text {
-	color: #FAA732;
+.tab_positif {
+	background-color: #009900 !important;
+}
+.tab_nonopini {
+	background-color: #FAA732 !important;
 }
 .fullwidth {
-   		width: 100%
+   	width: 100%
+}
+.halfwidth {
+	width: 50%;
 }
 .tweetviewer {
 	border-top: 1px solid #ddd;
 	overflow: auto;
-	margin: 3em 0 0 0;
-	max-height: 23em;
+	margin: 0.2em 0 0 0;
+	max-height: 33.5em;
 }
 #telusur .tweetviewer {
-	max-height: 22em;
+	max-height: 33.5em;
 }
 
 .content {
-    border-top: 1px solid #000;
-    border-bottom: 1px solid #000;
     max-height: 18em;
     overflow: auto;
 }
@@ -243,24 +360,34 @@ body {
 }
 
 /* CUSTOMIZATION */
-
+	/*overriding bootstrap.css */
+	.toptenhour table {
+		height: 100%;
+	}
+	.toptenhour table td {
+		border: 1px solid #ddd;
+	}
+	ul {
+		margin: 0;
+	}
+	
 	#tweetbox .nav {
 		margin: 0px;
 	}	
 	#tweetbox .pagination {
-		margin: 0;
-		position: absolute;
-		top: 1px;
-		left: 7.5em;
+		display: table;
+        margin: 0px auto;
+		position: relative;
 	}
+	/* Search input form styling */
 	span.deleteicon {
        position: relative;
     }
     span.deleteicon span {
        position: absolute;
        display: block;
-       top: 0px;
-       right: 40px;
+       top: 5px;
+       right: 5px;
        width: 16px;
        height: 16px;
        background-image: url("../img/glyphicons-halflings.png");
@@ -272,10 +399,11 @@ body {
        padding-right: 16px;
     }
 	.search-query {
-		margin-left: 0.7em;
-		margin-top: -4px;
-		margin-right: 3em;
+		margin: 0.5em auto;
 		min-width: 9em;
+		-webkit-border-radius: 0px;
+		-moz-border-radius: 0px;
+		-border-radius: 0px;
 	}
 	
     /*Scrollbar Styling */

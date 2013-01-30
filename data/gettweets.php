@@ -65,9 +65,9 @@ $limitrows = 20;
 		while ($row = mysql_fetch_assoc($result)) { 
 		 ?>
 		 <tr id="tweets">
+		      <td class="<?php echo 'left_tab tab_'.$orientasi ?>"><div class="numtab"><?php echo $numbers; ?>.</div></td>
 		      <td class="jamtweet"><?php echo $row["jam"]; ?></td>
-		      <td><?php echo $row["content"]; ?></td>
-		      <td class="numbtweet"><small>[<?php echo $numbers; ?>]</small></td>
+		      <td class="tweetcontent"><?php echo $row["content"]; ?></td>
 		 </tr>
 		 <?php
 		 $numbers++;
@@ -90,24 +90,24 @@ $limitrows = 20;
 				if($isover<$rowscount){
 					$nextpage = $page + $limitrows;
 					$nexturl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$nextpage&atom=$atom&kw=$passkw";
-					$nextonclick =  "paginate('$nexturl','#paginationtweet', '#tweetcontainer');";
+					$nextonclick =  "loadTweetResult('$nexturl','#paginationtweet', '#tweetcontainer','#tweet .tweetcontent','#keywordsCache');";
 					$nextstyle = "";
 					$nextlabel = "<i class='icon-chevron-right'></i>";
 				}else{
 					$nextstyle = "background-color: #ddd";
 					$nextonclick = "";
-					$nextlabel = "<i class='icon-pause'></i>";
+					$nextlabel = "<i class='icon-stop'></i>";
 				}
 				if($isless>=$limitrows || $isless==0){
 					$prevpage = $page - $limitrows;
 					$prevurl = "data/gettweets.php?tg=$tanggal&or=$orientasi&rc=$rowscount&pg=$prevpage&atom=$atom&kw=$passkw";
-					$prevonclick =  "paginate('$prevurl','#paginationtweet', '#tweetcontainer');";
+					$prevonclick =  "loadTweetResult('$prevurl','#paginationtweet', '#tweetcontainer','#tweet .tweetcontent','#keywordsCache');";
 					$prevstyle = "";
 					$prevlabel = "<i class='icon-chevron-left'></i>";
 				}else{
 					$prevstyle = "background-color: #ddd";
 					$prevonclick = "";
-					$prevlabel = "<i class='icon-pause'></i>";
+					$prevlabel = "<i class='icon-stop'></i>";
 				}
 		?>
 		<div id="pagingbutton">
@@ -142,35 +142,17 @@ $limitrows = 20;
 		WHERE INSTR(content, '$keywords') > 0 ORDER BY tanggal ASC
 		LIMIT $page,$limitrows");
 		
-		//$numbers = $page+1;
+		$numbers = $page+1;
 		while ($row = mysql_fetch_assoc($query)) {
-			$content = array();
-			$splits = explode(' ', $row["content"],-1); 
-			$length = count($splits);
-			for ($i = 0; $i <= $length; $i++) {
-					
-				if(strpos($keywords,$checkkey)===false){
-					$content[$i] = "<strong>".$splits[$i]."</strong>";
-				}else{
-					$content[$i] = $splits[$i];
-				}
-			}
-					
+	
 		 ?>
 		 <tr id="tweets" title="<?php echo $row["orientasi"]; ?>">
+		      <td class="<?php echo 'left_tab tab_'.$row["orientasi"]; ?>"><div class="numtab"><?php echo $numbers; ?>.</div></td>
 		      <td class="jamtweet"><?php echo $row["tanggal"];?></td>
-		      <td class="<?php echo $row["orientasi"]; ?>">
-		      	<?php for ($i = 0; $i <= $length; $i++) {
-						if($splits[$i]==$keywords){
-							echo " <i><b>".$splits[$i]."</b></i> ";
-						}else{
-							echo " ".$splits[$i]." ";
-						}
-					};?>
-		      	</td>
+		      <td class="tweetcontent"><?php echo $row["content"];?></td>
 		 </tr>
 		 <?php
-		// $numbers++;
+		 $numbers++;
 		};
 		
 		?>
@@ -189,24 +171,24 @@ $limitrows = 20;
 				if($isover<$rowscount){
 					$nextpage = $page + $limitrows;
 					$nexturl = "data/gettweets.php?&top=yes&rc=$rowscount&pg=$nextpage&kw=$passkw";
-					$nextonclick =  "paginate('$nexturl','#paginationsearch','#keywordresult');";
+					$nextonclick =  "loadTweetResult('$nexturl','#paginationsearch','#keywordresult','#telusur .tweetcontent','#displaySearchKeyword');";
 					$nextstyle = "";
 					$nextlabel = "<i class='icon-chevron-right'></i>";
 				}else{
 					$nextstyle = "background-color: #ddd";
 					$nextonclick = "";
-					$nextlabel = "<i class='icon-pause'></i>";
+					$nextlabel = "<i class='icon-stop'></i>";
 				}
 				if($isless>=$limitrows || $isless==0){
 					$prevpage = $page - $limitrows;
 					$prevurl = "data/gettweets.php?&top=yes&rc=$rowscount&pg=$prevpage&kw=$passkws";
-					$prevonclick =  "paginate('$prevurl','#paginationsearch','#keywordresult');";
+					$prevonclick =  "loadTweetResult('$prevurl','#paginationsearch','#keywordresult','#telusur .tweetcontent','#displaySearchKeyword');";
 					$prevstyle = "";
 					$prevlabel = "<i class='icon-chevron-left'></i>";
 				}else{
 					$prevstyle = "background-color: #ddd";
 					$prevonclick = "";
-					$prevlabel = "<i class='icon-pause'></i>";
+					$prevlabel = "<i class='icon-stop'></i>";
 				}
 		?>
 		<div id="pagingbutton">
