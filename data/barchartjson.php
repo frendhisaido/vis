@@ -13,7 +13,7 @@ $barhours = $_GET['barhours'];
 $query = "";
 
 if(isset($barhours)){
-    $query = "SELECT 'dataset', DATE_FORMAT(datetime, '%H') as jam, COUNT(DATE_FORMAT(datetime, '%H')) as jumlah FROM data WHERE orientasi = 'negatif' GROUP BY jam UNION
+    $query = "SELECT 'dataset', DATE_FORMAT(datetime, '%H') as jam, COUNT(DATE_FORMAT(datetime, '%H')) as jumlah FROM data GROUP BY jam UNION
               SELECT orientasi, DATE_FORMAT(datetime, '%H') as jam, COUNT(DATE_FORMAT(datetime, '%H')) as jumlah FROM data WHERE orientasi = 'negatif' GROUP BY jam UNION
               SELECT orientasi, DATE_FORMAT(datetime, '%H') as jam, COUNT(DATE_FORMAT(datetime, '%H')) as jumlah FROM data WHERE orientasi = 'positif' GROUP BY jam UNION
               SELECT orientasi, DATE_FORMAT(datetime, '%H') as jam, COUNT(DATE_FORMAT(datetime, '%H')) as jumlah FROM data WHERE orientasi = 'nonopini' GROUP BY jam";

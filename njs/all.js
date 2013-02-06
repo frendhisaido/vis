@@ -84,7 +84,7 @@
             show: function(obj){
                 console.log(obj);
                 return false;},
-            zCode: {"zmentionz": "<i>@username</i>",
+            zCode: {"zmentionz": "<i>@mention</i>",
                       "zmakianz": "(makian)",
                       "rt": "RT",
                       "indosat": "INDOSAT"
@@ -178,32 +178,40 @@
             this.yScale =  function(){};
         };
         
-        
-            
-        //export   
+        //Init opentip styles
+        Opentip.styles.circ = {
+           extends: 'glass',
+           ajax: false,
+           showOn: null,
+           delay: 0,
+           tipJoint: 'bottom left',
+           target: true,
+           fixed: true,
+           hideDelay: 0.5,
+           borderWidth: 1.5,
+           borderRadius: 5,
+           hideOn: null,
+       };
+   
+       Opentip.styles.pieInfo = {
+           extends: 'glass',
+           showOn: "mouseover",
+           showEffect: "fade",
+           tipJoint: "bottom left",
+           borderRadius: 1,
+           escapeContent: false,
+           borderWidth: 3,
+           borderColor: "#317cc5",
+           fixed: false,
+       };
+       
+       
+                    
+        //Attach to window   
         window.gc = gc;
         window.vizconfig = vizconfig;
         window.initDatePicker = initDatePicker;  
 })();
-
-$(function() {
-   
-   
-   Opentip.styles.circ = {
-       extends: 'glass',
-       ajax: false,
-       showOn: null,
-       delay: 0,
-       tipJoint: 'bottom left',
-       target: true,
-       fixed: true,
-       hideDelay: 0.5,
-       borderWidth: 1.5,
-       borderRadius: 5,
-       hideOn: null,
-       group: 'circles'
-   } 
-});
 
 //FULSCREEN API
 (function() {
@@ -569,9 +577,7 @@ function initDrawLine(datasetline,datasetcircle,date1,date2) {
 
   base();
   drawLineChart();
-  
-  
-  //circles();
+
 }
 
 function base() {
@@ -699,20 +705,21 @@ var c = circsvg.selectAll('.points')
 	});
   });
   
-  initAllOpentips();  
+  initCircleOpentips();  
   contextbacksvg.select('.xContextAxis').call(contextchart.xAxis);
   backsvg.select('.xAxis').call(linechart.xAxis);
   backsvg.select('.yAxis').call(linechart.yAxis);
   linechart.loading(false);
 }
 
-function initAllOpentips() {
+function initCircleOpentips() {
     
     d3.selectAll(".apoint").attr("",function(d,i){
                       var ids = '#'+this.id;
                       new Opentip(ids, { 
                           style: 'circ',
-                          borderColor: gc.colorOrientasi(d.orientasi)
+                          borderColor: gc.colorOrientasi(d.orientasi),
+                          group: 'circles'
                           });
                   });   
 }
@@ -737,7 +744,7 @@ function loadTweetResult(requesturl, pagination, container, target , keywordsCac
 }
 
 function clickCircle(d, element){
-    var requestKeyWords, reqTweet, keyWords, setKeywords;
+    var requestKeyWords, reqTweet, keyWords, setKeywords, storedKeywords;
             setInfoCircle(d.date, d.jumlah, d.orientasi, gc.timeUnit, element.id);
             var optp = $('#'+element.id).data('opentips')[0];
                         //Set dan tampilkan tooltip dan tampilkan tweet
@@ -745,10 +752,11 @@ function clickCircle(d, element){
                             requestKeyWords = gc.getKeywUrl + '?tg='+ (d.tgl) + '&or='+ d.orientasi + '&track=no';
                                 d3.text(requestKeyWords).get(function(error, keys){
                                     keyWords = keys.trim(keys.lastIndexOf(' ')-1).split(' ').join(',');
-                                    setKeywords = keys.trim(keys.lastIndexOf(' ')-1).split(' ').join(', ');
+                                    $('#keywordsCache').text(keys.trim(keys.lastIndexOf(' ')-1).split(' ').join(', ')); //simpan keywords di div  #keywordsCache                                  
+                                    gc.swapZCode('#keywordsCache');
+                                    storedKeywords = $('#keywordsCache').text();
+                                    optp.setContent('<strong>Keywords</strong>: '+ storedKeywords);
                                     reqTweet = gc.getTweetUrl + '?tg='+ d.tgl + '&or='+ d.orientasi + '&atom='+ gc.timeUnit + '&kw='+ keyWords + ','; 
-                                    optp.setContent('<strong>Keywords</strong>: '+setKeywords);
-                                    $('#keywordsCache').text(setKeywords); //simpan keywords di DOM                                    
                                     loadTweetResult(reqTweet, '#paginationtweet', '#tweetcontainer','#tweet .tweetcontent','#keywordsCache'); //Load hasil search
                                     d3.select(element).style('fill', gc.colorOrientasi(d.orientasi)).attr('stroke-width', '1px');
                                     optp.show();   
@@ -757,10 +765,11 @@ function clickCircle(d, element){
                             requestKeyWords = gc.getKeywUrl + '?tg='+ (d.tgl) + '&or='+ d.orientasi + '&track=no';
                                 d3.text(requestKeyWords).get(function(error, keys){
                                     keyWords = keys.trim(keys.lastIndexOf(' ')-1).split(' ').join(',');
-                                    setKeywords = keys.trim(keys.lastIndexOf(' ')-1).split(' ').join(', ');
+                                    $('#keywordsCache').text(keys.trim(keys.lastIndexOf(' ')-1).split(' ').join(', ')); //simpan keywords di div  #keywordsCache                                  
+                                    gc.swapZCode('#keywordsCache');
+                                    storedKeywords = $('#keywordsCache').text();
+                                    optp.setContent('<strong>Keywords</strong>: '+ storedKeywords);
                                     reqTweet = gc.getTweetUrl + '?tg='+ (d.tgl.replace(' ', '%20')) + '&or='+ d.orientasi + '&atom='+ gc.timeUnit + '&rc='+ d.jumlah + '&kw='+ keyWords + ',';         
-                                    optp.setContent('<strong>Keywords</strong>: '+setKeywords);
-                                    $('#keywordsCache').text(setKeywords);
                                     loadTweetResult(reqTweet, '#paginationtweet', '#tweetcontainer', '#tweet .tweetcontent','#keywordsCache');
                                     d3.select(element).style('fill', gc.colorOrientasi(d.orientasi)).attr('stroke-width', '1px');
                                     optp.show();
@@ -1101,7 +1110,6 @@ kwchartbnon.append('div').attr('class', 'numkwrank').style('width' ,function(d){
 // END -- KEYWORD RANKS
 
 // Heat Map buat jam tersibuk
-
 function initBarHourChart() {
     
     
@@ -1154,7 +1162,7 @@ function initBarHourChart() {
         classTag: 'rectPos'
     })
     eachViz.push( {
-        data: dataPositif,
+        data: dataNonopini,
         colorMax: '#FAA732',
         elmn: '#barhourNonopini',
         classTag: 'rectNon'
@@ -1169,20 +1177,21 @@ function initBarHourChart() {
         h = (groundHeight/rows),
         w = (groundWidth/columns),
         rectPadding = 60,      
-        data = [];
+        heatMapBase = [];
     var margin = {top: 20, right: 80, bottom: 30, left: 50},
         width = 173 - margin.left - margin.right,
         height = 130 - margin.top - margin.bottom;    
         
     var colorScale = d3.scale.linear().interpolate(d3.interpolateRgb);
-    var heightScale = d3.scale.linear().range([0,h]);          
+    var heightScale = d3.scale.linear().range([0,h]); 
+    
+    //Generate array buat base heatmap, 4*6 balok. 24 jam.         
     for (var i = 0; i < 4; i++) {
         for(var j = 0; j < 6; j++){
-        data.push( { col: i, row: j});
+        heatMapBase.push( { col: i, row: j});
         }
     } 
-    //height of each row in the heatmap
-    //width of each column in the heatmap
+    // Loop eachViz untuk bikin masing-masing heatmap    
     var tempData, tempColor, tempElmn, tempTag;
     for(var i=0; i< eachViz.length;i++) {
         tempData = eachViz[i].data;
@@ -1199,40 +1208,59 @@ function initBarHourChart() {
             .attr("height", height + margin.top + margin.bottom);
         
         var heatMap = svg.selectAll(".heatmap")
-            .data(data, function(d) { return d.col + ':' + d.row; })
-          .enter().append("svg:g");
+            .data(heatMapBase, function(d) { return d.col + ':' + d.row; })
+          .enter().append("svg:g").attr('class', tempTag);
           
         heatMap.append('svg:rect')
             .attr('id', function(d,i){
                 return 'rectHour'+'_'+i;
             })
-            .attr('class', function(d){
-                return tempTag;
-            })
             .attr("x", function(d) { return d.row * w; })
             .attr("y", function(d) { return d.col * h; })
             .attr("width", function(d) { return w; })
             .attr("height", function(d) { return h; })
-            .style('stroke-width', '2px')
+            .style('stroke-width', '1px')
             .style('stroke', '#fff')
             .style("fill",'#fff')
             .transition().duration(2000)
             .style('stroke', function(d,i) {                 
-                return color(getJumlah(tempData,i)); ;
+                return color(getJumlah(tempData,i));
              })
             .style("fill", function(d,i) { 
                 return color(getJumlah(tempData,i)); 
              });
-                        
+                   
         heatMap.append('text')
-            .attr("x", function(d) { return d.row * w + 2; })
+            .attr("x", function(d) { return d.row * w ; })
             .attr("y", function(d) { return d.col * h + 20; })
-            .attr("font-size", '10')
+            .attr("dx", '0.5em')
+            .attr("font-size", '15')
             .attr("font-family", 'Arial Narrow')
             .text(function(d,i){
-                return i+':00';
+                return i;
             });
-     }                          
+            
+        
+        // Init opentips untuk setiap rect di heat map    
+        var tempElmn, tempJumlah, tempContent;
+        d3.selectAll("."+tempTag).attr("",function(d,i){
+                        tempElmn = $(this);
+                        tempJumlah = tempElmn.attr('title');
+                        tempContent = '( '+i+':00 ) <strong>'+getJumlah(tempData,i) +' tweet. </strong> ';
+                        tempElmn.opentip(tempContent, { background: '#FFFFFF', borderColor: tempColor});                        
+              }).on('mouseover.heatG', function(d){
+                    //Select G
+                    var oneG = d3.select(this);
+                    oneG.select('rect').style('stroke','#000'); 
+                 }).on('mouseout.heatG', function(d,i){
+                    var oneG = d3.select(this);
+                    oneG.select('rect').style('stroke', '');  
+                 });
+           
+     }
+     
+         
+                               
 }
 // END -- HEAT MAP
 
@@ -1266,15 +1294,7 @@ function makePie(key) {
     
     function setPieTip(d, elm){
         var myPie = $(elm);
-        var pieOpentip = new Opentip(myPie, {showOn: "mouseover",
-                                        showEffect: "fade",
-                                        tipJoint: "bottom left",
-                                        style: "glass",
-                                        borderRadius: 1,
-                                        escapeContent: false,
-                                        borderWidth: 3,
-                                        borderColor: "#317cc5",
-                                        fixed: false});
+        var pieOpentip = new Opentip(myPie, {style: 'pieInfo', group: 'pie'});
                                         
                             var infoPie = "<strong> \""+key+"\"</strong> disebutkan di :</br>"+
                                         "- <strong>"+d[0]+ "</strong> tweet negatif</br>"+
@@ -1602,21 +1622,20 @@ function drawKDC(data, maxJum, totalJum,orient){
 /* END MISC JS */
 
 /* START BAR JS */
-                              
 var barchart = new vizconfig();
-    barchart.margin = [5, 10, 20, 25];
-    barchart.width = 215 ;
-    barchart.height = 70;
-    barchart.xScale = d3.scale.linear().range([0, (barchart.width-barchart.margin[2])]);
+    barchart.margin = [5, 10, 20, 25, 100];
+    barchart.width = $('#barContainer').width();
+    barchart.height = 75;
+    barchart.xScale = d3.scale.linear().range([0, barchart.width - barchart.margin[4] ]);
     barchart.yScale = d3.scale.ordinal().rangeRoundBands([0, barchart.height], .1);
     barchart.xAxis = d3.svg.axis().scale(barchart.xScale).tickSubdivide(true).orient('top').tickSize(-barchart.height).tickValues([5000, 15000]);
 
 
 var svgbar = d3.select("#bar").append('svg')
-    .attr('width', barchart.width + barchart.margin[1])
+    .attr('width', barchart.width )
     .attr('height', barchart.height + barchart.margin[1])
   .append('g')
-    .attr("transform", gc.translate(0,15))
+    .attr("transform", gc.translate(5,15))
     .on("click.bar", function(){
         d3.selectAll('.values').attr('opacity', 1).transition().delay(3000).duration(1000).attr('opacity',0);
     });
@@ -1645,20 +1664,25 @@ function drawbarchart(data) {
 		  .data(data)
 		.enter().append('g')
 		  .attr('class', 'bar')
-		  .attr('transform', function(d) { return gc.translate(5, barchart.yScale(d.orientasi)/2); });
-
+		  .attr('transform', function(d) { return gc.translate( 80, barchart.yScale(d.orientasi)/2); });
+      
+      bar.append('text')
+          .style('fill', function(d) { return gc.colorOrientasi(d.orientasi);})
+          .attr('transform', function(d) { return gc.translate( -70, barchart.yScale(d.orientasi)/5); })
+          .text(function(d){
+              return d.orientasi;
+          });
+      
 	  bar.append('rect')
 	  	.attr('class', 'barchartbgbar')
 	  	.attr('fill', '#E6E6E6')
-	  	.attr('width', (barchart.width-barchart.margin[2]))
+	  	.attr('width', (barchart.width - barchart.margin[4]))
 	  	.attr('height', barchart.yScale());
 
 	  svgbar.append('g')
  		.attr('class', 'barchartxaxis textUnselectable')
-        .attr('transform', gc.translate(10,0))
+        .attr('transform', gc.translate(80,0))
 	 	.call(barchart.xAxis);
-
-
 
 	  bar.append('rect')
 	  	  .attr('id', 'activebar')
@@ -1699,8 +1723,7 @@ function drawbarchart(data) {
 		.transition().delay(3000).duration(4500)
 		  .attr('opacity', 0);
 
-	var totaltweet = d3.select('#totaltweet').append('text')
-		  .text(d3.sum(data, function(d) { return d.jumlah; }));
+	$('#totalTweet').text(d3.sum(data, function(d) { return d.jumlah; }));
 }
 
 function updatebarchart(date1, date2) {
@@ -1847,26 +1870,33 @@ function setInfoCircle(tanggal, jumlah, orientasi, per, circleid) {
         }
     }).text(jumlah + ' tweet '+ orientasi + ' ');
     var infcrcl = infos.append('svg').attr('width',20).attr('height',20).append('svg:circle')
-                                    .attr('r', 10)
+                                    .attr('r', 9)
                                     .attr('cx',10)
                                     .attr('cy',10)
                                     .attr('fill', gc.colorOrientasi(orientasi) )
-                                    .attr('value',circleid).attr('class', '').attr('id', 'getcircleid');
+                                    .attr('stroke','#000')
+                                    .attr('value',circleid)
+                                    .attr('id', 'getcircleid');
+
 	infcrcl.on('mouseover.infjml', function(d) {
 	    var circid = '#'+ $('#getcircleid').attr('value');
 	    
 	    d3.select(circid).transition().duration(200)
 	           .style('opacity', 1);
-	           
-	   $(circid).data('opentips')[0].show();
+	    
+        var content = '<strong>Keywords</strong>: '+$('#keywordsCache').text();
+        $('#getcircleid').opentip(content, 
+                    {delay: 0, tipJoint: 'top', background: '#FFFFFF', borderColor: '#000000'});       
+	   //$(circid).data('opentips')[0].show();
 	}).on('mouseout.infjml', function(d){
 	   var circid = '#'+ $('#getcircleid').attr('value');
 	   
 	   d3.select(circid).transition().duration(500)
                .style('opacity', 0);
                
-       $(circid).data('opentips')[0].prepareToHide(); 
+       //   $(circid).data('opentips')[0].prepareToHide(); 
 	});
+	
 	
 }
 
@@ -1916,6 +1946,12 @@ function initjs() {
              $('#searchguide').show();  
         }     
     }));
+    // Opentips untuk warning sebelum klik X
+    $('.deleteicon span').opentip("<strong>WARNING:</strong> Tombol ini akan menghilangkan semua hasil "+
+                                   "penelusuran dan visualisasi yang berhubungan dengan penelusuran. "
+                                    , {delay:0, tipJoint: "top"});
+    
+    
     
     /*
      * Listener for lines visibility toggles
@@ -2085,20 +2121,30 @@ function initjs() {
     });
     
     $('#setDateRentang').click(function() {
-        var dd1 = $('#calDate1').val() + ' 00';
-        var dd2 = $('#calDate2').val() + ' 23';
-        var passDomain = [dd1, dd2];
+        var date1 = $('#calDate1')
+            date2 = $('#calDate2');
+        if(date1.val() !== '' && date2.val() !== ''){
+            var dd1 = date1.val() + ' 00';
+            var dd2 = date2.val() + ' 23';
+            var passDomain = [dd1, dd2];
+            
+            setDomain(passDomain, true);
         
-        setDomain(passDomain, true);
-    
-        updatebarchart(
-                       $('#calDate1').val(),
-                       $('#calDate2').val()
-                      );
-        setInfoRentang(
-                       $('#calDate1').val(),
-                       $('#calDate2').val()
-                        );
+            updatebarchart( date1.val(), date2.val() );
+            setInfoRentang( date1.val(), date2.val() );
+            
+            date1.removeClass('input_warning');
+            date2.removeClass('input_warning');  
+        } else {
+            if(date1.val() == ''){
+                date1.addClass('input_warning');
+                date1.val('Harus diisi!');
+            }
+            if(date2.val() == ''){
+                date2.addClass('input_warning');
+                date2.val('Harus diisi!');
+            }
+        }
     });
     
     $('#resetDateRentang').click(function(){

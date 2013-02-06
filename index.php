@@ -126,46 +126,46 @@
           </div>
                 <div id="overviewcontent">
                                     <div class="overviewtab">
-                                        <div class="overviewtitle">
+                                        <div class="text_center">
                                             Data set
                                         </div>
                                         <div id="barhourDataset" class="toptenhour">
                                            
                                         </div>
-                                        <div id="kwlistdataset">
+                                        <div id="kwlistdataset" class="lucidaFont">
                                         
                                         </div>
                                     </div>
                                     <div class="overviewtab">
-                                        <div class="overviewtitle">
+                                        <div class="text_center">
                                             Negatif
                                         </div>
                                         <div id="barhourNegatif" class="toptenhour">
                                             
                                         </div>
-                                        <div id="kwlistnegatif">
+                                        <div id="kwlistnegatif" class="lucidaFont">
                                       
                                         </div>
                                     </div>
                                     <div class="overviewtab">
-                                        <div class="overviewtitle">
+                                        <div class="text_center">
                                             Positif
                                         </div>
                                         <div id="barhourPositif" class="toptenhour">
                                             
                                         </div>
-                                        <div id="kwlistpositif">
+                                        <div id="kwlistpositif" class="lucidaFont">
                                         
                                         </div>
                                     </div>
                                     <div class="overviewtab">
-                                        <div class="overviewtitle">
+                                        <div class="text_center">
                                             Non-Opini
                                         </div>
                                         <div id="barhourNonopini" class="toptenhour">
                                             
                                         </div>
-                                        <div id="kwlistnonopini">
+                                        <div id="kwlistnonopini" class="lucidaFont">
                                         
                                         </div>
                                     </div>
@@ -173,9 +173,24 @@
       </div>   <!-- END OVERVIEW BOX --> 
   </div> <!-- END LEFTBOX --> 
   
-  <div id="rightbox" class="lefting">
+  <div id="rightbox" class="lefting" >
       <div id="infobox" class="lefting whiteBG borderBox">
-          <div id="bar"></div>
+          <!--
+          <div id="menuControl" class="fullwidth lefting">
+                       <div class="navbar navbar-static-top">
+                          <div class="navbar-inner">
+                            <a class="brand" href="#">Title</a>
+                            <ul class="nav">
+                              <li class="active"><a href="#">Home</a></li>
+                              <li><a href="#">Link</a></li>
+                              <li><a href="#">Link</a></li>
+                            </ul>
+                          </div>
+                        </div>
+          </div>
+          -->
+          <div id="topInfo" class="text_center info_text" style="margin: 1em 0 1em 0;">Brand: <strong>Indosat</strong> </br> Total Tweet: <strong><text id='totalTweet'></text></strong></div>
+          <div id="barContainer" class="fullwidth lefting"><div id="bar"></div></div>
           
       </div><!-- END INFOBOX -->
       
@@ -189,7 +204,10 @@
                   
                 <div class="tab-pane active" id="tweet">
                        <div class="infotweet lefting">
-                            <div id="infoCircle" ></div> 
+                            <div id="infoCircle" >
+                                <p><text>Klik lingkaran di grafik tren</text></p>
+                                <p><text>untuk menampilkan tweet disini</text></p>
+                            </div> 
                             <div id="keywordsCache" class="hide"></div>
                         </div>
                        <div id="paginationtweet" class="fullwidth"></div>
@@ -197,7 +215,6 @@
                            <table class="table table-hover">
                                 <tbody>
                                     <tr id="tweets">
-                                      <td> Klik lingkaran di grafik tren untuk menampilkan tweet disini</td>
                                     </tr>
                                 </tbody>
                             </table>
